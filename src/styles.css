@@ -11,3 +11,10 @@
 .skeleton{height:18px;border-radius:6px;margin:12px 0;background:linear-gradient(90deg,#edf0f5 25%,#f7f8fb 50%,#edf0f5 75%);background-size:200% 100%;animation:shim 1.2s infinite}.skeleton.short{width:55%}@keyframes shim{to{background-position:-200% 0}}
 caption.sr-only{display:block}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.protobar{background:#14213d;color:#fff;text-align:center;font-size:12px;padding:5px 10px;border-bottom:3px solid;border-image:linear-gradient(90deg,#ff9933 33%,#fff 33% 66%,#138808 66%) 1}
+.dispwrap{position:relative}.dispmenu{position:absolute;right:0;top:46px;width:230px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px #0002;padding:12px;z-index:70}
+html.hc body{background:#fff;color:#000}html.hc .card,html.hc .stat,html.hc .topbar{border-color:#000}html.hc .muted,html.hc .sub,html.hc small{color:#222!important}html.hc .btn,html.hc .iconbtn{border-color:#000}
+html.wide body{letter-spacing:.04em;word-spacing:.12em;line-height:1.8}
+html.hl a{background:#ffef9f;text-decoration:underline;outline:1px solid #b88a00}
+.notice a{color:inherit;font-weight:700}

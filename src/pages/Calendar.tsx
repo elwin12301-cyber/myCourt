@@ -1,13 +1,17 @@
 import { useApp } from '../context'
 import { Btn, Card, Notice, PageHead, Stat } from '../components/ui'
 import { newTaskModal } from './modals'
+import { monthGrid, toIso } from '../features/calendar'
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const EVENTS: Record<number, string> = { 23: 'Task due', 28: 'Hearing · CR/0412', 30: 'Draft review' }
+const EVENTS: Record<string, string> = { '2026-10-23': 'Task due (demo)', '2026-10-28': 'Hearing · CR/0412 (demo)', '2026-10-30': 'Draft review (demo)' }
 
 export default function CalendarPage() {
   const app = useApp()
   const { tasks, setTasks } = app
+  const now = new Date()
+  const todayIso = toIso(now)
+  const cells = monthGrid(now.getFullYear(), now.getMonth())
 
   return (
     <>
@@ -21,19 +25,15 @@ export default function CalendarPage() {
         <Stat label="Completed" num="19" desc="This month" ico="✓" />
       </div>
       <div className="grid layout2">
-        <Card title="October 2026">
+        <Card title={now.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}>
           <div className="calendar">
             {DAYS.map((d) => <div className="day" key={d}><b>{d}</b></div>)}
-            {Array.from({ length: 35 }, (_, i) => {
-              const n = i - 2
-              const inMonth = n > 0 && n <= 31
-              return (
-                <div className={`day ${n === 23 ? 'today' : ''}`} key={i}>
-                  <b>{inMonth ? n : ''}</b>
-                  {inMonth && EVENTS[n] && <span className="dot">{EVENTS[n]}</span>}
-                </div>
-              )
-            })}
+            {cells.map((cell, i) => (
+              <div className={`day ${cell.iso === todayIso ? 'today' : ''}`} key={i} aria-current={cell.iso === todayIso ? 'date' : undefined}>
+                <b>{cell.day ?? ''}</b>
+                {cell.iso && EVENTS[cell.iso] && <span className="dot">{EVENTS[cell.iso]}</span>}
+              </div>
+            ))}
           </div>
         </Card>
         <Card title="Tasks & follow-up">

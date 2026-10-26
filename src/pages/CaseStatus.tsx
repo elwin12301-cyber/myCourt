@@ -27,6 +27,16 @@ function F({ id, label, error, children }: { id: string; label: string; error?: 
   )
 }
 
+const OFFICIAL: [string, string][] = [
+  ['District Court services', 'https://services.ecourts.gov.in/'],
+  ['High Court services', 'https://hcservices.ecourts.gov.in/'],
+  ['Judgment search', 'https://judgments.ecourts.gov.in/'],
+  ['eFiling', 'https://filing.ecourts.gov.in/'],
+  ['ePay', 'https://pay.ecourts.gov.in/'],
+  ['Virtual Courts', 'https://vcourts.gov.in/'],
+  ['NJDG (district)', 'https://njdg.ecourts.gov.in/njdg_v3/'],
+]
+
 export default function CaseStatusPage() {
   const [mode, setMode] = useState<SearchMode>('cnr')
   const [v, setV] = useState({
@@ -117,6 +127,12 @@ export default function CaseStatusPage() {
       <div className="demobanner" role="note">
         <strong>Demonstration data.</strong> Results come from a local mock adapter with fictional records. This prototype is not connected to eCourts, is not affiliated with the judiciary, and must not be used to check a real case.
       </div>
+
+      <Notice>
+        For real case information use the official services: {OFFICIAL.map(([l, u], i) => (
+          <span key={u}>{i > 0 && ' · '}<a href={u} target="_blank" rel="noopener noreferrer">{l}<span className="sr-only"> (opens in a new tab)</span></a></span>
+        ))}
+      </Notice>
 
       <Card>
         <div className="tabrow" role="tablist" aria-label="Search by">

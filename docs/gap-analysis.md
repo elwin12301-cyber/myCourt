@@ -17,3 +17,13 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-011 | Calendar | "Today" hard-coded to day 23 | n/a | Wrong highlight on any other date | `src/pages/Calendar.tsx` | P3 | Open |
 | GAP-012 | Case-status field rules | Party-name minimum 3 characters and year range 1950–current are **prototype assumptions** | Not observed | Rules not confirmed against the official service | `validation.ts` | P3 | Unverified |
 | GAP-013 | Languages | English only | Home page showed English only | No gap observed | — | — | No action |
+
+## Status update (second implementation pass)
+| ID | Result |
+|---|---|
+| GAP-004 | **Fixed** — `Aa` display-settings menu: text size, high contrast, wider spacing, link highlight; saved in `localStorage`. Not yet checked against WCAG contrast ratios. |
+| GAP-007 | **Fixed** — hash URLs (`#/caseStatus`); back button and deep links work (`src/router.ts`). |
+| GAP-008 | **Fixed** — a site-wide "Prototype · demonstration data" bar replaces per-page labelling. |
+| GAP-010 | **Partly fixed** — Case Status links out to the verified official services; no cause list, ePay or eFiling features were built. |
+| GAP-011 | **Fixed** — calendar uses the current month and date; sample events are marked (demo). |
+| Still open | GAP-005b (linter), GAP-009 (backend), modal focus trap, GAP-002 outside Case Status. |

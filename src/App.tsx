@@ -1,7 +1,9 @@
-import { useCallback, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { AppContext } from './context'
 import type { ChatMessage, DocItem, ModalConfig, PageId, Task } from './types'
 import { Pill, Row } from './components/ui'
+import DisplaySettings from './components/DisplaySettings'
+import { hashForPage, pageFromHash } from './router'
 import Dashboard from './pages/Dashboard'
 import { CasesPage, CaseDetailPage } from './pages/Cases'
 import AssistantPage from './pages/Assistant'
@@ -65,7 +67,7 @@ const INITIAL_DOCS: DocItem[] = [
 ]
 
 export default function App() {
-  const [page, setPage] = useState<PageId>('dashboard')
+  const [page, setPage] = useState<PageId>(() => pageFromHash(window.location.hash))
   const [menuOpen, setMenuOpen] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
   const [toastShow, setToastShow] = useState(false)
@@ -79,7 +81,18 @@ export default function App() {
   const [researchQuery, setResearchQuery] = useState('')
   const toastTimer = useRef<number>()
 
-  const go = useCallback((p: PageId) => { setPage(p); setMenuOpen(false) }, [])
+  const go = useCallback((p: PageId) => {
+    setPage(p)
+    setMenuOpen(false)
+    if (window.location.hash !== hashForPage(p)) window.location.hash = hashForPage(p)
+    window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
+    const onHash = () => { setPage(pageFromHash(window.location.hash)); setMenuOpen(false) }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
   const toast = useCallback((msg: string) => {
     setToastMsg(msg)
     setToastShow(true)
@@ -133,6 +146,7 @@ export default function App() {
   return (
     <AppContext.Provider value={ctx}>
       <a className="skip" href="#main-content">Skip to main content</a>
+      <div className="protobar" role="note">Prototype · all case, client and financial data shown is demonstration data</div>
       <div className="app">
         <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
           <div className="brand">
@@ -160,7 +174,8 @@ export default function App() {
             </div>
             <div className="topactions">
               <button className="iconbtn hide-sm" onClick={() => go('calendar')}>◷ Upcoming: 3</button>
-              <button className="iconbtn" title="Notifications" onClick={showNotifications}>♧</button>
+              <DisplaySettings />
+              <button className="iconbtn" title="Notifications" aria-label="Notifications" onClick={showNotifications}>♧</button>
               <div className="avatar">AK</div>
             </div>
           </header>
