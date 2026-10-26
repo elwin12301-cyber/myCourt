@@ -3,6 +3,8 @@ import type { ReactNode } from 'react'
 export type PageId =
   | 'dashboard' | 'cases' | 'caseStatus' | 'caseDetail' | 'assistant' | 'research' | 'documents'
   | 'mapping' | 'voice' | 'hearing' | 'calendar' | 'intake' | 'billing'
+  | 'portalHome' | 'portalAbout' | 'portalHighCourts' | 'portalDistrict' | 'portalForms'
+  | 'portalContact' | 'portalHelp' | 'portalSearch'
 
 export interface ChatMessage { role: 'user' | 'assistant'; title: string; text: string }
 export interface Task { title: string; due: string; done: boolean }

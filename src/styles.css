@@ -18,3 +18,14 @@ html.hc body{background:#fff;color:#000}html.hc .card,html.hc .stat,html.hc .top
 html.wide body{letter-spacing:.04em;word-spacing:.12em;line-height:1.8}
 html.hl a{background:#ffef9f;text-decoration:underline;outline:1px solid #b88a00}
 .notice a{color:inherit;font-weight:700}
+
+.carousel{margin-bottom:18px}.carctl{display:flex;gap:6px;flex-shrink:0}
+.linkbtn{background:none;border:0;padding:0;color:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+.langsel{margin-left:auto;align-self:center}.langsel select{border:1px solid var(--line);border-radius:8px;padding:5px 8px;background:#fff}
+.linklist{columns:2;margin:0;padding-left:18px}.linklist li{margin-bottom:6px}
+html.inv{filter:invert(1) hue-rotate(180deg)}html.inv img,html.inv video{filter:invert(1) hue-rotate(180deg)}
+html.gray{filter:grayscale(1)}html.inv.gray{filter:invert(1) hue-rotate(180deg) grayscale(1)}
+html.tall body{line-height:2}
+html.noimg img,html.noimg svg{display:none!important}
+html.bigcur,html.bigcur *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M3 2l22 12-9 2-3 9z' fill='black' stroke='white' stroke-width='2'/></svg>") 3 2,auto!important}
+@media(max-width:760px){.linklist{columns:1}}

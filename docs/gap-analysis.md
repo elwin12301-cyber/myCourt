@@ -27,3 +27,20 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-010 | **Partly fixed** — Case Status links out to the verified official services; no cause list, ePay or eFiling features were built. |
 | GAP-011 | **Fixed** — calendar uses the current month and date; sample events are marked (demo). |
 | Still open | GAP-005b (linter), GAP-009 (backend), modal focus trap, GAP-002 outside Case Status. |
+
+## Third pass — full portal feature coverage
+| ID | Reference feature (verified) | Status in myCourt |
+|---|---|---|
+| GAP-014 | Portal home: carousel, counters, service cards, references, app/SMS, login button | **Implemented** (`PortalHome`); login is a clearly marked non-functional stub; reports are listed but not hosted |
+| GAP-015 | About page | **Implemented** (`PortalAbout`) |
+| GAP-016 | High Courts list | **Implemented** with filter (`PortalHighCourts`) |
+| GAP-017 | District Courts by state/UT | **Implemented** with filter; links to official state pages. Portal states 36, lists 37 — both shown |
+| GAP-018 | Forms for Advocates (24 PDFs) | **Implemented** as an index linking to the official files; file addresses derived, not individually tested |
+| GAP-019 | Contact Us | **Implemented**; e-mails kept in the portal's obfuscated form |
+| GAP-020 | Site search | **Implemented** over this demo's own index (services, courts, forms, pages); does not search case records |
+| GAP-021 | Accessibility toolbar (contrast, invert, saturation, text size/spacing/line height, hide images, big cursor, reset) | **Implemented** (`Aa` menu) |
+| GAP-022 | External site alert (Go/Cancel) | **Implemented** (`ExternalLink`) |
+| GAP-023 | Multi-language selector | **Partly**: selector shown, only English enabled; translations not built |
+| GAP-024 | Knowledge Management, site map, help videos, manuals, brochures, policies, newsletter | **Not built**: contents could not be verified; listed by name on the Help page |
+| GAP-025 | Live services (case status, cause list, ePay, eFiling, Virtual Court, NJDG, Justice Clock) | **Not replicated**: linked out. Case status has a separate demo |
+| GAP-026 | Mobile app | **Not built**; only referenced |

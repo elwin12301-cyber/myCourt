@@ -38,3 +38,6 @@ src/pages/CaseStatus.tsx
 
 ## Limitations
 Mock data only; no connection to eCourts; no CAPTCHA (omitted because no live service is called); some validation rules are prototype assumptions (see GAP-012). Not affiliated with the Indian judiciary.
+
+## eCourts portal reference section
+Sidebar → **ECOURTS PORTAL (REFERENCE)** (Portal overview, About, High Courts, District Courts, Forms for advocates, Contact, Help & policies, Search portal). Data lives in `src/features/portal/data.ts` and is a snapshot of the public portal dated 2026-10-26; counters may be outdated. Every portal page carries an "independent demonstration" banner. External links go through an "External site alert" (Go/Cancel). Try the **Aa** menu for the accessibility options and "Search portal" for `vakalatnama`, `Madras` or `ePay`.

@@ -13,6 +13,9 @@ import MappingPage from './pages/Mapping'
 import VoicePage from './pages/Voice'
 import HearingPage from './pages/Hearing'
 import CaseStatusPage from './pages/CaseStatus'
+import {
+  PortalAbout, PortalContact, PortalDistrict, PortalForms, PortalHelp, PortalHighCourts, PortalHome, PortalSearch,
+} from './pages/Portal'
 import CalendarPage from './pages/Calendar'
 import IntakePage from './pages/Intake'
 import BillingPage from './pages/Billing'
@@ -32,7 +35,26 @@ const NAV: { id: PageId; ico: string; label: string }[] = [
   { id: 'billing', ico: '₹', label: 'Time & billing' },
 ]
 
+const PORTAL_NAV: { id: PageId; ico: string; label: string }[] = [
+  { id: 'portalHome', ico: '⌂', label: 'Portal overview' },
+  { id: 'portalAbout', ico: 'ⓘ', label: 'About eCourts' },
+  { id: 'portalHighCourts', ico: '⚖', label: 'High Courts' },
+  { id: 'portalDistrict', ico: '▥', label: 'District Courts' },
+  { id: 'portalForms', ico: '▤', label: 'Forms for advocates' },
+  { id: 'portalContact', ico: '✉', label: 'Contact' },
+  { id: 'portalHelp', ico: '?', label: 'Help & policies' },
+  { id: 'portalSearch', ico: '⌕', label: 'Search portal' },
+]
+
 const PAGES: Record<PageId, () => JSX.Element> = {
+  portalHome: PortalHome,
+  portalAbout: PortalAbout,
+  portalHighCourts: PortalHighCourts,
+  portalDistrict: PortalDistrict,
+  portalForms: PortalForms,
+  portalContact: PortalContact,
+  portalHelp: PortalHelp,
+  portalSearch: PortalSearch,
   dashboard: Dashboard,
   cases: CasesPage,
   caseDetail: CaseDetailPage,
@@ -114,6 +136,7 @@ export default function App() {
     if (e.key !== 'Enter') return
     const q = e.currentTarget.value.toLowerCase()
     if (q.includes('cnr') || q.includes('status')) go('caseStatus')
+    else if (q.includes('ecourts') || q.includes('portal') || q.includes('form') || q.includes('high court')) go('portalSearch')
     else if (q.includes('document') || q.includes('order')) go('documents')
     else if (q.includes('section') || q.includes('ipc') || q.includes('bns')) go('mapping')
     else if (q.includes('hearing') || q.includes('date')) go('calendar')
@@ -157,6 +180,14 @@ export default function App() {
           <nav className="nav">
             {NAV.map((n) => (
               <button key={n.id} aria-current={activeNav === n.id ? 'page' : undefined} className={activeNav === n.id ? 'active' : ''} onClick={() => go(n.id)}>
+                <span className="ico">{n.ico}</span>{n.label}
+              </button>
+            ))}
+          </nav>
+          <div className="navlabel">ECOURTS PORTAL (REFERENCE)</div>
+          <nav className="nav" aria-label="eCourts portal reference">
+            {PORTAL_NAV.map((n) => (
+              <button key={n.id} aria-current={page === n.id ? 'page' : undefined} className={page === n.id ? 'active' : ''} onClick={() => go(n.id)}>
                 <span className="ico">{n.ico}</span>{n.label}
               </button>
             ))}

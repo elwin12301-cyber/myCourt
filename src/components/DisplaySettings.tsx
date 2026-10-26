@@ -1,13 +1,25 @@
 import { useEffect, useState } from 'react'
 
-interface Prefs { size: number; contrast: boolean; spacing: boolean; links: boolean }
-const DEFAULTS: Prefs = { size: 0, contrast: false, spacing: false, links: false }
+type Flag = 'contrast' | 'invert' | 'gray' | 'links' | 'spacing' | 'lines' | 'noimg' | 'cursor'
+interface Prefs { size: number; flags: Flag[] }
+const DEFAULTS: Prefs = { size: 0, flags: [] }
+const FLAGS: { id: Flag; label: string; cls: string }[] = [
+  { id: 'contrast', label: 'High contrast', cls: 'hc' },
+  { id: 'invert', label: 'Invert colours', cls: 'inv' },
+  { id: 'gray', label: 'Grayscale', cls: 'gray' },
+  { id: 'links', label: 'Highlight links', cls: 'hl' },
+  { id: 'spacing', label: 'Wider text spacing', cls: 'wide' },
+  { id: 'lines', label: 'Taller line height', cls: 'tall' },
+  { id: 'noimg', label: 'Hide images', cls: 'noimg' },
+  { id: 'cursor', label: 'Big cursor', cls: 'bigcur' },
+]
 const KEY = 'mycourt.display'
 
 function load(): Prefs {
   try {
     const raw = localStorage.getItem(KEY)
-    return raw ? { ...DEFAULTS, ...JSON.parse(raw) } : DEFAULTS
+    const parsed = raw ? JSON.parse(raw) : null
+    return parsed && Array.isArray(parsed.flags) ? { size: Number(parsed.size) || 0, flags: parsed.flags } : DEFAULTS
   } catch { return DEFAULTS }
 }
 
@@ -18,13 +30,11 @@ export default function DisplaySettings() {
   useEffect(() => {
     const root = document.documentElement
     root.style.fontSize = `${100 + p.size * 10}%`
-    root.classList.toggle('hc', p.contrast)
-    root.classList.toggle('wide', p.spacing)
-    root.classList.toggle('hl', p.links)
+    FLAGS.forEach((f) => root.classList.toggle(f.cls, p.flags.includes(f.id)))
     try { localStorage.setItem(KEY, JSON.stringify(p)) } catch { /* storage unavailable */ }
   }, [p])
 
-  const toggle = (k: 'contrast' | 'spacing' | 'links') => setP((s) => ({ ...s, [k]: !s[k] }))
+  const toggle = (k: Flag) => setP((s) => ({ ...s, flags: s.flags.includes(k) ? s.flags.filter((x) => x !== k) : [...s.flags, k] }))
   const size = (d: number) => setP((s) => ({ ...s, size: Math.max(-1, Math.min(3, s.size + d)) }))
 
   return (
@@ -37,9 +47,9 @@ export default function DisplaySettings() {
             <button className="btn small" onClick={() => setP((s) => ({ ...s, size: 0 }))}>A</button>
             <button className="btn small" onClick={() => size(1)} aria-label="Increase text size">A+</button>
           </div>
-          <label className="checkrow"><input type="checkbox" checked={p.contrast} onChange={() => toggle('contrast')} /><div><strong>High contrast</strong></div></label>
-          <label className="checkrow"><input type="checkbox" checked={p.spacing} onChange={() => toggle('spacing')} /><div><strong>Wider text spacing</strong></div></label>
-          <label className="checkrow"><input type="checkbox" checked={p.links} onChange={() => toggle('links')} /><div><strong>Highlight links</strong></div></label>
+          {FLAGS.map((f) => (
+            <label className="checkrow" key={f.id}><input type="checkbox" checked={p.flags.includes(f.id)} onChange={() => toggle(f.id)} /><div><strong>{f.label}</strong></div></label>
+          ))}
           <button className="btn small" onClick={() => setP(DEFAULTS)}>Reset all</button>
         </div>
       )}

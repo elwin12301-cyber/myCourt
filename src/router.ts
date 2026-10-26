@@ -3,6 +3,8 @@ import type { PageId } from './types'
 export const PAGE_IDS: PageId[] = [
   'dashboard', 'cases', 'caseStatus', 'caseDetail', 'assistant', 'research', 'documents',
   'mapping', 'voice', 'hearing', 'calendar', 'intake', 'billing',
+  'portalHome', 'portalAbout', 'portalHighCourts', 'portalDistrict', 'portalForms',
+  'portalContact', 'portalHelp', 'portalSearch',
 ]
 
 /** Parses "#/case-status"-style hashes; unknown values fall back to the dashboard. */
