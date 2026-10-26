@@ -6,7 +6,7 @@ export function PageHead({ title, sub, children }: { title: string; sub: string;
   return (
     <div className="pagehead">
       <div>
-        <div className="eyebrow">MrCourt workspace</div>
+        <div className="eyebrow">myCourt workspace</div>
         <h2>{title}</h2>
         <p className="sub">{sub}</p>
       </div>

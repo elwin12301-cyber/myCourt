@@ -45,7 +45,7 @@ const PAGES: Record<PageId, () => JSX.Element> = {
 
 const INITIAL_MESSAGES: ChatMessage[] = [{
   role: 'assistant',
-  title: 'MrCourt AI',
+  title: 'myCourt AI',
   text: 'Hello, Advocate. I can help review your matter, find source-backed legal authorities, prepare a hearing brief, or turn dictation into structured notes. Choose a matter to begin.',
 }]
 
@@ -132,7 +132,7 @@ export default function App() {
         <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
           <div className="brand">
             <div className="brandmark">M</div>
-            <div><h1>MrCourt</h1><small>LEGAL WORKSPACE</small></div>
+            <div><h1>myCourt</h1><small>LEGAL WORKSPACE</small></div>
           </div>
           <div className="navlabel">WORKSPACE</div>
           <nav className="nav">

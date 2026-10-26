@@ -30,7 +30,7 @@ export default function AssistantPage() {
     setMessages((m) => [
       ...m,
       { role: 'user', title: 'You', text: q },
-      { role: 'assistant', title: 'MrCourt AI', text: answerFor(q) },
+      { role: 'assistant', title: 'myCourt AI', text: answerFor(q) },
     ])
     setInput('')
   }
