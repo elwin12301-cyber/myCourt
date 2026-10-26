@@ -22,6 +22,7 @@ export default function Dashboard() {
         <Card title="Quick actions">
           <div className="quickgrid">
             <Quick ico="✦" title="Ask AI assistant" sub="Grounded in matter context" to="assistant" />
+            <Quick ico="⚑" title="Check case status" sub="CNR, case number, party" to="caseStatus" />
             <Quick ico="⌕" title="Research with RAG" sub="Search cited sources" to="research" />
             <Quick ico="◉" title="Dictate a note" sub="Transcribe and structure" to="voice" />
             <Quick ico="▤" title="Upload documents" sub="OCR and extract facts" to="documents" />

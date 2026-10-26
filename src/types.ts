@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 export type PageId =
-  | 'dashboard' | 'cases' | 'caseDetail' | 'assistant' | 'research' | 'documents'
+  | 'dashboard' | 'cases' | 'caseStatus' | 'caseDetail' | 'assistant' | 'research' | 'documents'
   | 'mapping' | 'voice' | 'hearing' | 'calendar' | 'intake' | 'billing'
 
 export interface ChatMessage { role: 'user' | 'assistant'; title: string; text: string }

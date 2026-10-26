@@ -10,6 +10,7 @@ import DocumentsPage from './pages/Documents'
 import MappingPage from './pages/Mapping'
 import VoicePage from './pages/Voice'
 import HearingPage from './pages/Hearing'
+import CaseStatusPage from './pages/CaseStatus'
 import CalendarPage from './pages/Calendar'
 import IntakePage from './pages/Intake'
 import BillingPage from './pages/Billing'
@@ -17,6 +18,7 @@ import BillingPage from './pages/Billing'
 const NAV: { id: PageId; ico: string; label: string }[] = [
   { id: 'dashboard', ico: '▦', label: 'Dashboard' },
   { id: 'cases', ico: '▣', label: 'Cases & matters' },
+  { id: 'caseStatus', ico: '⚑', label: 'Case status' },
   { id: 'assistant', ico: '✦', label: 'AI Legal Assistant' },
   { id: 'research', ico: '⌕', label: 'RAG Research' },
   { id: 'documents', ico: '▤', label: 'Documents & OCR' },
@@ -32,6 +34,7 @@ const PAGES: Record<PageId, () => JSX.Element> = {
   dashboard: Dashboard,
   cases: CasesPage,
   caseDetail: CaseDetailPage,
+  caseStatus: CaseStatusPage,
   assistant: AssistantPage,
   research: ResearchPage,
   documents: DocumentsPage,
@@ -97,7 +100,8 @@ export default function App() {
   const onSearch = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return
     const q = e.currentTarget.value.toLowerCase()
-    if (q.includes('document') || q.includes('order')) go('documents')
+    if (q.includes('cnr') || q.includes('status')) go('caseStatus')
+    else if (q.includes('document') || q.includes('order')) go('documents')
     else if (q.includes('section') || q.includes('ipc') || q.includes('bns')) go('mapping')
     else if (q.includes('hearing') || q.includes('date')) go('calendar')
     else if (q.includes('research') || q.includes('judgment')) go('research')
@@ -128,6 +132,7 @@ export default function App() {
 
   return (
     <AppContext.Provider value={ctx}>
+      <a className="skip" href="#main-content">Skip to main content</a>
       <div className="app">
         <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
           <div className="brand">
@@ -137,7 +142,7 @@ export default function App() {
           <div className="navlabel">WORKSPACE</div>
           <nav className="nav">
             {NAV.map((n) => (
-              <button key={n.id} className={activeNav === n.id ? 'active' : ''} onClick={() => go(n.id)}>
+              <button key={n.id} aria-current={activeNav === n.id ? 'page' : undefined} className={activeNav === n.id ? 'active' : ''} onClick={() => go(n.id)}>
                 <span className="ico">{n.ico}</span>{n.label}
               </button>
             ))}
@@ -147,11 +152,11 @@ export default function App() {
             <div><strong>Adv. A. Kumar</strong><small>Advocate workspace</small></div>
           </div>
         </aside>
-        <main className="main">
+        <main className="main" id="main-content" tabIndex={-1}>
           <header className="topbar">
             <button className="iconbtn mobilemenu" onClick={() => setMenuOpen((o) => !o)}>☰</button>
             <div className="search">
-              <input placeholder="Search matters, documents, authorities…" onKeyDown={onSearch} />
+              <input aria-label="Search" placeholder="Search matters, documents, authorities…" onKeyDown={onSearch} />
             </div>
             <div className="topactions">
               <button className="iconbtn hide-sm" onClick={() => go('calendar')}>◷ Upcoming: 3</button>
@@ -167,10 +172,10 @@ export default function App() {
 
       <div className={`modalback ${modal ? 'show' : ''}`}>
         {modal && (
-          <form className="modal" onSubmit={submitModal}>
+          <form className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" onSubmit={submitModal} onKeyDown={(e) => { if (e.key === 'Escape') setModal(null) }}>
             <div className="modalhead">
-              <h3>{modal.title}</h3>
-              <button type="button" className="iconbtn" onClick={() => setModal(null)}>✕</button>
+              <h3 id="modal-title">{modal.title}</h3>
+              <button type="button" className="iconbtn" aria-label="Close dialog" autoFocus onClick={() => setModal(null)}>✕</button>
             </div>
             <div>{modal.body}</div>
             <div className="actions" style={{ justifyContent: 'flex-end', marginTop: 16 }}>
