@@ -35,3 +35,10 @@ html.bigcur,html.bigcur *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http:/
 .portalfoot{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
 .portalfoot p{margin:0 0 8px}
 .nav .linklike{width:100%}
+
+.portalhead{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.portalhead .langsel{margin-left:0}
+.portalsearch{display:flex;gap:6px;flex:1;min-width:220px;max-width:420px;margin-left:auto}
+.portalsearch input{flex:1;min-width:0;border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+td.nowrap{white-space:nowrap}
+html.lowsat{filter:saturate(.35)}html.lowsat.gray{filter:grayscale(1)}

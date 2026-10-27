@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
-type Flag = 'contrast' | 'invert' | 'gray' | 'links' | 'spacing' | 'lines' | 'noimg' | 'cursor'
+type Flag = 'contrast' | 'invert' | 'gray' | 'sat' | 'links' | 'spacing' | 'lines' | 'noimg' | 'cursor'
 interface Prefs { size: number; flags: Flag[] }
 const DEFAULTS: Prefs = { size: 0, flags: [] }
 const FLAGS: { id: Flag; label: string; cls: string }[] = [
   { id: 'contrast', label: 'High contrast', cls: 'hc' },
   { id: 'invert', label: 'Invert colours', cls: 'inv' },
   { id: 'gray', label: 'Grayscale', cls: 'gray' },
+  { id: 'sat', label: 'Low saturation', cls: 'lowsat' },
   { id: 'links', label: 'Highlight links', cls: 'hl' },
   { id: 'spacing', label: 'Wider text spacing', cls: 'wide' },
   { id: 'lines', label: 'Taller line height', cls: 'tall' },

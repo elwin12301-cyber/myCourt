@@ -12,7 +12,8 @@ import {
 import { buildIndex, searchPortal } from '../features/portal/search'
 
 export function Shell({ title, sub, children, back }: { page?: PageId; title: string; sub: string; children: ReactNode; back?: boolean }) {
-  const { go } = useApp()
+  const { go, portalQuery, setPortalQuery } = useApp()
+  const [draft, setDraft] = useState(portalQuery)
   return (
     <>
       <div className="demobanner" role="note">
@@ -20,7 +21,16 @@ export function Shell({ title, sub, children, back }: { page?: PageId; title: st
         as reviewed on {PORTAL_SNAPSHOT_DATE}. It is not the official portal, is not affiliated with the Indian judiciary, and
         figures may be out of date. Verify everything on <ExternalLink href={OFFICIAL_HOME} className="linkbtn">ecourts.gov.in</ExternalLink>.
       </div>
-      <div className="langrow">
+      <div className="portalhead">
+        <div>
+          <strong>eCourts reference</strong>
+          <div className="tiny muted">High Courts of India · District and Taluka Courts of India</div>
+        </div>
+        <form className="portalsearch" role="search" onSubmit={(e) => { e.preventDefault(); setPortalQuery(draft); go('portalSearch') }}>
+          <label className="sr-only" htmlFor="portal-top-search">Search this site</label>
+          <input id="portal-top-search" type="search" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Search this site" />
+          <button className="btn small" type="submit">Search</button>
+        </form>
         <label className="langsel tiny">
           <span className="sr-only">Language</span>
           <select aria-label="Language" defaultValue="English" onChange={(e) => { e.target.value = 'English' }}>
@@ -150,7 +160,9 @@ export function PortalHome() {
           </div>
         </Card>
         <Card title="eCourts services app and SMS">
-          <p>Mobile app for Android and iOS is listed on the portal (store links were not visible when reviewed).</p>
+          <p>Mobile app for Android and iOS is listed on the portal.</p>
+          <div className="actions" style={{ marginBottom: 10 }}><Pill>Google Play</Pill><Pill>App Store</Pill></div>
+          <p className="tiny muted">On the official page these badges are images, not links, so no store address is available.</p>
           <div className="sourcebox">
             <h4>Know your case status by return SMS</h4>
             <p>SMS <strong>{SMS_FORMAT}</strong> to <strong>{SMS_NUMBER}</strong>. Separate the word and the number with a space.</p>
@@ -269,21 +281,21 @@ export function PortalContact() {
   const rows = HIGH_COURTS.filter((h) => `${h.name} ${h.jurisdiction}`.toLowerCase().includes(q.toLowerCase()))
   return (
     <Shell page="portalContact" title="Contact" sub="The portal lists one general e-mail and the Central Project Coordinator (CPC) of each High Court.">
-      <div className="grid layout2">
+      <div className="grid">
+        <Card title="General">
+          <div className="sourcebox"><h4>e-Committee, Supreme Court of India</h4><p>{COMMITTEE_EMAIL}</p></div>
+          <Notice>Addresses are shown in the portal&apos;s anti-spam form: replace [at] with @ and [dot] with a full stop. CPC contacts are for issues with case-data availability or updates. The portal lists no postal address or phone number, and has no contact form.</Notice>
+        </Card>
         <Card title="Contacts by High Court">
           <Filter value={q} onChange={setQ} label="Filter by High Court or state" count={rows.length} />
           <div className="tablewrap">
             <table>
               <caption className="sr-only">High Court CPC contacts</caption>
               <thead><tr><th scope="col">High Court</th><th scope="col">Jurisdiction</th><th scope="col">CPC e-mail</th></tr></thead>
-              <tbody>{rows.map((h) => <tr key={h.name}><td><strong>{h.name}</strong></td><td>{h.jurisdiction}</td><td>{h.cpcEmail}</td></tr>)}</tbody>
+              <tbody>{rows.map((h) => <tr key={h.name}><td><strong>{h.name}</strong></td><td>{h.jurisdiction}</td><td className="nowrap">{h.cpcEmail}</td></tr>)}</tbody>
             </table>
             {rows.length === 0 && <div className="empty">No High Court matches “{q}”.</div>}
           </div>
-        </Card>
-        <Card title="General">
-          <div className="sourcebox"><h4>e-Committee, Supreme Court of India</h4><p>{COMMITTEE_EMAIL}</p></div>
-          <Notice>Addresses are shown in the portal's anti-spam form: replace [at] with @ and [dot] with a full stop. CPC contacts are for issues with case-data availability or updates. The portal lists no postal address or phone number, and has no contact form.</Notice>
         </Card>
       </div>
     </Shell>
@@ -320,8 +332,10 @@ export function PortalHelp() {
 
 export function PortalSearch() {
   const { go } = useApp()
-  const [q, setQ] = useState('')
-  const [submitted, setSubmitted] = useState('')
+  const { portalQuery } = useApp()
+  const [q, setQ] = useState(portalQuery)
+  const [submitted, setSubmitted] = useState(portalQuery)
+  useEffect(() => { setQ(portalQuery); setSubmitted(portalQuery) }, [portalQuery])
   const index = useMemo(buildIndex, [])
   const hits = useMemo(() => searchPortal(submitted, index), [submitted, index])
   return (

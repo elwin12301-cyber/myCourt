@@ -32,5 +32,7 @@ export interface AppContextValue {
   transcript: string
   setTranscript: (t: string) => void
   researchQuery: string
+  portalQuery: string
+  setPortalQuery: (q: string) => void
   setResearchQuery: (q: string) => void
 }

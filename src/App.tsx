@@ -121,6 +121,7 @@ export default function App() {
     'The matter is listed on 14 November. Check the certified copy of the order. Verify the section reference before drafting.',
   )
   const [researchQuery, setResearchQuery] = useState('')
+  const [portalQuery, setPortalQuery] = useState('')
   const toastTimer = useRef<number>()
 
   const go = useCallback((p: PageId) => {
@@ -150,7 +151,8 @@ export default function App() {
     messages, setMessages: (u: (m: ChatMessage[]) => ChatMessage[]) => setMessagesState(u),
     transcript, setTranscript,
     researchQuery, setResearchQuery,
-  }), [go, toast, openModal, tasks, docs, messages, transcript, researchQuery])
+    portalQuery, setPortalQuery,
+  }), [go, toast, openModal, tasks, docs, messages, transcript, researchQuery, portalQuery])
 
   const onSearch = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return
