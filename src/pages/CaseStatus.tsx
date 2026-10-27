@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { Btn, Card, Notice, PageHead } from '../components/ui'
+import { useApp } from '../context'
 import ExternalLink from '../components/ExternalLink'
 import { generateCaptcha, verifyCaptcha } from '../features/caseStatus/captcha'
 import { createMockAdapter } from '../features/caseStatus/mockAdapter'
@@ -16,6 +17,7 @@ const adapter = createMockAdapter()
 type Phase = 'idle' | 'loading' | 'error' | 'done'
 
 export default function CaseStatusPage({ initialMode = 'cnr' }: { initialMode?: SearchMode } = {}) {
+  const { go } = useApp()
   const [mode, setMode] = useState<SearchMode>(initialMode)
   const [v, setV] = useState<FormValues>(EMPTY)
   const [errors, setErrors] = useState<FieldErrors>({})
@@ -116,9 +118,11 @@ export default function CaseStatusPage({ initialMode = 'cnr' }: { initialMode?: 
       </div>
 
       <Card title="Other search services on the official site">
-        <p className="tiny muted">The official Search menu also lists these services. They are not rebuilt here; each opens the official site.</p>
+        <p className="tiny muted">The official Search menu also lists these services. Cause List has a demo here; the others are not rebuilt and open the official site.</p>
         <div className="actions">
-          {SEARCH_MENU_LINKS.map((l) => <ExternalLink key={l.label} href={l.url}>{l.label} ↗</ExternalLink>)}
+          {SEARCH_MENU_LINKS.map((l) => (l.page
+            ? <Btn key={l.label} className="small" onClick={() => go(l.page!)}>{l.label} (demo)</Btn>
+            : <ExternalLink key={l.label} href={l.url}>{l.label} ↗</ExternalLink>))}
         </div>
       </Card>
     </>

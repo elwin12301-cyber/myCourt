@@ -33,3 +33,12 @@ describe('Case Status rendering', () => {
     for (const s of ['Case details', 'Case status', 'Acts', 'FIR details', 'History', 'IA business', 'Orders']) expect(html).toContain(s)
   })
 })
+
+import CauseListPage from '../../pages/CauseList'
+
+describe('Cause List rendering', () => {
+  it('renders the official fields, the disclaimer and both list buttons', () => {
+    const html = wrap(<CauseListPage />)
+    for (const s of ['Court Name', 'Cause List Date', 'Enter Captcha', '>Civil<', '>Criminal<', 'Select Establishment', 'may differ from the actual cause list']) expect(html).toContain(s)
+  })
+})

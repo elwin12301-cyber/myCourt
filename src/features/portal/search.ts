@@ -21,6 +21,7 @@ const PAGES: PortalHit[] = [
   { id: 'p-contact', title: 'Contact us', kind: 'Page', description: 'e-Committee e-mail and High Court CPC contacts', page: 'portalContact' },
   { id: 'p-forms', title: 'Forms for Advocates', kind: 'Page', description: 'Vakalatnama, bail bond, memo of appearance and other forms', page: 'portalForms' },
   { id: 'p-help', title: 'Help, policies and accessibility', kind: 'Page', description: 'Useful links, manuals, policies, accessibility', page: 'portalHelp' },
+  { id: 'p-cause', title: 'Cause list (demo)', kind: 'Page', description: 'Show the Civil or Criminal cause list of a court on a date using demonstration data', page: 'causeList' },
   { id: 'p-status', title: 'Case status (demo)', kind: 'Page', description: 'Search by CNR, case number or party name using demonstration data', page: 'caseStatus' },
   ...USEFUL_LINKS.map((l): PortalHit => ({ id: `u-${l.label}`, title: l.label, kind: 'Page', description: 'Listed under Useful Links on the official portal', page: l.page })),
   ...MAIN_MENU.filter((m) => m.url).map((m): PortalHit => ({ id: `m-${m.label}`, title: m.label, kind: 'Page', description: 'Main menu link to an external site', url: m.url })),

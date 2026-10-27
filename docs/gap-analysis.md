@@ -66,3 +66,12 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-012 (update) | Party-name minimum of 3 characters | **Now verified** against the official help text. Year range, bar-code pattern and optional Establishment remain assumptions |
 | GAP-037 | Court Orders, Cause List, Caveat Search, Process Details, Location | **Not rebuilt** — linked to the official site |
 | GAP-038 | Results table columns and case-history layout | **Unverified** — not observable; the prototype's layout is its own design |
+
+## Sixth pass — Cause List
+| ID | Finding | Status |
+|---|---|---|
+| GAP-039 | No Cause List service (only a link-out) | **Fixed** — `Cause list` page: State/District/Court Complex/Establishment, required Court Name (number, judge, designation) and date, CAPTCHA, Civil and Criminal buttons, official disclaimer, list with serial numbers and case view |
+| GAP-040 | Cause list table columns | **Unverified** — prototype design (Sr No, case, parties, advocates, purpose, View) |
+| GAP-041 | Print control | Added beyond the official page (it shows none) |
+| GAP-042 | Court rooms, judges and hearings | Fictional demonstration data for 8 courts in Tamil Nadu, Maharashtra and Delhi |
+| GAP-037 (update) | Remaining unbuilt Search-menu services | Court Orders, Caveat Search, Process Details, Location (linked out) |

@@ -13,6 +13,7 @@ import MappingPage from './pages/Mapping'
 import VoicePage from './pages/Voice'
 import HearingPage from './pages/Hearing'
 import CaseStatusPage from './pages/CaseStatus'
+import CauseListPage from './pages/CauseList'
 import {
   PortalBrochures, PortalHelpVideos, PortalKnowledge, PortalManuals, PortalNewsletter, PortalPolicy,
   PortalScreenReader, PortalSitemap, PortalWebInfo,
@@ -30,6 +31,7 @@ const NAV: { id: PageId; ico: string; label: string }[] = [
   { id: 'dashboard', ico: '▦', label: 'Dashboard' },
   { id: 'cases', ico: '▣', label: 'Cases & matters' },
   { id: 'caseStatus', ico: '⚑', label: 'Case status' },
+  { id: 'causeList', ico: '☷', label: 'Cause list' },
   { id: 'assistant', ico: '✦', label: 'AI Legal Assistant' },
   { id: 'research', ico: '⌕', label: 'RAG Research' },
   { id: 'documents', ico: '▤', label: 'Documents & OCR' },
@@ -79,6 +81,7 @@ const PAGES: Record<PageId, () => JSX.Element> = {
   cases: CasesPage,
   caseDetail: CaseDetailPage,
   caseStatus: CaseStatusPage,
+  causeList: CauseListPage,
   assistant: AssistantPage,
   research: ResearchPage,
   documents: DocumentsPage,
@@ -157,7 +160,8 @@ export default function App() {
   const onSearch = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return
     const q = e.currentTarget.value.toLowerCase()
-    if (q.includes('cnr') || q.includes('status')) go('caseStatus')
+    if (q.includes('cause')) go('causeList')
+    else if (q.includes('cnr') || q.includes('status')) go('caseStatus')
     else if (q.includes('ecourts') || q.includes('portal') || q.includes('form') || q.includes('high court')) go('portalSearch')
     else if (q.includes('document') || q.includes('order')) go('documents')
     else if (q.includes('section') || q.includes('ipc') || q.includes('bns')) go('mapping')

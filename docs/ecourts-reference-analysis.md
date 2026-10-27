@@ -95,3 +95,16 @@ Source: `https://services.ecourts.gov.in/ecourtindia_v6/?p=casestatus/index` (te
 | Page inconsistency | Help text gives CAPTCHA length as 5 and as 6 characters in different places |
 
 **Not observed (Unverified):** the CAPTCHA image, dropdown option lists (districts, complexes, establishments, case types, police stations, acts), validation messages, results table columns, case-history layout (only empty headings "History", "IA Business", "PDF Viewer" and "Acknowledgement" were visible), and behaviour after Go or View.
+
+## Fifth review pass (2026-10-27) — District Court Cause List page
+Source: `https://services.ecourts.gov.in/ecourtindia_v6/?p=cause_list/index` (text read through a fetch tool; no browser, nothing submitted).
+
+| Item | Verified content |
+|---|---|
+| Court selection | Select State, Select District, Select Court Complex, Select Establishment (cascading; the role of Establishment is not explained) |
+| Required fields | *Court Name (dropdown "Select court"; each entry shows court number, judge name and designation), *Cause List Date (calendar control), *Enter Captcha |
+| CAPTCHA | Image, "Play CAPTCHA Audio", "Refresh Image"; help text says 5 digits in one place and 6 alphanumeric characters in another |
+| Actions | **Civil** and **Criminal** buttons, each showing that list for the chosen court and date. No Reset, Search, Print or PDF control visible |
+| Notes | Disclaimer: "Cause list displayed may differ from the actual cause list. For further queries, contact court administrator." Step-by-step help and a help-video link |
+
+**Not observed (Unverified):** results table columns, case details in a list, date format and range limits, validation messages, the PDF viewer content (heading only), and the function of Establishment.

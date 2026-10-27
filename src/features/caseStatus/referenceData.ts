@@ -1,4 +1,5 @@
 import { STATES } from '../portal/data'
+import type { PageId } from '../../types'
 import type { SearchMode } from './types'
 
 /** The official Case Status page lists 36 states/UTs, with Dadra and Nagar Haveli and Daman and Diu merged. */
@@ -66,9 +67,9 @@ export const helpVideoUrl = (key: string) =>
   `https://services.ecourts.gov.in/ecourtindia_v6/?p=view_help_videos/show_help_videos&caseSearchType=${key}`
 
 /** Other items in the official Search menu; linked out, not rebuilt. */
-export const SEARCH_MENU_LINKS = [
+export const SEARCH_MENU_LINKS: { label: string; url: string; page?: PageId }[] = [
   { label: 'Court Orders', url: 'https://services.ecourts.gov.in/ecourtindia_v6/?p=courtorder/index' },
-  { label: 'Cause List', url: 'https://services.ecourts.gov.in/ecourtindia_v6/?p=cause_list/index' },
+  { label: 'Cause List', url: 'https://services.ecourts.gov.in/ecourtindia_v6/?p=cause_list/index', page: 'causeList' },
   { label: 'Caveat Search', url: 'https://services.ecourts.gov.in/ecourtindia_v6/?p=caveat_search/index' },
   { label: 'Process Details', url: 'https://services.ecourts.gov.in/ecourtindia_v6/?p=processDetails/processData' },
   { label: 'Location', url: 'https://services.ecourts.gov.in/ecourtindia_v6/?p=location/index' },

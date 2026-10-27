@@ -41,3 +41,6 @@ Mock data only; no connection to eCourts; no CAPTCHA (omitted because no live se
 
 ## eCourts portal reference section
 Sidebar → **ECOURTS PORTAL (REFERENCE)** (Portal overview, About, High Courts, District Courts, Forms for advocates, Contact, Help & policies, Search portal). Data lives in `src/features/portal/data.ts` and is a snapshot of the public portal dated 2026-10-26; counters may be outdated. Every portal page carries an "independent demonstration" banner. External links go through an "External site alert" (Go/Cancel). Try the **Aa** menu for the accessibility options and "Search portal" for `vakalatnama`, `Madras` or `ePay`.
+
+## Cause List
+Sidebar -> **Cause list**. Try: Tamil Nadu > Chennai > Principal Sessions Court Complex > court 12 - Demo Judge A > date 2026-10-28 > **Criminal** (2 matters). Civil example: City Civil Court Complex > court 4 > 2026-10-30 > **Civil** (2 matters). Any other court or date shows an empty-list message. Code: `src/features/causeList/`, `src/pages/CauseList.tsx`. All judges, courts and cases are fictional.
