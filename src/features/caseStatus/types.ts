@@ -1,48 +1,53 @@
-export type SearchMode = 'cnr' | 'caseNumber' | 'party'
-export type CaseStatusFilter = 'Pending' | 'Disposed' | 'Both'
+export type SearchMode = 'cnr' | 'party' | 'caseNumber' | 'filingNumber' | 'advocate' | 'fir' | 'act' | 'caseType'
+export type StatusFilter = 'Pending' | 'Disposed' | 'Both'
+export type PendingDisposed = 'Pending' | 'Disposed'
+export type AdvocateBy = 'name' | 'barCode' | 'caseListDate'
 
-export interface CnrQuery { mode: 'cnr'; cnr: string }
-export interface CaseNumberQuery {
-  mode: 'caseNumber'
-  state: string
-  district: string
-  court: string
-  caseType: string
-  number: string
-  year: string
-}
-export interface PartyQuery {
-  mode: 'party'
-  state: string
-  district: string
-  court: string
-  name: string
-  year: string
-  status: CaseStatusFilter
-}
-export type CaseQuery = CnrQuery | CaseNumberQuery | PartyQuery
+export interface CourtSelection { state: string; district: string; complex: string; establishment: string }
+
+export type CaseQuery =
+  | { mode: 'cnr'; cnr: string }
+  | { mode: 'party'; court: CourtSelection; name: string; year: string; status: StatusFilter }
+  | { mode: 'caseNumber'; court: CourtSelection; caseType: string; number: string; year: string }
+  | { mode: 'filingNumber'; court: CourtSelection; caseType: string; number: string; year: string }
+  | { mode: 'advocate'; court: CourtSelection; by: AdvocateBy; name: string; barCode: string; date: string; status: StatusFilter }
+  | { mode: 'fir'; court: CourtSelection; policeStation: string; number: string; year: string; status: StatusFilter }
+  | { mode: 'act'; court: CourtSelection; actType: string; section: string; status: PendingDisposed }
+  | { mode: 'caseType'; court: CourtSelection; caseType: string; year: string; status: PendingDisposed }
 
 export interface HearingEntry { date: string; businessOn: string; purpose: string; judge: string }
 export interface OrderEntry { date: string; title: string }
+export interface IaEntry { ia: string; party: string; date: string; status: string }
+export interface AdvocateRef { name: string; barCode: string }
+export interface ActRef { act: string; sections: string }
 
 export interface CaseRecord {
   cnr: string
   caseType: string
   caseNumber: string
   year: string
-  petitioner: string
-  respondent: string
-  advocate: string
-  state: string
-  district: string
-  court: string
-  status: 'Pending' | 'Disposed'
+  filingNumber: string
+  filingYear: string
   filingDate: string
   registrationDate: string
+  petitioner: string
+  respondent: string
+  petitionerAdvocate: AdvocateRef
+  respondentAdvocate: AdvocateRef
+  firNumber: string | null
+  firYear: string | null
+  policeStation: string | null
+  acts: ActRef[]
+  court: CourtSelection
+  courtNumberAndJudge: string
+  status: 'Pending' | 'Disposed'
+  firstHearing: string
   nextHearing: string | null
+  decisionDate: string | null
   stage: string
   history: HearingEntry[]
   orders: OrderEntry[]
+  iaBusiness: IaEntry[]
 }
 
 /**

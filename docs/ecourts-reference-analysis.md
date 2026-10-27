@@ -74,3 +74,24 @@ Addresses were read from the official home page source; each Useful Links page w
 | App badges | Not links on the official page |
 | **Site map** | Returned HTTP 500 when read — **Unverified** |
 | Change Password dialog | Hidden login-only dialog; not replicated |
+
+## Fourth review pass (2026-10-27) — District Court Case Status page
+Source: `https://services.ecourts.gov.in/ecourtindia_v6/?p=casestatus/index` (text read through a fetch tool; no browser, no screenshots, nothing submitted).
+
+| Item | Verified content |
+|---|---|
+| Search menu (sidebar) | CNR Number, Case Status, Court Orders, Cause List, Caveat Search, Process Details, Location |
+| Case Status search types (7) | Party Name, Case Number, Filing Number, Advocate, FIR Number, Act, Case Type |
+| Court selection | State (36 entries; Dadra/Daman merged as "The Dadra And Nagar Haveli And Daman And Diu"), District, Court Complex, Establishment. No "Court Name" field |
+| Party Name | *Petitioner/Respondent (min 3 characters), *Registration Year, Pending / Disposed / Both |
+| Case Number | *Case Type, *Case Number, *Year |
+| Filing Number | *Case Type, *Filing Number, *Year (filing year) |
+| Advocate | Radio: Advocate Name, Bar Code, Date Case List. *Advocate (min 3 characters), *Advocate Bar Code (example MAH/XXXX/1982), Pending/Disposed/Both, *Case List Date |
+| FIR Number | *Police Station, FIR Number and Year (not marked required), Pending/Disposed/Both |
+| Act | Search Act (min 3 characters), *Act Type, Under Section (optional; blank lists all), Pending/Disposed only |
+| Case Type | *Case Type, *Year, Pending/Disposed only |
+| All forms | CAPTCHA (image, audio, refresh), "Go" button, "Back" button, help text, "How to" help-video link, "Fields marked with * are required" |
+| Other | Six languages (English, हिन्दी, मराठी, ગુજરાતી, ಕನ್ನಡ, தமிழ்), accessibility tools, theme customizer, 12 footer links, version 1.0, last updated 2 January 2026 |
+| Page inconsistency | Help text gives CAPTCHA length as 5 and as 6 characters in different places |
+
+**Not observed (Unverified):** the CAPTCHA image, dropdown option lists (districts, complexes, establishments, case types, police stations, acts), validation messages, results table columns, case-history layout (only empty headings "History", "IA Business", "PDF Viewer" and "Acknowledgement" were visible), and behaviour after Go or View.

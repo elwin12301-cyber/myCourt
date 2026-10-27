@@ -54,3 +54,15 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-029 | Reference reports listed without links | **Fixed** — link to the official PDFs (addresses untested) |
 | GAP-030 | Policy pages are paraphrases, not full text | Open by design; each links to the official page |
 | GAP-031 | Help video files, app store links | Not available on the official page |
+
+## Fifth pass — complete Case Status
+| ID | Finding | Status |
+|---|---|---|
+| GAP-032 | Only CNR, case number and party name were built; the official page has 7 search types plus CNR | **Fixed** — all 8: CNR, Party Name, Case Number, Filing Number, Advocate (name, bar code, date case list), FIR Number, Act, Case Type |
+| GAP-033 | No State/District/Court Complex/Establishment selector | **Fixed** — cascading selector; 36-entry state list as on the official page; district data exists only for Tamil Nadu, Maharashtra and Delhi (demo) |
+| GAP-034 | No CAPTCHA step | **Fixed** — demonstration CAPTCHA (refresh, listen). It has no security purpose and is labelled as such |
+| GAP-035 | No per-search help or help videos | **Fixed** — "How to search" panel with the official help text; help-video links for the six types that have them |
+| GAP-036 | Case detail was minimal | **Fixed** — case details, status, parties and advocates, acts, FIR, history, IA business, orders |
+| GAP-012 (update) | Party-name minimum of 3 characters | **Now verified** against the official help text. Year range, bar-code pattern and optional Establishment remain assumptions |
+| GAP-037 | Court Orders, Cause List, Caveat Search, Process Details, Location | **Not rebuilt** — linked to the official site |
+| GAP-038 | Results table columns and case-history layout | **Unverified** — not observable; the prototype's layout is its own design |

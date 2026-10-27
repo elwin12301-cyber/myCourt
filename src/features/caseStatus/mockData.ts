@@ -1,0 +1,93 @@
+import type { CaseRecord, CourtSelection } from './types'
+
+const court = (state: string, district: string, complex: string, establishment: string): CourtSelection => ({ state, district, complex, establishment })
+const adv = (name: string, barCode: string) => ({ name, barCode })
+
+/**
+ * Fictional records. Identifiers use the 99999x pattern, names and bar codes are invented,
+ * and none of these are real cases or people.
+ */
+export const DEMO_CASES: CaseRecord[] = [
+  {
+    cnr: 'TNCH019999992025', caseType: 'Criminal Case (CC)', caseNumber: '412', year: '2025',
+    filingNumber: '1030', filingYear: '2025', filingDate: '2025-08-12', registrationDate: '2025-08-14',
+    petitioner: 'State (demo)', respondent: 'R. Kumar (demo)',
+    petitionerAdvocate: adv('Public Prosecutor (demo)', 'TN/0001/2010'), respondentAdvocate: adv('A. Kumar (demo)', 'TN/0412/2012'),
+    firNumber: '214', firYear: '2025', policeStation: 'Demo Police Station - Chennai Central',
+    acts: [{ act: 'Indian Penal Code', sections: '420, 34' }],
+    court: court('Tamil Nadu', 'Chennai', 'Principal Sessions Court Complex', 'Sessions Court'),
+    courtNumberAndJudge: '12 - Demo Judge A', status: 'Pending', firstHearing: '2025-09-30', nextHearing: '2026-10-28', decisionDate: null, stage: 'Evidence',
+    history: [
+      { date: '2026-09-02', businessOn: '2026-09-02', purpose: 'Arguments', judge: 'Demo Judge A' },
+      { date: '2026-07-15', businessOn: '2026-09-02', purpose: 'Evidence', judge: 'Demo Judge A' },
+      { date: '2025-08-20', businessOn: '2025-09-30', purpose: 'First hearing', judge: 'Demo Judge A' },
+    ],
+    orders: [{ date: '2026-09-02', title: 'Interim order (demo)' }, { date: '2025-08-20', title: 'Order on first hearing (demo)' }],
+    iaBusiness: [{ ia: 'IA 1/2026', party: 'Respondent', date: '2026-07-15', status: 'Pending' }],
+  },
+  {
+    cnr: 'TNCH019999992024', caseType: 'Civil Suit (CS)', caseNumber: '118', year: '2024',
+    filingNumber: '305', filingYear: '2024', filingDate: '2024-03-04', registrationDate: '2024-03-06',
+    petitioner: 'Mehta (demo)', respondent: 'Rao (demo)',
+    petitionerAdvocate: adv('S. Iyer (demo)', 'TN/1180/2009'), respondentAdvocate: adv('M. Nair (demo)', 'TN/2201/2014'),
+    firNumber: null, firYear: null, policeStation: null,
+    acts: [{ act: 'Code of Civil Procedure', sections: 'Order 7 Rule 1' }],
+    court: court('Tamil Nadu', 'Chennai', 'City Civil Court Complex', 'City Civil Court'),
+    courtNumberAndJudge: '4 - Demo Judge B', status: 'Pending', firstHearing: '2024-04-18', nextHearing: '2026-10-30', decisionDate: null, stage: 'Written statement',
+    history: [{ date: '2026-08-10', businessOn: '2026-10-30', purpose: 'Written statement', judge: 'Demo Judge B' }],
+    orders: [{ date: '2026-08-10', title: 'Order granting time (demo)' }],
+    iaBusiness: [],
+  },
+  {
+    cnr: 'MHMU019999992022', caseType: 'Criminal Appeal (CRL.A)', caseNumber: '77', year: '2022',
+    filingNumber: '510', filingYear: '2022', filingDate: '2022-01-19', registrationDate: '2022-01-21',
+    petitioner: 'Aruna Foundation (demo)', respondent: 'State (demo)',
+    petitionerAdvocate: adv('P. Desai (demo)', 'MAH/0077/2005'), respondentAdvocate: adv('Public Prosecutor (demo)', 'MAH/0002/2011'),
+    firNumber: '88', firYear: '2021', policeStation: 'Demo Police Station - Mumbai Fort',
+    acts: [{ act: 'Code of Criminal Procedure', sections: '374' }],
+    court: court('Maharashtra', 'Mumbai', 'City Civil and Sessions Court', 'Sessions Court'),
+    courtNumberAndJudge: '7 - Demo Judge C', status: 'Disposed', firstHearing: '2022-03-02', nextHearing: null, decisionDate: '2024-05-06', stage: 'Judgment pronounced',
+    history: [{ date: '2024-05-06', businessOn: '2024-05-06', purpose: 'Judgment', judge: 'Demo Judge C' }],
+    orders: [{ date: '2024-05-06', title: 'Final judgment (demo)' }],
+    iaBusiness: [],
+  },
+  {
+    cnr: 'DLND019999992023', caseType: 'Criminal Case (CC)', caseNumber: '905', year: '2023',
+    filingNumber: '2210', filingYear: '2023', filingDate: '2023-06-11', registrationDate: '2023-06-13',
+    petitioner: 'Sharma Traders (demo)', respondent: 'V. Singh (demo)',
+    petitionerAdvocate: adv('K. Verma (demo)', 'D/3301/2008'), respondentAdvocate: adv('R. Gill (demo)', 'D/1190/2015'),
+    firNumber: null, firYear: null, policeStation: null,
+    acts: [{ act: 'Negotiable Instruments Act', sections: '138' }],
+    court: court('Delhi', 'New Delhi', 'Patiala House Court Complex', 'Magistrate Courts'),
+    courtNumberAndJudge: '21 - Demo Judge D', status: 'Pending', firstHearing: '2023-07-20', nextHearing: '2026-11-05', decisionDate: null, stage: 'Complainant evidence',
+    history: [{ date: '2026-09-15', businessOn: '2026-11-05', purpose: 'Complainant evidence', judge: 'Demo Judge D' }],
+    orders: [],
+    iaBusiness: [],
+  },
+  {
+    cnr: 'TNMD019999992023', caseType: 'Civil Suit (CS)', caseNumber: '56', year: '2023',
+    filingNumber: '140', filingYear: '2023', filingDate: '2023-02-01', registrationDate: '2023-02-03',
+    petitioner: 'L. Pandian (demo)', respondent: 'T. Selvi (demo)',
+    petitionerAdvocate: adv('S. Iyer (demo)', 'TN/1180/2009'), respondentAdvocate: adv('G. Raman (demo)', 'TN/0950/2011'),
+    firNumber: null, firYear: null, policeStation: null,
+    acts: [{ act: 'Code of Civil Procedure', sections: 'Order 39' }],
+    court: court('Tamil Nadu', 'Madurai', 'District Court Complex', 'District Court'),
+    courtNumberAndJudge: '3 - Demo Judge E', status: 'Disposed', firstHearing: '2023-03-14', nextHearing: null, decisionDate: '2025-02-20', stage: 'Decree passed',
+    history: [{ date: '2025-02-20', businessOn: '2025-02-20', purpose: 'Judgment', judge: 'Demo Judge E' }],
+    orders: [{ date: '2025-02-20', title: 'Decree (demo)' }],
+    iaBusiness: [],
+  },
+  {
+    cnr: 'MHPU019999992026', caseType: 'Criminal Case (CC)', caseNumber: '301', year: '2026',
+    filingNumber: '640', filingYear: '2026', filingDate: '2026-02-09', registrationDate: '2026-02-11',
+    petitioner: 'State (demo)', respondent: 'D. Patil (demo)',
+    petitionerAdvocate: adv('Public Prosecutor (demo)', 'MAH/0003/2012'), respondentAdvocate: adv('A. Kumar (demo)', 'TN/0412/2012'),
+    firNumber: '45', firYear: '2026', policeStation: 'Demo Police Station - Pune Camp',
+    acts: [{ act: 'Bharatiya Nyaya Sanhita', sections: '318' }],
+    court: court('Maharashtra', 'Pune', 'District and Sessions Court', 'Sessions Court'),
+    courtNumberAndJudge: '9 - Demo Judge F', status: 'Pending', firstHearing: '2026-03-10', nextHearing: '2026-10-28', decisionDate: null, stage: 'Charge framing',
+    history: [{ date: '2026-08-20', businessOn: '2026-10-28', purpose: 'Charge framing', judge: 'Demo Judge F' }],
+    orders: [{ date: '2026-08-20', title: 'Order on charge (demo)' }],
+    iaBusiness: [],
+  },
+]
