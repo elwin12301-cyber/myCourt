@@ -10,19 +10,7 @@ import {
 } from '../features/portal/data'
 import { buildIndex, searchPortal } from '../features/portal/search'
 
-const TABS: { id: PageId; label: string }[] = [
-  { id: 'portalHome', label: 'Home' },
-  { id: 'portalAbout', label: 'About' },
-  { id: 'portalHighCourts', label: 'High Courts' },
-  { id: 'portalDistrict', label: 'District Courts' },
-  { id: 'portalForms', label: 'Forms for Advocates' },
-  { id: 'portalContact', label: 'Contact' },
-  { id: 'portalHelp', label: 'Help & policies' },
-  { id: 'portalSearch', label: 'Search portal' },
-]
-
-function Shell({ page, title, sub, children }: { page: PageId; title: string; sub: string; children: ReactNode }) {
-  const { go } = useApp()
+function Shell({ title, sub, children }: { page?: PageId; title: string; sub: string; children: ReactNode }) {
   return (
     <>
       <div className="demobanner" role="note">
@@ -30,17 +18,14 @@ function Shell({ page, title, sub, children }: { page: PageId; title: string; su
         as reviewed on {PORTAL_SNAPSHOT_DATE}. It is not the official portal, is not affiliated with the Indian judiciary, and
         figures may be out of date. Verify everything on <ExternalLink href={OFFICIAL_HOME} className="linkbtn">ecourts.gov.in</ExternalLink>.
       </div>
-      <nav className="tabrow" aria-label="Portal sections">
-        {TABS.map((t) => (
-          <button key={t.id} className={`tab ${page === t.id ? 'active' : ''}`} aria-current={page === t.id ? 'page' : undefined} onClick={() => go(t.id)}>{t.label}</button>
-        ))}
+      <div className="langrow">
         <label className="langsel tiny">
           <span className="sr-only">Language</span>
           <select aria-label="Language" defaultValue="English" onChange={(e) => { e.target.value = 'English' }}>
             {LANGUAGES.map((l) => <option key={l} disabled={l !== 'English'} title={l !== 'English' ? 'Translations are not available in this prototype' : undefined}>{l}</option>)}
           </select>
         </label>
-      </nav>
+      </div>
       <PageHead title={title} sub={sub} />
       {children}
     </>

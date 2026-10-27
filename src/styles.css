@@ -29,3 +29,5 @@ html.tall body{line-height:2}
 html.noimg img,html.noimg svg{display:none!important}
 html.bigcur,html.bigcur *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M3 2l22 12-9 2-3 9z' fill='black' stroke='white' stroke-width='2'/></svg>") 3 2,auto!important}
 @media(max-width:760px){.linklist{columns:1}}
+
+.langrow{display:flex;justify-content:flex-end;margin-bottom:-8px}
