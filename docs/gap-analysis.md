@@ -44,3 +44,13 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-024 | Knowledge Management, site map, help videos, manuals, brochures, policies, newsletter | **Not built**: contents could not be verified; listed by name on the Help page |
 | GAP-025 | Live services (case status, cause list, ePay, eFiling, Virtual Court, NJDG, Justice Clock) | **Not replicated**: linked out. Case status has a separate demo |
 | GAP-026 | Mobile app | **Not built**; only referenced |
+
+## Fourth pass — menu and Useful Links audit
+| ID | Finding | Status |
+|---|---|---|
+| GAP-027 | Official main menu has 8 items; the sidebar group had 5. Missing: e-Committee, NJDG, Supreme Court (all external) | **Fixed** — sidebar now follows the official order, plus Useful links and Search portal; externals use the exit alert |
+| GAP-024 (update) | Useful Links were names only | **Fixed** — all 15 have a page: Site map (own map; official returned 500), Forms, Help Videos, Manuals, Disclaimer, Knowledge Management, Brochures, Web Information Manager, Newsletter, Privacy, Terms, Copyright, Hyperlinking, Accessibility Statement, Screen Reader Access |
+| GAP-028 | Footer (owner, NIC hosting, version, last updated, partner links, YouTube) absent | **Fixed** — footer on every portal page |
+| GAP-029 | Reference reports listed without links | **Fixed** — link to the official PDFs (addresses untested) |
+| GAP-030 | Policy pages are paraphrases, not full text | Open by design; each links to the official page |
+| GAP-031 | Help video files, app store links | Not available on the official page |

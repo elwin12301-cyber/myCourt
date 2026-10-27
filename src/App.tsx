@@ -14,6 +14,12 @@ import VoicePage from './pages/Voice'
 import HearingPage from './pages/Hearing'
 import CaseStatusPage from './pages/CaseStatus'
 import {
+  PortalBrochures, PortalHelpVideos, PortalKnowledge, PortalManuals, PortalNewsletter, PortalPolicy,
+  PortalScreenReader, PortalSitemap, PortalWebInfo,
+} from './pages/PortalPages'
+import ExternalLink from './components/ExternalLink'
+import { MAIN_MENU, USEFUL_LINKS } from './features/portal/data'
+import {
   PortalAbout, PortalContact, PortalDistrict, PortalForms, PortalHelp, PortalHighCourts, PortalHome, PortalSearch,
 } from './pages/Portal'
 import CalendarPage from './pages/Calendar'
@@ -35,18 +41,32 @@ const NAV: { id: PageId; ico: string; label: string }[] = [
   { id: 'billing', ico: '₹', label: 'Time & billing' },
 ]
 
-const PORTAL_NAV: { id: PageId; ico: string; label: string }[] = [
-  { id: 'portalHome', ico: '⌂', label: 'Portal overview' },
-  { id: 'portalAbout', ico: 'ⓘ', label: 'About eCourts' },
-  { id: 'portalHighCourts', ico: '⚖', label: 'High Courts' },
-  { id: 'portalDistrict', ico: '▥', label: 'District Courts' },
-  { id: 'portalForms', ico: '▤', label: 'Forms for advocates' },
-  { id: 'portalContact', ico: '✉', label: 'Contact' },
-  { id: 'portalHelp', ico: '?', label: 'Help & policies' },
-  { id: 'portalSearch', ico: '⌕', label: 'Search portal' },
+const MENU_ICONS: Record<string, string> = {
+  Home: '⌂', About: 'ⓘ', 'e-Committee': '↗', NJDG: '↗', 'Supreme Court': '↗',
+  'High Courts': '⚖', 'District Courts': '▥', 'Contact Us': '✉',
+}
+const PORTAL_NAV: { label: string; ico: string; id?: PageId; url?: string }[] = [
+  ...MAIN_MENU.map((m) => ({ label: m.label, ico: MENU_ICONS[m.label] ?? '•', id: m.page, url: m.url })),
+  { label: 'Useful links', ico: '☰', id: 'portalHelp' },
+  { label: 'Search portal', ico: '⌕', id: 'portalSearch' },
 ]
+const POLICY_PAGES: PageId[] = ['portalDisclaimer', 'portalPrivacy', 'portalTerms', 'portalCopyright', 'portalHyperlink', 'portalAccessibility']
 
 const PAGES: Record<PageId, () => JSX.Element> = {
+  portalHelpVideos: PortalHelpVideos,
+  portalManuals: PortalManuals,
+  portalBrochures: PortalBrochures,
+  portalKnowledge: PortalKnowledge,
+  portalNewsletter: PortalNewsletter,
+  portalWebInfo: PortalWebInfo,
+  portalDisclaimer: () => <PortalPolicy page="portalDisclaimer" />,
+  portalPrivacy: () => <PortalPolicy page="portalPrivacy" />,
+  portalTerms: () => <PortalPolicy page="portalTerms" />,
+  portalCopyright: () => <PortalPolicy page="portalCopyright" />,
+  portalHyperlink: () => <PortalPolicy page="portalHyperlink" />,
+  portalAccessibility: () => <PortalPolicy page="portalAccessibility" />,
+  portalScreenReader: PortalScreenReader,
+  portalSitemap: PortalSitemap,
   portalHome: PortalHome,
   portalAbout: PortalAbout,
   portalHighCourts: PortalHighCourts,
@@ -186,11 +206,16 @@ export default function App() {
           </nav>
           <div className="navlabel">ECOURTS PORTAL (REFERENCE)</div>
           <nav className="nav" aria-label="eCourts portal reference">
-            {PORTAL_NAV.map((n) => (
-              <button key={n.id} aria-current={page === n.id ? 'page' : undefined} className={page === n.id ? 'active' : ''} onClick={() => go(n.id)}>
-                <span className="ico">{n.ico}</span>{n.label}
-              </button>
-            ))}
+            {PORTAL_NAV.map((n) => {
+              const active = n.id === page || (n.id === 'portalHelp' && (USEFUL_LINKS.some((l) => l.page === page) || POLICY_PAGES.includes(page)))
+              return n.url ? (
+                <ExternalLink key={n.label} className="" href={n.url}><span className="ico">{n.ico}</span>{n.label}</ExternalLink>
+              ) : (
+                <button key={n.label} aria-current={active ? 'page' : undefined} className={active ? 'active' : ''} onClick={() => go(n.id!)}>
+                  <span className="ico">{n.ico}</span>{n.label}
+                </button>
+              )
+            })}
           </nav>
           <div className="sidebottom">
             <div className="avatar">AK</div>

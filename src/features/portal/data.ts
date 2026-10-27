@@ -2,6 +2,8 @@
  * Public information transcribed from https://ecourts.gov.in/ecourts2.0/ on 2026-10-26.
  * Counters and lists are a snapshot and may be out of date. This is not official data.
  */
+import type { PageId } from '../../types'
+
 export const PORTAL_SNAPSHOT_DATE = '2026-10-26'
 export const OFFICIAL_HOME = 'https://ecourts.gov.in/ecourts2.0/'
 
@@ -32,7 +34,7 @@ export const STATS: StatGroup[] = [
 
 export type ServiceTarget =
   | { kind: 'external'; url: string }
-  | { kind: 'internal'; page: 'portalHighCourts' | 'portalDistrict' | 'portalHelp' }
+  | { kind: 'internal'; page: PageId }
   | { kind: 'none' }
 
 export interface Service { id: string; name: string; description: string; target: ServiceTarget }
@@ -48,17 +50,17 @@ export const SERVICES: Service[] = [
   { id: 'hcs', name: 'High Courts of India', description: 'Information for stakeholders.', target: { kind: 'internal', page: 'portalHighCourts' } },
   { id: 'dcs', name: 'District Courts of India', description: 'Cause lists, case status, orders and judgments by state.', target: { kind: 'internal', page: 'portalDistrict' } },
   { id: 'justice-clock', name: 'Justice Clock', description: 'Real-time pendency monitoring.', target: { kind: 'external', url: 'https://justiceclock.ecourts.gov.in' } },
-  { id: 'km', name: 'Knowledge Management', description: 'Help videos, manuals and brochures.', target: { kind: 'internal', page: 'portalHelp' } },
+  { id: 'km', name: 'Knowledge Management', description: 'Help videos, manuals and brochures.', target: { kind: 'internal', page: 'portalKnowledge' } },
   { id: 'nstep', name: 'NSTEP', description: 'Judicial data for High Court NJDG.', target: { kind: 'none' } },
   { id: 'legraa', name: 'LeGRAA', description: 'Information on District Court services.', target: { kind: 'none' } },
   { id: 'digital-court', name: 'Digital Court', description: 'Judicial data for District Court NJDG.', target: { kind: 'none' } },
 ]
 
 export const REFERENCES = [
-  { title: 'Policy Action Plan Document of Phase II', size: '776 KB' },
-  { title: 'Innovations in Phase II', size: '18.7 MB' },
-  { title: 'Objectives Accomplishments Report-2019', size: '12.3 MB' },
-  { title: 'Annexure to the Report-2019', size: '34.6 MB' },
+  { title: 'Policy Action Plan Document of Phase II', size: '776 KB', file: 'PolicyActionPlanDocument-PhaseII-approved-08012014-indexed_Sign.pdf' },
+  { title: 'Innovations in Phase II', size: '18.7 MB', file: 'FINAL_INNOVATIONS_IN_PHASE_II.pdf' },
+  { title: 'Objectives Accomplishments Report-2019', size: '12.3 MB', file: 'Objective_Accomplishment_Report-2019.pdf' },
+  { title: 'Annexure to the Report-2019', size: '34.6 MB', file: 'Annexures_of_the_report.pdf' },
 ]
 
 export const SMS_NUMBER = '9766899899'
@@ -66,11 +68,6 @@ export const SMS_FORMAT = 'ECOURTS <your CNR Number>'
 
 export const LANGUAGES = ['English', 'हिन्दी', 'मराठी', 'ಕನ್ನಡ', 'தமிழ்']
 
-export const USEFUL_LINKS = [
-  'Site map', 'Forms for Advocates', 'Help Videos', 'Manuals', 'Disclaimer', 'Knowledge Management', 'Brochures',
-  'Web Information Manager', 'Newsletter', 'Privacy Policy', 'Terms and Conditions', 'Copyright Policy',
-  'Hyperlinking Policy', 'Accessibility Statement', 'Screen Reader Access',
-]
 
 export const PROJECT_GOALS = [
   'Time-bound, citizen-centric service delivery under the eCourt Litigant\'s Charter',
@@ -161,3 +158,155 @@ export const FORMS: { title: string; file: string; size: string }[] = [
 ].map(([title, file, size]) => ({ title, file, size }))
 
 export const formLink = (file: string) => `https://ecourts.gov.in/ecourts2.0/forms/${encodeURIComponent(file)}`
+
+/* ---- Menus, Useful Links and footer (addresses read from the official home page, 2026-10-26) ---- */
+export const OFFICIAL_BASE = 'https://ecourts.gov.in/ecourts2.0'
+export const officialAbout = (slug: string) => `${OFFICIAL_BASE}/?p=about_us/${slug}`
+export const OFFICIAL_SITEMAP = `${OFFICIAL_BASE}/view/sitemap.php`
+export const referenceLink = (file: string) => `${OFFICIAL_BASE}/static/docs/${encodeURIComponent(file)}`
+export const manualLink = (file: string) => `${OFFICIAL_BASE}/static/manuals/${encodeURIComponent(file)}`
+
+export interface MenuItem { label: string; page?: PageId; url?: string }
+/** The official main menu, in the official order. */
+export const MAIN_MENU: MenuItem[] = [
+  { label: 'Home', page: 'portalHome' },
+  { label: 'About', page: 'portalAbout' },
+  { label: 'e-Committee', url: 'https://ecommitteesci.gov.in/' },
+  { label: 'NJDG', url: 'https://njdg.ecourts.gov.in/' },
+  { label: 'Supreme Court', url: 'https://www.sci.gov.in/' },
+  { label: 'High Courts', page: 'portalHighCourts' },
+  { label: 'District Courts', page: 'portalDistrict' },
+  { label: 'Contact Us', page: 'portalContact' },
+]
+
+export interface UsefulLink { label: string; page: PageId; slug: string }
+/** The 15 Useful Links in the official order. `slug` is the official `?p=about_us/<slug>` page. */
+export const USEFUL_LINKS: UsefulLink[] = [
+  { label: 'Site map', page: 'portalSitemap', slug: '' },
+  { label: 'Forms for Advocates', page: 'portalForms', slug: 'forms_for_advocates' },
+  { label: 'Help Videos', page: 'portalHelpVideos', slug: 'help_videos' },
+  { label: 'Manuals', page: 'portalManuals', slug: 'manuals' },
+  { label: 'Disclaimer', page: 'portalDisclaimer', slug: 'disclaimer' },
+  { label: 'Knowledge Management', page: 'portalKnowledge', slug: 'knowledge_mgmt' },
+  { label: 'Brochures', page: 'portalBrochures', slug: 'brochures' },
+  { label: 'Web Information Manager', page: 'portalWebInfo', slug: 'webinfo' },
+  { label: 'Newsletter', page: 'portalNewsletter', slug: 'newsletter' },
+  { label: 'Privacy Policy', page: 'portalPrivacy', slug: 'privacy' },
+  { label: 'Terms and Conditions', page: 'portalTerms', slug: 'terms' },
+  { label: 'Copyright Policy', page: 'portalCopyright', slug: 'copyright' },
+  { label: 'Hyperlinking Policy', page: 'portalHyperlink', slug: 'hyperlink' },
+  { label: 'Accessibility Statement', page: 'portalAccessibility', slug: 'access' },
+  { label: 'Screen Reader Access', page: 'portalScreenReader', slug: 'screen_recorder' },
+]
+
+/** Help video titles as listed; the page showed no video addresses. */
+export const HELP_VIDEOS = [
+  'Basic Introduction to eCourts site', 'District Court Website - Salient Features', 'NJDG Public Portal - Features and facilities',
+  'Cause List search', 'Party name search - Case Status', 'CNR search - Case Status', 'Case Number search - Case Status',
+  'Filing Number search - Case Status', 'Act based search - Case Status', 'Court Name search - Court Order',
+  'Case Number search - Court Order', 'FIR Number search - Case Status', 'Order date - Period search - Court Order',
+  'Case Type search - Case Status', 'Advocate Name, Bar Code, Date case list search',
+]
+
+export const MANUALS: { title: string; file: string }[] = [
+  ['eFiling User Manual', 'efiling-User-manual.pdf'], ['NSTEP User Manual', 'NSTEP-User manual.pdf'],
+  ['ePay User Manual', 'ePay-Final-USer-manual.pdf'], ['Case Management through CIS 3.0', 'Case Management through CIS 3.0.pdf'],
+  ['Filing User Manual', 'Filing User Manual.pdf'], ['Registration User Manual', 'Registration User Manual.pdf'],
+  ['Allocation User Manual', 'Allocation User Manual.pdf'], ['Court User Manual', 'Court User Manual.pdf'],
+  ['Super User Manual', 'Super User Manual.pdf'],
+].map(([title, file]) => ({ title, file }))
+
+export const BROCHURES: { title: string; file: string }[] = [
+  { title: 'ePay Brochure', file: 'epay_brochure.pdf' },
+  { title: 'NSTEP Brochure', file: 'NSTEP_brochure.pdf' },
+  { title: 'eCourts Project Brochure', file: 'eCourts_brochure.pdf' },
+]
+
+const NL = 'https://services.ecourts.gov.in/ecourtindia_v6/newsletter/'
+export const NEWSLETTERS: { title: string; date: string; url: string }[] = [
+  ['eCommittee Newsletter December, 2016', '16 Jan, 2017', 'eCommitteeNewsletter_December2016.pdf'],
+  ['eCommittee Newsletter November, 2016', '17 Dec, 2016', 'eCommitteeNewsletterNovember2016.pdf'],
+  ['eCommittee Newsletter October, 2016', '22 Nov, 2016', 'eCommitteeNewsletterOctober2016.pdf'],
+  ['eCommittee Newsletter August-September, 2016', '22 Nov, 2016', 'eCommitteeNewsletterAug_Sep2016.pdf'],
+  ['eCommittee Newsletter July, 2016', '16 Nov, 2016', 'eCommitteeNewsletterJuly2016.pdf'],
+  ['eCommittee Newsletter June, 2016', '16 Nov, 2016', 'eCommitteeNewsletterJune2016.pdf'],
+  ['eCommittee Newsletter May, 2016', '01 Jul, 2016', 'eCommittee_Newsletter_May_2016.pdf'],
+  ['eCommittee Newsletter April, 2016', '26 May, 2016', 'ecommittee_newsletter_april_2016.pdf'],
+  ['eCommittee Newsletter March, 2016', '26 May, 2016', 'newsletter_ecommittee_march_2016.pdf'],
+].map(([title, date, f]) => ({ title, date, url: NL + f }))
+
+/** Role contact only; the individual named on the official page is deliberately not reproduced. */
+export const WEB_INFO = {
+  designation: 'Member - Human Resources',
+  department: 'eCommittee, Supreme Court of India',
+  email: 'hr-ecommittee[at]aij[dot]gov[dot]in',
+}
+
+export const SCREEN_READERS = [
+  { name: 'Non Visual Desktop Access (NVDA)', site: 'nvda-project.org', usage: 'Free' },
+  { name: 'System Access To Go', site: 'satogo.com', usage: 'Free' },
+  { name: 'Hal', site: 'yourdolphin.co.uk', usage: 'Commercial' },
+  { name: 'JAWS', site: 'freedomscientific.com', usage: 'Commercial' },
+  { name: 'Supernova', site: 'yourdolphin.co.uk', usage: 'Commercial' },
+]
+
+/** Footer partner logos as links (the official page used http for some; https is assumed and untested). */
+export const PARTNERS = [
+  { name: 'Digital India', url: 'https://www.digitalindia.gov.in/' },
+  { name: 'National Portal of India', url: 'https://www.india.gov.in/' },
+  { name: 'Department of Justice', url: 'https://doj.gov.in/' },
+  { name: 'e-Committee', url: 'https://ecommitteesci.gov.in/' },
+  { name: 'India Code', url: 'https://indiacode.nic.in/' },
+  { name: 'NIC', url: 'https://www.nic.in/' },
+]
+export const YOUTUBE_URL = 'https://www.youtube.com/channel/UCPMHFB1lou-P_YtErFFYjgw'
+export const FOOTER_FACTS = {
+  owner: 'Content owned by eCommittee, Supreme Court of India.',
+  host: 'Designed, developed, hosted and maintained by the National Informatics Centre (NIC), Ministry of Electronics & Information Technology, Government of India.',
+  version: '2.0',
+  lastUpdated: '11 April 2026',
+}
+
+export interface PolicyPage { title: string; slug: string; bullets: string[] }
+/** Paraphrased summaries; the official pages are authoritative. */
+export const POLICIES: Partial<Record<PageId, PolicyPage>> = {
+  portalDisclaimer: { title: 'Disclaimer', slug: 'disclaimer', bullets: [
+    'Confirm the information with the relevant authorities or official records before relying on it.',
+    'The content is not suitable for use as proof in legal proceedings.',
+    'The courts, the National Informatics Centre and the e-Committee disclaim responsibility for wrong data or delayed updates.',
+    'The operators accept no liability for losses from using the information, and welcome reports of mistakes.',
+  ] },
+  portalPrivacy: { title: 'Privacy Policy', slug: 'privacy', bullets: [
+    'The content is not a statement of law; verify before acting on it.',
+    'The site does not automatically capture specific personal information, and visitors can browse without sharing details.',
+    'Visits are logged for statistics (server address, top-level domain, browser type, access time, pages viewed).',
+    'The site says it does not use cookies.',
+    'If personal details are requested, users are told how they will be used; privacy concerns go to the webmaster via the contact page.',
+  ] },
+  portalTerms: { title: 'Terms and Conditions', slug: 'terms', bullets: [
+    'The site is built and maintained by NIC/NICSI, with content supplied by the e-Committee and High Courts, for reference only.',
+    'Nothing on the site is a statement of law; the underlying Acts and Rules take precedence.',
+    'The e-Committee is not liable for losses arising from use of the site, including indirect or consequential losses.',
+    'Indian law governs the terms, and disputes fall under the jurisdiction of Indian courts.',
+    'External links are for convenience; those sites follow their own policies and are not endorsed.',
+  ] },
+  portalCopyright: { title: 'Copyright Policy', slug: 'copyright', bullets: [
+    'Reusing content, wholly or partly, requires clear and prominent credit to the source.',
+    'Content must not be presented in a misleading, offensive or disparaging way.',
+    'Permission does not extend to items marked as owned by a third party.',
+    'For third-party material, authorisation must be obtained from the relevant courts.',
+  ] },
+  portalHyperlink: { title: 'Hyperlinking Policy', slug: 'hyperlink', bullets: [
+    'The site links to other websites and portals to ease navigation.',
+    'The e-Committee takes no responsibility for the content or reliability of linked sites, and its views may differ.',
+    'A link does not mean approval of the linked material.',
+    'Links may stop working because the linked pages are outside its control.',
+  ] },
+  portalAccessibility: { title: 'Accessibility Statement', slug: 'access', bullets: [
+    'The portal aims to be usable regardless of device, technology or ability, and to follow Indian Government guidelines and WCAG 2.0 level AAA.',
+    'Known limitation: PDF files are not yet accessible.',
+    'External sites are the responsibility of their own departments.',
+    'Features listed: skip navigation, descriptive link text, file type and size shown, table headers, headings, page titles, image alternative text, form labels, consistent navigation, keyboard support, adjustable text size.',
+    'Accessibility problems can be reported by e-mail to the e-Committee.',
+  ] },
+}

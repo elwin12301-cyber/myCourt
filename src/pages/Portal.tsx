@@ -6,11 +6,13 @@ import type { PageId } from '../types'
 import {
   COMMITTEE_EMAIL, DISTRICT_TOTALS, FORMS, HIGH_COURTS, LANGUAGES, OFFICIAL_HOME, PHASES, PORTAL_SNAPSHOT_DATE,
   PROJECT_GOALS, REFERENCES, SERVICES, SLIDES, SMS_FORMAT, SMS_NUMBER, STATS, STATES, USEFUL_LINKS,
+  FOOTER_FACTS, PARTNERS, YOUTUBE_URL, referenceLink,
   districtLink, formLink, highCourtsLink,
 } from '../features/portal/data'
 import { buildIndex, searchPortal } from '../features/portal/search'
 
-function Shell({ title, sub, children }: { page?: PageId; title: string; sub: string; children: ReactNode }) {
+export function Shell({ title, sub, children, back }: { page?: PageId; title: string; sub: string; children: ReactNode; back?: boolean }) {
+  const { go } = useApp()
   return (
     <>
       <div className="demobanner" role="note">
@@ -26,9 +28,24 @@ function Shell({ title, sub, children }: { page?: PageId; title: string; sub: st
           </select>
         </label>
       </div>
+      {back && <div style={{ marginBottom: 10 }}><Btn className="small" onClick={() => go('portalHelp')}>← Useful links</Btn></div>}
       <PageHead title={title} sub={sub} />
       {children}
+      <PortalFooter />
     </>
+  )
+}
+
+function PortalFooter() {
+  return (
+    <footer className="portalfoot" aria-label="Portal footer">
+      <p>As stated on the official portal footer: {FOOTER_FACTS.owner} {FOOTER_FACTS.host}</p>
+      <p className="tiny">Official site version {FOOTER_FACTS.version} · official last-updated date {FOOTER_FACTS.lastUpdated} · reviewed {PORTAL_SNAPSHOT_DATE}</p>
+      <div className="actions">
+        {PARTNERS.map((x) => <ExternalLink key={x.name} href={x.url}>{x.name} ↗</ExternalLink>)}
+        <ExternalLink href={YOUTUBE_URL}>YouTube ↗</ExternalLink>
+      </div>
+    </footer>
   )
 }
 
@@ -127,7 +144,7 @@ export function PortalHome() {
             {REFERENCES.map((r) => (
               <div className="listrow" key={r.title}>
                 <div><strong>{r.title}</strong><small>PDF · {r.size}</small></div>
-                <span className="pill" title="Download from the official portal">Official portal only</span>
+                <ExternalLink href={referenceLink(r.file)}>Open PDF ↗</ExternalLink>
               </div>
             ))}
           </div>
@@ -276,16 +293,23 @@ export function PortalContact() {
 /* ----------------------------------------------------------------- Help */
 
 export function PortalHelp() {
+  const { go } = useApp()
   return (
-    <Shell page="portalHelp" title="Help, policies and accessibility" sub="Useful links listed in the footer of the official portal.">
+    <Shell page="portalHelp" title="Useful links" sub="The 15 Useful Links from the footer of the official portal, in the official order.">
       <div className="grid layout2">
-        <Card title="Useful links on the official portal">
-          <ul className="linklist">{USEFUL_LINKS.map((l) => <li key={l}>{l}</li>)}</ul>
-          <Notice>Destination addresses for these pages could not be confirmed (two guessed addresses returned errors), so they are listed by name only. Find them in the footer of <ExternalLink href={OFFICIAL_HOME} className="linkbtn">the official portal</ExternalLink>.</Notice>
+        <Card title="Useful links">
+          <div className="list">
+            {USEFUL_LINKS.map((l) => (
+              <div className="listrow" key={l.label}>
+                <strong>{l.label}</strong>
+                <Btn className="small" onClick={() => go(l.page)}>Open</Btn>
+              </div>
+            ))}
+          </div>
         </Card>
         <Card title="Accessibility in this prototype">
           <p>The <strong>Aa</strong> button in the top bar offers: text size (A−, A, A+), high contrast, invert, grayscale, highlight links, wider text spacing, taller line height, hide images, big cursor, and reset. A skip link is available at the start of every page. Choices are remembered in this browser.</p>
-          <p className="muted tiny">The official portal also offers a screen reader access page and an accessibility statement; those are not reproduced here.</p>
+          <p className="muted tiny">The official accessibility statement and screen reader pages are summarised under Useful links.</p>
         </Card>
       </div>
     </Shell>

@@ -1,10 +1,13 @@
 import type { PageId } from '../../types'
-import { FORMS, HIGH_COURTS, SERVICES, STATES, USEFUL_LINKS, formLink } from './data'
+import {
+  BROCHURES, FORMS, HELP_VIDEOS, HIGH_COURTS, MAIN_MENU, MANUALS, NEWSLETTERS, SERVICES, STATES, USEFUL_LINKS,
+  formLink, manualLink,
+} from './data'
 
 export interface PortalHit {
   id: string
   title: string
-  kind: 'Service' | 'High Court' | 'District Courts' | 'Form' | 'Page'
+  kind: 'Service' | 'High Court' | 'District Courts' | 'Form' | 'Page' | 'Document'
   description: string
   page?: PageId
   url?: string
@@ -19,7 +22,8 @@ const PAGES: PortalHit[] = [
   { id: 'p-forms', title: 'Forms for Advocates', kind: 'Page', description: 'Vakalatnama, bail bond, memo of appearance and other forms', page: 'portalForms' },
   { id: 'p-help', title: 'Help, policies and accessibility', kind: 'Page', description: 'Useful links, manuals, policies, accessibility', page: 'portalHelp' },
   { id: 'p-status', title: 'Case status (demo)', kind: 'Page', description: 'Search by CNR, case number or party name using demonstration data', page: 'caseStatus' },
-  ...USEFUL_LINKS.map((l): PortalHit => ({ id: `u-${l}`, title: l, kind: 'Page', description: 'Listed under Useful Links on the official portal', page: 'portalHelp' })),
+  ...USEFUL_LINKS.map((l): PortalHit => ({ id: `u-${l.label}`, title: l.label, kind: 'Page', description: 'Listed under Useful Links on the official portal', page: l.page })),
+  ...MAIN_MENU.filter((m) => m.url).map((m): PortalHit => ({ id: `m-${m.label}`, title: m.label, kind: 'Page', description: 'Main menu link to an external site', url: m.url })),
 ]
 
 export function buildIndex(): PortalHit[] {
@@ -32,6 +36,10 @@ export function buildIndex(): PortalHit[] {
     })),
     ...HIGH_COURTS.map((h): PortalHit => ({ id: `h-${h.name}`, title: `${h.name} High Court`, kind: 'High Court', description: h.jurisdiction, page: 'portalHighCourts' })),
     ...STATES.map((s): PortalHit => ({ id: `d-${s.code}`, title: `${s.name} district courts`, kind: 'District Courts', description: `State/UT code ${s.code}`, page: 'portalDistrict' })),
+    ...MANUALS.map((m): PortalHit => ({ id: `man-${m.file}`, title: m.title, kind: 'Document', description: 'Manual (PDF)', url: manualLink(m.file) })),
+    ...BROCHURES.map((m): PortalHit => ({ id: `bro-${m.file}`, title: m.title, kind: 'Document', description: 'Brochure (PDF)', url: manualLink(m.file) })),
+    ...NEWSLETTERS.map((n): PortalHit => ({ id: `nl-${n.url}`, title: n.title, kind: 'Document', description: `Newsletter · ${n.date}`, url: n.url })),
+    ...HELP_VIDEOS.map((v): PortalHit => ({ id: `hv-${v}`, title: v, kind: 'Document', description: 'Help video', page: 'portalHelpVideos' })),
     ...FORMS.map((f): PortalHit => ({ id: `f-${f.file}`, title: f.title, kind: 'Form', description: `PDF · ${f.size}`, url: formLink(f.file) })),
   ]
 }

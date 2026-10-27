@@ -44,3 +44,57 @@ describe('searchPortal', () => {
     expect(searchPortal('puducherry', idx).some((h) => h.kind === 'High Court')).toBe(true)
   })
 })
+
+import { PAGE_IDS } from '../../router'
+import {
+  BROCHURES, HELP_VIDEOS, MAIN_MENU, MANUALS, NEWSLETTERS, PARTNERS, POLICIES, SCREEN_READERS, USEFUL_LINKS,
+  manualLink, referenceLink, REFERENCES,
+} from './data'
+
+describe('menus and useful links', () => {
+  it('keeps the main menu in the official order', () => {
+    expect(MAIN_MENU.map((m) => m.label)).toEqual([
+      'Home', 'About', 'e-Committee', 'NJDG', 'Supreme Court', 'High Courts', 'District Courts', 'Contact Us',
+    ])
+  })
+  it('gives every menu item exactly one destination', () => {
+    for (const m of MAIN_MENU) expect(Boolean(m.page) !== Boolean(m.url)).toBe(true)
+  })
+  it('lists the 15 useful links, each mapped to a real page id', () => {
+    expect(USEFUL_LINKS).toHaveLength(15)
+    for (const l of USEFUL_LINKS) expect(PAGE_IDS).toContain(l.page)
+    expect(new Set(USEFUL_LINKS.map((l) => l.page)).size).toBe(15)
+  })
+  it('has a policy summary for each policy page', () => {
+    for (const l of USEFUL_LINKS.filter((x) => POLICIES[x.page])) expect(POLICIES[l.page]!.bullets.length).toBeGreaterThan(2)
+    expect(Object.keys(POLICIES)).toHaveLength(6)
+  })
+})
+
+describe('documents and footer data', () => {
+  it('matches the counts on the official pages', () => {
+    expect(HELP_VIDEOS).toHaveLength(15)
+    expect(MANUALS).toHaveLength(9)
+    expect(BROCHURES).toHaveLength(3)
+    expect(NEWSLETTERS).toHaveLength(9)
+    expect(REFERENCES).toHaveLength(4)
+    expect(PARTNERS).toHaveLength(6)
+    expect(SCREEN_READERS).toHaveLength(5)
+  })
+  it('only uses https links on government hosts', () => {
+    const urls = [
+      ...MAIN_MENU.flatMap((m) => (m.url ? [m.url] : [])), ...PARTNERS.map((p) => p.url), ...NEWSLETTERS.map((n) => n.url),
+      manualLink('Court User Manual.pdf'), referenceLink('FINAL_INNOVATIONS_IN_PHASE_II.pdf'),
+    ]
+    for (const u of urls) expect(u).toMatch(/^https:\/\/[a-z.]+\.(gov\.in|nic\.in)(\/|$)/)
+  })
+  it('encodes spaces in document file names', () => {
+    expect(manualLink('Court User Manual.pdf')).toContain('Court%20User%20Manual.pdf')
+  })
+  it('finds documents through portal search', () => {
+    expect(searchPortal('vakalatnama').length).toBeGreaterThan(0)
+    expect(searchPortal('brochure').some((h) => h.kind === 'Document')).toBe(true)
+    expect(searchPortal('newsletter 2016').length).toBeGreaterThanOrEqual(9)
+    expect(searchPortal('supreme court').some((h) => h.url?.includes('sci.gov.in'))).toBe(true)
+  })
+})

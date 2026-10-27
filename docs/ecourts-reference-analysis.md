@@ -53,3 +53,24 @@ Method unchanged: text read through a fetch tool, no browser, no screenshots, no
 **Verified — Forms for Advocates.** 24 PDFs with sizes.
 
 **Unverified.** Knowledge Management page, site map, Help Videos, Manuals, Brochures, Newsletter, policy pages, app store links, whether counters update live, and everything behind the linked services (case status, cause lists, ePay, eFiling, Virtual Court, NJDG, Justice Clock). Two guessed internal addresses (`?p=knowledge_management`, `?p=sitemap`) returned HTTP 400, so they are not treated as real.
+
+## Third review pass (2026-10-27) — menus, Useful Links and footer
+Addresses were read from the official home page source; each Useful Links page was then read (text only, no browser). **Correction:** two internal addresses guessed earlier were wrong; the real ones are `?p=about_us/knowledge_mgmt` and `/view/sitemap.php`.
+
+| Item | Verified content |
+|---|---|
+| Main menu (8) | Home, About, e-Committee (ecommitteesci.gov.in), NJDG (njdg.ecourts.gov.in), Supreme Court (sci.gov.in), High Courts, District Courts, Contact Us |
+| Help Videos | 15 titles, no video addresses or languages |
+| Manuals | 9 PDFs under `static/manuals/`; no language or size shown |
+| Brochures | 3 PDFs (ePay, NSTEP, eCourts Project) |
+| Knowledge Management | Hub page linking Help Videos, User Manuals, Brochures; no files |
+| Newsletter | 9 monthly eCommittee issues, March–December 2016, full PDF addresses, no sizes |
+| Web Information Manager | Role, department and an e-mail in anti-spam form (an individual is also named; not reproduced here) |
+| Disclaimer, Privacy, Terms, Copyright, Hyperlinking | Read and summarised (paraphrase) |
+| Accessibility Statement | Targets WCAG 2.0 level AAA; PDFs not yet accessible; 12 listed features |
+| Screen Reader Access | Table of 5 screen readers (NVDA, System Access To Go, Hal, JAWS, Supernova) |
+| Footer | Content owner, NIC hosting, version 2.0, last updated 11 April 2026, six partner links, YouTube channel |
+| References | 4 PDFs under `static/docs/` |
+| App badges | Not links on the official page |
+| **Site map** | Returned HTTP 500 when read — **Unverified** |
+| Change Password dialog | Hidden login-only dialog; not replicated |

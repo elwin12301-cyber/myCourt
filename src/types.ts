@@ -4,7 +4,10 @@ export type PageId =
   | 'dashboard' | 'cases' | 'caseStatus' | 'caseDetail' | 'assistant' | 'research' | 'documents'
   | 'mapping' | 'voice' | 'hearing' | 'calendar' | 'intake' | 'billing'
   | 'portalHome' | 'portalAbout' | 'portalHighCourts' | 'portalDistrict' | 'portalForms'
-  | 'portalContact' | 'portalHelp' | 'portalSearch'
+  | 'portalContact' | 'portalHelp' | 'portalSearch' | 'portalHelpVideos' | 'portalManuals'
+  | 'portalBrochures' | 'portalKnowledge' | 'portalNewsletter' | 'portalWebInfo' | 'portalDisclaimer'
+  | 'portalPrivacy' | 'portalTerms' | 'portalCopyright' | 'portalHyperlink' | 'portalAccessibility'
+  | 'portalScreenReader' | 'portalSitemap'
 
 export interface ChatMessage { role: 'user' | 'assistant'; title: string; text: string }
 export interface Task { title: string; due: string; done: boolean }
