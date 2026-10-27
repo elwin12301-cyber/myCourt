@@ -15,6 +15,7 @@ import HearingPage from './pages/Hearing'
 import CaseStatusPage from './pages/CaseStatus'
 import CauseListPage from './pages/CauseList'
 import CourtOrdersPage from './pages/CourtOrders'
+import ServicesApp from './pages/services/ServicesApp'
 import {
   PortalBrochures, PortalHelpVideos, PortalKnowledge, PortalManuals, PortalNewsletter, PortalPolicy,
   PortalScreenReader, PortalSitemap, PortalWebInfo,
@@ -34,6 +35,7 @@ const NAV: { id: PageId; ico: string; label: string }[] = [
   { id: 'caseStatus', ico: '⚑', label: 'Case status' },
   { id: 'causeList', ico: '☷', label: 'Cause list' },
   { id: 'courtOrders', ico: '❏', label: 'Court orders' },
+  { id: 'services', ico: '⌂', label: 'eCourts Services site' },
   { id: 'assistant', ico: '✦', label: 'AI Legal Assistant' },
   { id: 'research', ico: '⌕', label: 'RAG Research' },
   { id: 'documents', ico: '▤', label: 'Documents & OCR' },
@@ -85,6 +87,7 @@ const PAGES: Record<PageId, () => JSX.Element> = {
   caseStatus: CaseStatusPage,
   causeList: CauseListPage,
   courtOrders: () => <CourtOrdersPage />,
+  services: () => <ServicesApp />,
   assistant: AssistantPage,
   research: ResearchPage,
   documents: DocumentsPage,
@@ -195,6 +198,16 @@ export default function App() {
 
   const Page = PAGES[page]
   const activeNav = page === 'caseDetail' ? 'cases' : page
+
+  // The eCourts Services site is a full-page prototype with its own chrome, so it replaces the workspace layout.
+  if (page === 'services') {
+    return (
+      <AppContext.Provider value={ctx}>
+        <ServicesApp />
+        <div className={`toast ${toastShow ? 'show' : ''}`}>{toastMsg}</div>
+      </AppContext.Provider>
+    )
+  }
 
   return (
     <AppContext.Provider value={ctx}>

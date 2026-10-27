@@ -45,7 +45,7 @@ export interface ModeInfo { id: SearchMode; label: string; heading: string; help
 
 /** Labels and help text follow the official page (read 2026-10-27). */
 export const MODES: ModeInfo[] = [
-  { id: 'cnr', label: 'CNR Number', heading: 'Search by CNR Number',
+  { id: 'cnr', label: 'CNR Number', heading: 'Search by CNR number',
     help: 'Enter the 16 digit alphanumeric CNR number without any hyphen or space. Example: MHAU019999992015.' },
   { id: 'party', label: 'Party Name', heading: 'Search by Petitioner/Respondent', videoKey: 'CSPartyNameHelp',
     help: 'Enter at least 3 characters. The name can be the petitioner, plaintiff, complainant, respondent, defendant, appellant, accused or extra party. Choose Both if the status is unknown. After searching, select View to see the case history.' },

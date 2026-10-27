@@ -53,3 +53,12 @@ Sidebar -> **Court orders**. All data is fictional. Examples (solve the on-scree
 - **Order Date** tab: from and to `2025-08-20` -> one order (both dates are included).
 - Use **View** to open the case, **Back to results** to return with the same filter and sort.
 Specification, plan, tasks and the validation log are in `specs/001-court-orders/`. The browser check can be re-run with `node specs/001-court-orders/browser-check.mjs <output-folder>` while `npm run dev` is running (needs Google Chrome).
+
+## eCourts Services site
+Sidebar -> **eCourts Services site** (address `#/services`). It replaces the workspace layout with a full site: top bar, header, theme notice, main menu, Search Menu, footer. Everything is fictional.
+- **Home** is the CNR search (try `TNCH019999992025`). **Case Status** has the seven other searches. Court Orders and Cause List work inside the site.
+- **Caveat Search:** Tamil Nadu > Chennai > Principal Sessions Court Complex, name "kumar", Anywhere (2 results) or Starting with (1). Caveat number `1`, year `2025` lists three.
+- **Process Details:** `PRC-DEMO-0001` with `advocate.one@example.invalid`. A wrong e-mail and an unknown ID show the same message.
+- **Location:** choose a court, then View location (pop-up; Escape closes).
+- **Tools:** gear icon (theme), Aa (accessibility), language selector, notice Dismiss, Search this site. Choices are remembered.
+- Code: `src/features/services/`, `src/pages/services/`. Check it with `node specs/002-services-site-prototype/browser-check.mjs <output-folder>` while `npm run dev` is running (needs Google Chrome).

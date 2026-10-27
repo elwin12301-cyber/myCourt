@@ -52,7 +52,7 @@ Open the address Vite prints (normally http://localhost:5173; it picks the next 
 
 ## What's in the app
 
-- **Workspace:** dashboard, cases, **case status** (eight demo search types), **cause list** and **court orders**, AI assistant, research, documents and OCR, section mapping, voice notes, hearing preparation, calendar, client intake, billing.
+- **Workspace:** dashboard, cases, **case status** (eight demo search types), **cause list** and **court orders**, a full **eCourts Services site** prototype (caveat search, process details, location and more), AI assistant, research, documents and OCR, section mapping, voice notes, hearing preparation, calendar, client intake, billing.
 - **eCourts portal reference:** overview, About, High Courts, District Courts, Forms for Advocates, Contact, Help, and portal search. A snapshot of public information dated 2026-10-26.
 - **Accessibility:** skip link, keyboard-operable controls, and an **Aa** display menu (text size, contrast, invert, grayscale, link highlight, spacing, line height, hide images, big cursor).
 

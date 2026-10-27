@@ -50,3 +50,70 @@ html.lowsat{filter:saturate(.35)}html.lowsat.gray{filter:grayscale(1)}
 
 /* Keep a clear keyboard focus ring on form fields; earlier rules set outline:none with higher specificity. */
 input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #f59e0b!important;outline-offset:2px}
+
+/* ---- eCourts Services site prototype (specs/002-services-site-prototype) ---- */
+.svc{--svc-chrome:#14213d;--svc-chrome-ink:#fff;--svc-accent:#3157c8;--svc-bg:#f5f7fb;--svc-ink:#1d2939;--blue:var(--svc-accent);background:var(--svc-bg);color:var(--svc-ink);min-height:100vh}
+.svc.theme-light{--svc-chrome:#fff;--svc-chrome-ink:#14213d;--svc-bg:#fff}
+.svc.theme-eco{--svc-chrome:#1b5e3a;--svc-chrome-ink:#fff;--svc-accent:#2e7d4f;--svc-bg:#f2f8f3}
+.svc.theme-dark{--svc-chrome:#0b1220;--svc-chrome-ink:#e5e7eb;--svc-accent:#7b9cff;--svc-bg:#111827;--svc-ink:#e5e7eb;--ink:#e5e7eb;--muted:#9ca3af;--line:#334155}
+.svc-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 24px;border-bottom:1px solid var(--line)}
+.top-light .svc-top{background:#fff;color:#14213d}.top-dark .svc-top{background:#0b1220;color:#e5e7eb;border-color:#1f2937}
+.top-dark .svc-top .iconbtn,.top-dark .svc-top select,.top-dark .svc-top input{background:#1f2937;color:#e5e7eb;border-color:#475569}
+.svc-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.svc-tools select{border:1px solid var(--line);border-radius:8px;padding:7px 8px;background:#fff}
+.svc-search{display:flex;gap:6px}.svc-search input{border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:170px}
+.svc-link{background:none;border:0;padding:4px 2px;color:inherit;text-decoration:underline;cursor:pointer;font:inherit}
+.svc-head{background:var(--svc-chrome);color:var(--svc-chrome-ink);padding:18px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.svc-brand{display:flex;gap:12px;align-items:center}.svc-brand h1{margin:0;font-size:22px;line-height:1.1}.svc-brand p{margin:3px 0 0}.svc-brand small{opacity:.8}
+.svc-app{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}
+.svc-notice{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#fff8e8;color:#805b13;border-bottom:1px solid #f7e2ad;padding:9px 24px;font-size:13px}
+.svc-menu{display:flex;flex-wrap:wrap;gap:2px;padding:0 24px;background:var(--svc-chrome);border-top:1px solid #ffffff26}
+.svc-menu button,.svc-menu .svc-link{background:transparent;color:var(--svc-chrome-ink);padding:12px 14px;border-radius:0;text-decoration:none;border-bottom:3px solid transparent}
+.svc-menu button[aria-current=page]{border-bottom-color:#ff9933;font-weight:700}
+.svc-menu button:hover{background:#ffffff1a}
+.svc-body{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;padding:22px 24px;max-width:1500px;margin:auto}
+.svc-side h2{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.svc-side nav{display:grid;gap:4px}
+.svc-side button{display:flex;gap:10px;align-items:center;text-align:left;padding:11px 12px;border-radius:9px;background:#fff;border:1px solid var(--line);color:var(--ink)}
+.svc-side button[data-ico]::before{content:attr(data-ico);width:18px;text-align:center}
+.svc-side button[aria-current=page]{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:700}
+.svc-crumbs ol{display:flex;gap:6px;list-style:none;padding:0;margin:0 0 12px;font-size:13px;flex-wrap:wrap}
+.svc-crumbs li+li::before{content:'>';margin-right:6px;color:var(--muted)}
+.svc-crumbs button{background:none;border:0;padding:0;color:var(--blue);text-decoration:underline}
+.svc-usage{font-size:12px;color:var(--muted);margin:0 0 12px}
+.svc-foot{background:var(--svc-chrome);color:var(--svc-chrome-ink);padding:22px 24px;margin-top:28px;font-size:13px}
+.svc-foot h2{font-size:14px;margin:0 0 8px}.svc-foot ul{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px}
+.svc-foot p{margin:0 0 6px}.svc-foot .svc-link{color:inherit}
+.svc-theme{position:relative}.svc-themepanel{position:absolute;right:0;top:44px;width:250px;background:#fff;color:#1d2939;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px #0003;padding:12px;z-index:70}
+.svc-themepanel fieldset{border:0;margin:0 0 10px;padding:0}.svc-themepanel legend{font-weight:700;font-size:12px;margin-bottom:4px}
+.svc-themepanel label{display:inline-flex;gap:5px;margin-right:12px}
+.svc-linklist{columns:2;margin:0;padding-left:18px}.svc-linklist li{margin-bottom:6px}
+.svc-popup{position:fixed;inset:0;background:#0b173b70;display:grid;place-items:center;padding:20px;z-index:95}
+.svc-popup .modal{max-width:520px}
+.svc-map{height:120px;border:1px dashed var(--line);border-radius:10px;display:grid;place-items:center;color:var(--muted);margin:10px 0;font-size:12px;background:repeating-linear-gradient(45deg,#f8faff 0 10px,#fff 10px 20px)}
+.svc.theme-dark{color:#e5e7eb}
+.svc.theme-dark .card,.svc.theme-dark .stat{background:#1f2937;border-color:#334155;color:#e5e7eb}
+.svc.theme-dark .field input,.svc.theme-dark .field select,.svc.theme-dark .field textarea,.svc.theme-dark .svc-body select,.svc.theme-dark .svc-body input{background:#0f172a;color:#e5e7eb;border-color:#475569}
+.svc.theme-dark th{background:#111827;color:#9ca3af}.svc.theme-dark td,.svc.theme-dark th{border-color:#334155}
+.svc.theme-dark .btn,.svc.theme-dark .svc-side button{background:#1f2937;color:#e5e7eb;border-color:#475569}
+.svc.theme-dark .btn.primary,.svc.theme-dark .svc-side button[aria-current=page]{background:var(--blue);color:#0b1220;border-color:var(--blue)}
+.svc.theme-dark .tabrow,.svc.theme-dark .listrow,.svc.theme-dark .checkrow{border-color:#334155}
+.svc.theme-dark .tab{color:#9ca3af}.svc.theme-dark .tab.active{color:var(--blue)}
+.svc.theme-dark .howto,.svc.theme-dark .sourcebox,.svc.theme-dark .result,.svc.theme-dark .quick{background:#111827;border-color:#334155}
+.svc.theme-dark .captcha{background:#111827;color:#e5e7eb;border-color:#475569}
+.svc.theme-dark .modal,.svc.theme-dark .svc-themepanel{background:#1f2937;color:#e5e7eb}
+.svc.theme-dark .muted,.svc.theme-dark .sub,.svc.theme-dark .empty{color:#9ca3af}
+html.hc .svc.svc{--svc-chrome:#fff;--svc-chrome-ink:#000;--svc-bg:#fff;--svc-ink:#000;background:#fff;color:#000}
+html.hc .svc.svc .svc-top,html.hc .svc.svc .svc-head,html.hc .svc.svc .svc-foot,html.hc .svc.svc .svc-menu{background:#fff;color:#000;border-color:#000}
+html.hc .svc.svc .card{background:#fff;color:#000;border-color:#000}
+@media(max-width:860px){.svc-body{grid-template-columns:1fr;padding:16px}.svc-side nav{display:flex;overflow:auto;gap:6px}.svc-side button{white-space:nowrap}.svc-top,.svc-head,.svc-menu,.svc-foot,.svc-notice{padding-left:14px;padding-right:14px}.svc-linklist{columns:1}}
+
+/* Grid children must be allowed to shrink, or the Search Menu strip widens the whole page on phones. */
+.svc-body>*{min-width:0}
+.svc-side nav{overflow-x:auto}
+.svc.theme-dark .field label,.svc.theme-dark .svc-side h2,.svc.theme-dark .checkrow strong{color:#cbd5e1}
+.svc.theme-dark .svc-crumbs li+li::before{color:#9ca3af}
+
+/* Hidden screen-reader text is absolutely positioned; anchor it so it can never extend the page sideways (it used to sit at the far right of wide tables). */
+.sr-only{left:0;top:0}
+.tablewrap{position:relative}

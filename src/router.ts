@@ -1,7 +1,7 @@
 import type { PageId } from './types'
 
 export const PAGE_IDS: PageId[] = [
-  'dashboard', 'cases', 'caseStatus', 'causeList', 'courtOrders', 'caseDetail', 'assistant', 'research', 'documents',
+  'dashboard', 'cases', 'caseStatus', 'causeList', 'courtOrders', 'services', 'caseDetail', 'assistant', 'research', 'documents',
   'mapping', 'voice', 'hearing', 'calendar', 'intake', 'billing',
   'portalHome', 'portalAbout', 'portalHighCourts', 'portalDistrict', 'portalForms',
   'portalContact', 'portalHelp', 'portalSearch', 'portalHelpVideos', 'portalManuals',
@@ -10,12 +10,22 @@ export const PAGE_IDS: PageId[] = [
   'portalScreenReader', 'portalSitemap',
 ]
 
-/** Parses "#/case-status"-style hashes; unknown values fall back to the dashboard. */
+/** Parses "#/case-status"-style hashes; unknown values fall back to the dashboard. Only the first segment counts. */
 export function pageFromHash(hash: string): PageId {
-  const id = hash.replace(/^#\/?/, '')
+  const id = hash.replace(/^#\/?/, '').split('/')[0]
   return (PAGE_IDS.find((p) => p === id) ?? 'dashboard') as PageId
 }
 
 export function hashForPage(p: PageId): string {
   return `#/${p}`
+}
+
+/** The eCourts Services site keeps its own sub-pages at `#/services/<slug>`. */
+export function servicesHash(slug: string): string {
+  return `#/services/${slug}`
+}
+
+export function servicesSlugFromHash(hash: string, valid: readonly string[], fallback: string): string {
+  const m = /^#\/?services\/([^/?#]+)/.exec(hash)
+  return m && valid.includes(m[1]) ? m[1] : fallback
 }

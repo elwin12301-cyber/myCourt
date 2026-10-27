@@ -86,3 +86,21 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-048 | Results table filter resets after opening a case (Case Status and Cause List) | **Open** — Court Orders keeps it in the page; the other two tables can adopt the same design |
 | GAP-049 | Order documents, official results layout | **Unverified / not built** — no documents in demonstration data |
 | GAP-037 (update) | Remaining unbuilt Search-menu services | Caveat Search, Process Details, Location (linked out) |
+
+## Eighth pass — complete services site (spec `002-services-site-prototype`)
+| ID | Finding | Status |
+|---|---|---|
+| GAP-050 | No full-page services site; services were separate workspace pages | **Fixed** — `eCourts Services` site with top bar, header, notice, 7-item main menu, 7-item Search Menu, breadcrumbs, 12-link footer; reload, Back and deep links work (`#/services/<page>`) |
+| GAP-051 | CNR search mixed into Case Status | **Fixed** inside the site: CNR is its own Home page (Search, Reset, Back, note, help link); Case Status has exactly 7 searches with Go |
+| GAP-052 | No Caveat Search | **Fixed** — four searches, Anywhere / Starting with, caveator or caveatee, subordinate court, date of decision, active caveats only. Field grouping is the prototype's interpretation |
+| GAP-053 | No Process Details | **Fixed** — Process ID and registered e-mail; wrong e-mail and unknown ID give the same message; e-mail never stored, logged, put in the address or repeated in the result |
+| GAP-054 | No Location | **Fixed** — court selector and an accessible pop-up (Escape closes, focus returns) with a fictional address and a map placeholder |
+| GAP-055 | No theme customizer | **Fixed** — Topbar Light/Dark and Theme Default/Dark/Eco/Light, remembered after reload; accessibility options take precedence |
+| GAP-056 | Language selector | **Partly**: six languages listed; choosing one shows a notice and the page stays English |
+| GAP-057 | No site search | **Fixed** — searches pages, services, 25 High Courts, contact rows, forms, help videos and newsletters |
+| GAP-058 | High Courts, Contact Us, About Us, 12 footer pages | **Fixed**. Contact shows the 24 rows the services page lists with a note about the 25th (Telangana); footer pages other than About and Contact reuse main-portal content and say so |
+| GAP-059 | Hidden screen-reader text widened pages sideways (found by measuring without phone emulation) | **Fixed** app-wide in `src/styles.css`; it affected wide tables, for example Forms (+156 px at 360 px) |
+| GAP-060 | Search Menu strip widened the whole site by about 600 px at 360 px | **Fixed** (grid children may shrink) |
+| GAP-061 | Dark theme form labels too dim | **Fixed** |
+| GAP-062 | Earlier 360 px checks used phone emulation, which zooms the page out and can hide overflow | **Corrected**: both browser-check scripts now measure without it; both re-run and pass |
+| GAP-063 | Translations for the five other languages; real data; official colours and layout; help-video and store links; official results layouts | **Not built / Unverified** |

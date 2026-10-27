@@ -34,7 +34,12 @@ function buildOrderQuery(mode: OrderMode, v: FormValues, filter: OrderFilter, x:
 /** Optional starting state, used by render tests to show every page state without user input. */
 export interface CourtOrdersInitial { phase?: Phase; results?: OrderResult[]; selected?: CaseRecord | null }
 
-export default function CourtOrdersPage({ initialMode = 'party', initial }: { initialMode?: OrderMode; initial?: CourtOrdersInitial } = {}) {
+export default function CourtOrdersPage({ initialMode = 'party', initial, hideOtherServices = false }: {
+  initialMode?: OrderMode
+  initial?: CourtOrdersInitial
+  /** The eCourts Services site shows these links in its own Search Menu. */
+  hideOtherServices?: boolean
+} = {}) {
   const { go } = useApp()
   const [mode, setMode] = useState<OrderMode>(initialMode)
   const [v, setV] = useState<FormValues>(EMPTY)
@@ -187,15 +192,17 @@ export default function CourtOrdersPage({ initialMode = 'party', initial }: { in
         {selected && <CaseDetail c={selected} onBack={() => setSelected(null)} />}
       </div>
 
-      <Card title="Other search services">
-        <p className="tiny muted">Cause List and Case Status have demonstrations here. Caveat Search, Process Details and Location are not rebuilt and open the official site.</p>
-        <div className="actions">
-          <Btn className="small" onClick={() => go('caseStatus')}>Case Status (demo)</Btn>
-          {SEARCH_MENU_LINKS.filter((l) => l.page !== 'courtOrders').map((l) => (l.page
-            ? <Btn key={l.label} className="small" onClick={() => go(l.page!)}>{l.label} (demo)</Btn>
-            : <ExternalLink key={l.label} href={l.url}>{l.label} ↗</ExternalLink>))}
-        </div>
-      </Card>
+      {!hideOtherServices && (
+        <Card title="Other search services">
+          <p className="tiny muted">Cause List and Case Status have demonstrations here. Caveat Search, Process Details and Location are not rebuilt and open the official site.</p>
+          <div className="actions">
+            <Btn className="small" onClick={() => go('caseStatus')}>Case Status (demo)</Btn>
+            {SEARCH_MENU_LINKS.filter((l) => l.page !== 'courtOrders').map((l) => (l.page
+              ? <Btn key={l.label} className="small" onClick={() => go(l.page!)}>{l.label} (demo)</Btn>
+              : <ExternalLink key={l.label} href={l.url}>{l.label} ↗</ExternalLink>))}
+          </div>
+        </Card>
+      )}
     </>
   )
 }

@@ -124,3 +124,28 @@ Source: `https://services.ecourts.gov.in/ecourtindia_v6/?p=courtorder/index` (te
 | Results | Help text says results link to the order or judgment PDF ("Order on Exhibit or Copy of Judgement" or "Order No."); the list itself was not visible |
 
 **Not observed (Unverified):** results columns, pagination, PDF viewer, validation messages, date format, and whether Establishment is required.
+
+## Seventh review pass (2026-10-27) — the whole District and Taluka Courts services site
+Source: `https://services.ecourts.gov.in/ecourtindia_v6/` (pages `home/index`, `casestatus/index`, `caveat_search/index`, `processDetails/processData`, `location/index`, `high_court/index`, `contact_us/index`, `about_us/index`). Text read through a fetch tool; no browser, no screenshots, nothing submitted.
+
+| Item | Verified content |
+|---|---|
+| Top bar | Link to the e-Committee and the Supreme Court; "Skip to main content" |
+| Language selector | English, हिन्दी, मराठी, ગુજરાતી, ಕನ್ನಡ, தமிழ் (six; the main portal home page showed English only) |
+| Accessibility options | High Contrast, Normal Contrast, Highlight Links, Invert Saturation; A+, A-, A, Text Spacing, Line Height; Hide Images, Big Cursor; Reset all settings |
+| Branding and search | State emblem with "eCourts Services District and Taluka Courts of India"; "Search this site" box; eCourts and Digital India logos |
+| Notice | A theme-update message asking users to clear the browser cache |
+| Main menu (7) | Home, e-Committee, Supreme Court, High Courts, District Courts, NJDG, Contact Us |
+| Theme Customizer | Topbar Color: Light, Dark. Theme Color: Default, Dark, Eco, Light |
+| Search Menu (7) | CNR Number, Case Status, Court Orders, Cause List, Caveat Search, Process Details, Location |
+| Other chrome | "Download eCourts Services App" with store badges that are placeholder links; "Do not use browser toolbar reload or back button"; combo-box keyboard tip; footer with 12 Useful Links, ownership and NIC hosting statements, last updated 2 January 2026, version 1.0, YouTube, six partner logos |
+| CNR page (home) | "Search by CNR number", example MHAU019999992015, Search and Reset buttons, Back, note "If you dont have CNR Number then use other options from Search Menu section.", help-video link; also a Select State, Select District and Go row whose purpose is not stated |
+| Case Status | Seven searches (see the earlier pass); the CNR search is a separate page |
+| Caveat Search | Match type Anywhere / Starting with (help text also mentions Soundex); *Caveator/Caveatee Name with Caveator and Caveatee options; Subordinate Court; *Case Type; *Case Number; *Filing Number; Date of Decision; *Year; *Caveat Number and year; captcha; Go. Help: a part of the caveat number plus the year is enough; active caveats are displayed |
+| Process Details | "Search By Process ID": *Process ID, *Email Id, captcha, Search, Reset; note "Email address should be registered with the court." |
+| Location | State, District, Court Complex, Establishment; note "Location: Refer popup new window to view location." |
+| High Courts | Breadcrumb Home > High Courts; 25 courts, each an external link with its address |
+| Contact Us | Breadcrumb; e-Committee e-mail; note to contact the High Court coordinator; "Contact Information" table of **24** courts (the main portal lists 25; Telangana is missing here) |
+| About Us | Origin (2005 policy), funding, four goals, Phase I and II, portal launch 7 August 2013, key figures |
+
+**Not observed (Unverified):** the visual design (colours, fonts, spacing), how Caveat Search fields are grouped, what Process Details and Location show after a search, results columns of every service, the Process Details page itself (its address returned the home page content), and the services-site versions of the other footer pages (the main-portal versions are reused and labelled).

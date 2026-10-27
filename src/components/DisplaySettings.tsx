@@ -24,7 +24,7 @@ function load(): Prefs {
   } catch { return DEFAULTS }
 }
 
-export default function DisplaySettings() {
+export default function DisplaySettings({ label = 'Display settings' }: { label?: string } = {}) {
   const [open, setOpen] = useState(false)
   const [p, setP] = useState<Prefs>(load)
 
@@ -40,9 +40,9 @@ export default function DisplaySettings() {
 
   return (
     <div className="dispwrap">
-      <button className="iconbtn" aria-expanded={open} aria-controls="dispmenu" onClick={() => setOpen((o) => !o)}>Aa<span className="sr-only"> Display settings</span></button>
+      <button className="iconbtn" aria-expanded={open} aria-controls="dispmenu" onClick={() => setOpen((o) => !o)}>Aa<span className="sr-only"> {label}</span></button>
       {open && (
-        <div className="dispmenu" id="dispmenu" role="group" aria-label="Display settings" onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false) }}>
+        <div className="dispmenu" id="dispmenu" role="group" aria-label={label} onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false) }}>
           <div className="actions">
             <button className="btn small" onClick={() => size(-1)} aria-label="Decrease text size">A−</button>
             <button className="btn small" onClick={() => setP((s) => ({ ...s, size: 0 }))}>A</button>

@@ -1,12 +1,14 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { useApp } from '../context'
+import { useEyebrow } from './chrome'
 import type { PageId } from '../types'
 
 export function PageHead({ title, sub, children }: { title: string; sub: string; children?: ReactNode }) {
+  const eyebrow = useEyebrow()
   return (
     <div className="pagehead">
       <div>
-        <div className="eyebrow">myCourt workspace</div>
+        <div className="eyebrow">{eyebrow}</div>
         <h2>{title}</h2>
         <p className="sub">{sub}</p>
       </div>

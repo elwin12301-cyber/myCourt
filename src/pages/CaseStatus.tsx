@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { Btn, Card, Notice, PageHead } from '../components/ui'
 import { useApp } from '../context'
 import ExternalLink from '../components/ExternalLink'
@@ -16,9 +16,27 @@ const adapter = createMockAdapter()
 
 type Phase = 'idle' | 'loading' | 'error' | 'done'
 
-export default function CaseStatusPage({ initialMode = 'cnr' }: { initialMode?: SearchMode } = {}) {
+/** Options that let the eCourts Services site reuse this page with the official separation of CNR and Case Status. */
+export interface CaseStatusOptions {
+  initialMode?: SearchMode
+  /** Which searches to offer; with a single mode the tab row is hidden. */
+  modes?: SearchMode[]
+  title?: string
+  sub?: string
+  submitLabel?: string
+  onBack?: () => void
+  hideOtherServices?: boolean
+  footerNote?: ReactNode
+}
+
+export default function CaseStatusPage({
+  initialMode, modes, title = 'Case Status',
+  sub = 'Search by CNR, party name, case number, filing number, advocate, FIR number, act or case type, then view the case history.',
+  submitLabel = 'Go', onBack, hideOtherServices = false, footerNote,
+}: CaseStatusOptions = {}) {
   const { go } = useApp()
-  const [mode, setMode] = useState<SearchMode>(initialMode)
+  const visibleModes = modes?.length ? MODES.filter((m) => modes.includes(m.id)) : MODES
+  const [mode, setMode] = useState<SearchMode>(initialMode ?? visibleModes[0].id)
   const [v, setV] = useState<FormValues>(EMPTY)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [captcha, setCaptcha] = useState(() => generateCaptcha())
@@ -67,7 +85,7 @@ export default function CaseStatusPage({ initialMode = 'cnr' }: { initialMode?: 
 
   return (
     <>
-      <PageHead title="Case Status" sub="Search by CNR, party name, case number, filing number, advocate, FIR number, act or case type, then view the case history.">
+      <PageHead title={title} sub={sub}>
         <Btn kind="soft" onClick={reset}>Reset</Btn>
       </PageHead>
 
@@ -76,14 +94,16 @@ export default function CaseStatusPage({ initialMode = 'cnr' }: { initialMode?: 
       </div>
 
       <Card>
-        <div className="tabrow" role="tablist" aria-label="Search by">
-          {MODES.map((m) => (
-            <button key={m.id} role="tab" id={`tab-${m.id}`} aria-selected={mode === m.id} aria-controls="searchpanel"
-              className={`tab ${mode === m.id ? 'active' : ''}`} onClick={() => switchMode(m.id)}>{m.label}</button>
-          ))}
-        </div>
+        {visibleModes.length > 1 && (
+          <div className="tabrow" role="tablist" aria-label="Search by">
+            {visibleModes.map((m) => (
+              <button key={m.id} role="tab" id={`tab-${m.id}`} aria-selected={mode === m.id} aria-controls="searchpanel"
+                className={`tab ${mode === m.id ? 'active' : ''}`} onClick={() => switchMode(m.id)}>{m.label}</button>
+            ))}
+          </div>
+        )}
 
-        <form id="searchpanel" role="tabpanel" aria-labelledby={`tab-${mode}`} onSubmit={run} noValidate>
+        <form id="searchpanel" role={visibleModes.length > 1 ? 'tabpanel' : undefined} aria-labelledby={visibleModes.length > 1 ? `tab-${mode}` : undefined} aria-label={visibleModes.length > 1 ? undefined : info.heading} onSubmit={run} noValidate>
           <h4 style={{ margin: '0 0 6px' }}>{info.heading}</h4>
           <details className="howto">
             <summary>How to search</summary>
@@ -96,14 +116,16 @@ export default function CaseStatusPage({ initialMode = 'cnr' }: { initialMode?: 
           <CaptchaField code={captcha} value={captchaInput} onChange={setCaptchaInput} onRefresh={refreshCaptcha} error={errors.captcha} />
 
           <div className="actions">
-            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? 'Searching…' : 'Go'}</button>
+            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? 'Searching…' : submitLabel}</button>
             <Btn onClick={reset}>Reset</Btn>
+            {onBack && <Btn onClick={onBack}>Back</Btn>}
           </div>
+          {footerNote}
         </form>
       </Card>
 
       <div style={{ marginTop: 18 }} aria-live="polite">
-        {phase === 'idle' && <div className="empty">Choose a search type, fill in the details and select Go.</div>}
+        {phase === 'idle' && <div className="empty">Choose a search type, fill in the details and select {submitLabel}.</div>}
         {phase === 'loading' && (
           <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span className="sr-only">Loading results</span></Card>
         )}
@@ -117,14 +139,16 @@ export default function CaseStatusPage({ initialMode = 'cnr' }: { initialMode?: 
         {selected && <CaseDetail c={selected} onBack={() => setSelected(null)} />}
       </div>
 
-      <Card title="Other search services on the official site">
-        <p className="tiny muted">The official Search menu also lists these services. Cause List has a demo here; the others are not rebuilt and open the official site.</p>
-        <div className="actions">
-          {SEARCH_MENU_LINKS.map((l) => (l.page
-            ? <Btn key={l.label} className="small" onClick={() => go(l.page!)}>{l.label} (demo)</Btn>
-            : <ExternalLink key={l.label} href={l.url}>{l.label} ↗</ExternalLink>))}
-        </div>
-      </Card>
+      {!hideOtherServices && (
+        <Card title="Other search services on the official site">
+          <p className="tiny muted">The official Search menu also lists these services. Cause List and Court Orders have demos here; the others are not rebuilt and open the official site.</p>
+          <div className="actions">
+            {SEARCH_MENU_LINKS.map((l) => (l.page
+              ? <Btn key={l.label} className="small" onClick={() => go(l.page!)}>{l.label} (demo)</Btn>
+              : <ExternalLink key={l.label} href={l.url}>{l.label} ↗</ExternalLink>))}
+          </div>
+        </Card>
+      )}
     </>
   )
 }

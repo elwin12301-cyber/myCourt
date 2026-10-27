@@ -48,3 +48,6 @@ Screenshots were reviewed at desktop width and at 360 px.
 | III Accessible and responsive | Labels, required markers, `role="alert"` errors, tab roles, scripted Tab check, focus ring fix, 360 px check |
 | IV Tested, type-safe changes | Strict TypeScript; 56 new tests; build passes |
 | V Confidentiality and secure integration | No real data or secrets; adapter boundary documented in `contracts/order-search-adapter.md`; captcha is a labelled demonstration only |
+
+## Correction (2026-10-27): how the 360 px check was measured
+The phone-width results above were first measured with Chrome's mobile emulation, which zooms the page out to fit wide content and can hide horizontal overflow. `browser-check.mjs` now measures without it. After a related app-wide fix (hidden screen-reader text no longer widens pages), the script was re-run: **23 of 23 passed**, including the results page at 360 px. Whether the results page overflowed before that fix was not tested, so the original claim is superseded by this re-run, not independently confirmed.
