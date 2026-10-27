@@ -75,3 +75,14 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-041 | Print control | Added beyond the official page (it shows none) |
 | GAP-042 | Court rooms, judges and hearings | Fictional demonstration data for 8 courts in Tamil Nadu, Maharashtra and Delhi |
 | GAP-037 (update) | Remaining unbuilt Search-menu services | Court Orders, Caveat Search, Process Details, Location (linked out) |
+
+## Seventh pass — Court Orders (spec `001-court-orders`)
+| ID | Finding | Status |
+|---|---|---|
+| GAP-044 | No Court Orders service | **Fixed** — four searches (party name, case number, court number, order date), order-type filter, captcha, results, case view, other-services panel |
+| GAP-045 | Orders had no number, type or document flag | **Fixed** — `kind`, `number` and `hasDocument` on every order; case view shows them |
+| GAP-046 | Form fields had a faint keyboard focus ring (found by browser check) | **Fixed** — visible 3 px ring on all form fields, app-wide |
+| GAP-047 | Uneven field heights in form rows | **Fixed** on Court Orders, Case Status and Cause List forms |
+| GAP-048 | Results table filter resets after opening a case (Case Status and Cause List) | **Open** — Court Orders keeps it in the page; the other two tables can adopt the same design |
+| GAP-049 | Order documents, official results layout | **Unverified / not built** — no documents in demonstration data |
+| GAP-037 (update) | Remaining unbuilt Search-menu services | Caveat Search, Process Details, Location (linked out) |

@@ -108,3 +108,19 @@ Source: `https://services.ecourts.gov.in/ecourtindia_v6/?p=cause_list/index` (te
 | Notes | Disclaimer: "Cause list displayed may differ from the actual cause list. For further queries, contact court administrator." Step-by-step help and a help-video link |
 
 **Not observed (Unverified):** results table columns, case details in a list, date format and range limits, validation messages, the PDF viewer content (heading only), and the function of Establishment.
+
+## Sixth review pass (2026-10-27) — District Court Court Orders page
+Source: `https://services.ecourts.gov.in/ecourtindia_v6/?p=courtorder/index` (text read through a fetch tool; no browser; nothing submitted).
+
+| Item | Verified content |
+|---|---|
+| Search types (4) | Party Name, Case Number, Court Number, Order Date. No FIR, advocate or free-text judgment search |
+| Court selection | State, District, Court Complex, Establishment, shared above the forms |
+| Party Name | *Petitioner/Respondent (min 3 characters; example "Ramesh Narayan Yadav"), *Year; matches petitioner, plaintiff, complainant, respondent, defendant, appellant, accused or extra party |
+| Case Number | *Case Type, *Case Number, *Year |
+| Court Number | *Court Number; each entry shows court number, judge name, designation and judge period |
+| Order Date | *From Date, *To Date (format not shown) |
+| All forms | Order type radios: Interim Orders, Final Orders, Both; CAPTCHA (image, audio, refresh, 5 or 6 characters); Go button; "How to" help; help-video links on three forms |
+| Results | Help text says results link to the order or judgment PDF ("Order on Exhibit or Copy of Judgement" or "Order No."); the list itself was not visible |
+
+**Not observed (Unverified):** results columns, pagination, PDF viewer, validation messages, date format, and whether Establishment is required.

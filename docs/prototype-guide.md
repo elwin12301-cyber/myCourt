@@ -44,3 +44,12 @@ Sidebar → **ECOURTS PORTAL (REFERENCE)** (Portal overview, About, High Courts,
 
 ## Cause List
 Sidebar -> **Cause list**. Try: Tamil Nadu > Chennai > Principal Sessions Court Complex > court 12 - Demo Judge A > date 2026-10-28 > **Criminal** (2 matters). Civil example: City Civil Court Complex > court 4 > 2026-10-30 > **Civil** (2 matters). Any other court or date shows an empty-list message. Code: `src/features/causeList/`, `src/pages/CauseList.tsx`. All judges, courts and cases are fictional.
+
+## Court Orders
+Sidebar -> **Court orders**. All data is fictional. Examples (solve the on-screen captcha each time):
+- **Case Number** tab: Tamil Nadu > Chennai > Principal Sessions Court Complex; Criminal Case (CC), 412, 2025; Both -> 2 orders, newest first.
+- **Party Name** tab: same court; "kumar", 2025 -> the same case's orders.
+- **Court Number** tab: choose `12 - Demo Judge A - ...` -> orders heard in that court.
+- **Order Date** tab: from and to `2025-08-20` -> one order (both dates are included).
+- Use **View** to open the case, **Back to results** to return with the same filter and sort.
+Specification, plan, tasks and the validation log are in `specs/001-court-orders/`. The browser check can be re-run with `node specs/001-court-orders/browser-check.mjs <output-folder>` while `npm run dev` is running (needs Google Chrome).

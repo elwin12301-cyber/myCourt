@@ -16,7 +16,16 @@ export type CaseQuery =
   | { mode: 'caseType'; court: CourtSelection; caseType: string; year: string; status: PendingDisposed }
 
 export interface HearingEntry { date: string; businessOn: string; purpose: string; judge: string }
-export interface OrderEntry { date: string; title: string }
+export type OrderKind = 'Interim' | 'Final'
+export interface OrderEntry {
+  date: string
+  title: string
+  kind: OrderKind
+  /** Order number within its case, assigned in date order. */
+  number: string
+  /** Always false in demonstration data: no document files exist. */
+  hasDocument: boolean
+}
 export interface IaEntry { ia: string; party: string; date: string; status: string }
 export interface AdvocateRef { name: string; barCode: string }
 export interface ActRef { act: string; sections: string }

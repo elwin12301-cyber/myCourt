@@ -1,7 +1,7 @@
 import type { PageId } from './types'
 
 export const PAGE_IDS: PageId[] = [
-  'dashboard', 'cases', 'caseStatus', 'causeList', 'caseDetail', 'assistant', 'research', 'documents',
+  'dashboard', 'cases', 'caseStatus', 'causeList', 'courtOrders', 'caseDetail', 'assistant', 'research', 'documents',
   'mapping', 'voice', 'hearing', 'calendar', 'intake', 'billing',
   'portalHome', 'portalAbout', 'portalHighCourts', 'portalDistrict', 'portalForms',
   'portalContact', 'portalHelp', 'portalSearch', 'portalHelpVideos', 'portalManuals',

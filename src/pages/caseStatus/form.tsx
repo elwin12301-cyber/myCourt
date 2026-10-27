@@ -50,7 +50,7 @@ export function Field({ id, label, required, error, hint, children }: { id: stri
   )
 }
 
-function Radios<T extends string>({ legend, name, value, options, onChange, labels }: { legend: string; name: string; value: T; options: T[]; onChange: (v: T) => void; labels?: Record<string, string> }) {
+export function Radios<T extends string>({ legend, name, value, options, onChange, labels }: { legend: string; name: string; value: T; options: T[]; onChange: (v: T) => void; labels?: Record<string, string> }) {
   return (
     <fieldset className="radiogroup">
       <legend>{legend}</legend>
@@ -61,7 +61,7 @@ function Radios<T extends string>({ legend, name, value, options, onChange, labe
   )
 }
 
-type Setter = (patch: Partial<FormValues>) => void
+export type Setter = (patch: Partial<FormValues>) => void
 
 export function CourtPicker({ v, set, errors }: { v: FormValues; set: Setter; errors: FieldErrors }) {
   const districts = Object.keys(LOCATIONS[v.state] ?? {})
@@ -70,7 +70,7 @@ export function CourtPicker({ v, set, errors }: { v: FormValues; set: Setter; er
   const aria = (k: string) => ({ 'aria-invalid': !!errors[k], 'aria-describedby': errors[k] ? `${k}-err` : undefined })
   return (
     <>
-      <div className="grid layout3" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
+      <div className="grid layout3" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
         <Field id="state" label="State" required error={errors.state}>
           <select id="state" value={v.state} {...aria('state')} onChange={(e) => set({ state: e.target.value, district: '', complex: '', establishment: '', policeStation: '' })}>
             <option value="">Select State</option>
@@ -103,7 +103,7 @@ export function CourtPicker({ v, set, errors }: { v: FormValues; set: Setter; er
   )
 }
 
-function YearField({ v, set, errors, id = 'year', label, required }: { v: FormValues; set: Setter; errors: FieldErrors; id?: string; label: string; required?: boolean }) {
+export function YearField({ v, set, errors, id = 'year', label, required }: { v: FormValues; set: Setter; errors: FieldErrors; id?: string; label: string; required?: boolean }) {
   const key = id === 'firYear' ? 'firYear' : 'year'
   return (
     <Field id={id} label={label} required={required} error={errors[id]}>
@@ -112,7 +112,7 @@ function YearField({ v, set, errors, id = 'year', label, required }: { v: FormVa
   )
 }
 
-function CaseTypeField({ v, set, errors }: { v: FormValues; set: Setter; errors: FieldErrors }) {
+export function CaseTypeField({ v, set, errors }: { v: FormValues; set: Setter; errors: FieldErrors }) {
   return (
     <Field id="caseType" label="Case Type" required error={errors.caseType}>
       <select id="caseType" value={v.caseType} aria-invalid={!!errors.caseType} aria-describedby={errors.caseType ? 'caseType-err' : undefined} onChange={(e) => set({ caseType: e.target.value })}>
@@ -143,7 +143,7 @@ export function ModeFields({ mode, v, set, errors }: { mode: SearchMode; v: Form
       <CourtPicker v={v} set={set} errors={errors} />
       {mode === 'party' && (
         <>
-          <div className="grid layout2" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
+          <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
             <Field id="name" label="Petitioner/Respondent" required error={errors.name}>
               <input id="name" value={v.name} aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-err' : undefined} onChange={(e) => set({ name: e.target.value })} />
             </Field>
@@ -153,7 +153,7 @@ export function ModeFields({ mode, v, set, errors }: { mode: SearchMode; v: Form
         </>
       )}
       {(mode === 'caseNumber' || mode === 'filingNumber') && (
-        <div className="grid layout3" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
+        <div className="grid layout3" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
           <CaseTypeField v={v} set={set} errors={errors} />
           {num('number', mode === 'filingNumber' ? 'Filing Number' : 'Case Number', 'number')}
           <YearField v={v} set={set} errors={errors} label={mode === 'filingNumber' ? 'Filing Year' : 'Year'} required />
@@ -167,7 +167,7 @@ export function ModeFields({ mode, v, set, errors }: { mode: SearchMode; v: Form
               <input id="barCode" value={v.barCode} aria-invalid={!!errors.barCode} aria-describedby={errors.barCode ? 'barCode-err' : undefined} onChange={(e) => set({ barCode: e.target.value })} />
             </Field>
           ) : (
-            <div className="grid layout2" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
+            <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
               <Field id="name" label="Advocate" required error={errors.name} hint="At least 3 characters.">
                 <input id="name" value={v.name} aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-err' : undefined} onChange={(e) => set({ name: e.target.value })} />
               </Field>
@@ -185,7 +185,7 @@ export function ModeFields({ mode, v, set, errors }: { mode: SearchMode; v: Form
       )}
       {mode === 'fir' && (
         <>
-          <div className="grid layout3" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
+          <div className="grid layout3" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
             <Field id="policeStation" label="Police Station" required error={errors.policeStation}>
               <select id="policeStation" value={v.policeStation} disabled={!POLICE_STATIONS[v.district]} aria-invalid={!!errors.policeStation} aria-describedby={errors.policeStation ? 'policeStation-err' : undefined} onChange={(e) => set({ policeStation: e.target.value })}>
                 <option value="">Select police station</option>
@@ -202,7 +202,7 @@ export function ModeFields({ mode, v, set, errors }: { mode: SearchMode; v: Form
       )}
       {mode === 'act' && (
         <>
-          <div className="grid layout3" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
+          <div className="grid layout3" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
             <Field id="actSearch" label="Search Act" hint="Type at least 3 characters to narrow the list.">
               <input id="actSearch" value={v.actSearch} onChange={(e) => set({ actSearch: e.target.value, actType: '' })} />
             </Field>
@@ -221,7 +221,7 @@ export function ModeFields({ mode, v, set, errors }: { mode: SearchMode; v: Form
       )}
       {mode === 'caseType' && (
         <>
-          <div className="grid layout2" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
+          <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
             <CaseTypeField v={v} set={set} errors={errors} />
             <YearField v={v} set={set} errors={errors} label="Year" required />
           </div>

@@ -2,3 +2,9 @@ node_modules
 dist
 .claude/
 *.local
+
+*.log
+.env*
+coverage/
+.DS_Store
+Thumbs.db

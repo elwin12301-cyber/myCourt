@@ -22,7 +22,10 @@ export const DEMO_CASES: CaseRecord[] = [
       { date: '2026-07-15', businessOn: '2026-09-02', purpose: 'Evidence', judge: 'Demo Judge A' },
       { date: '2025-08-20', businessOn: '2025-09-30', purpose: 'First hearing', judge: 'Demo Judge A' },
     ],
-    orders: [{ date: '2026-09-02', title: 'Interim order (demo)' }, { date: '2025-08-20', title: 'Order on first hearing (demo)' }],
+    orders: [
+      { date: '2026-09-02', title: 'Interim order (demo)', kind: 'Interim', number: '2', hasDocument: false },
+      { date: '2025-08-20', title: 'Order on first hearing (demo)', kind: 'Interim', number: '1', hasDocument: false },
+    ],
     iaBusiness: [{ ia: 'IA 1/2026', party: 'Respondent', date: '2026-07-15', status: 'Pending' }],
   },
   {
@@ -35,7 +38,7 @@ export const DEMO_CASES: CaseRecord[] = [
     court: court('Tamil Nadu', 'Chennai', 'City Civil Court Complex', 'City Civil Court'),
     courtNumberAndJudge: '4 - Demo Judge B', status: 'Pending', firstHearing: '2024-04-18', nextHearing: '2026-10-30', decisionDate: null, stage: 'Written statement',
     history: [{ date: '2026-08-10', businessOn: '2026-10-30', purpose: 'Written statement', judge: 'Demo Judge B' }],
-    orders: [{ date: '2026-08-10', title: 'Order granting time (demo)' }],
+    orders: [{ date: '2026-08-10', title: 'Order granting time (demo)', kind: 'Interim', number: '1', hasDocument: false }],
     iaBusiness: [],
   },
   {
@@ -48,7 +51,10 @@ export const DEMO_CASES: CaseRecord[] = [
     court: court('Maharashtra', 'Mumbai', 'City Civil and Sessions Court', 'Sessions Court'),
     courtNumberAndJudge: '7 - Demo Judge C', status: 'Disposed', firstHearing: '2022-03-02', nextHearing: null, decisionDate: '2024-05-06', stage: 'Judgment pronounced',
     history: [{ date: '2024-05-06', businessOn: '2024-05-06', purpose: 'Judgment', judge: 'Demo Judge C' }],
-    orders: [{ date: '2024-05-06', title: 'Final judgment (demo)' }],
+    orders: [
+      { date: '2024-05-06', title: 'Final judgment (demo)', kind: 'Final', number: '2', hasDocument: false },
+      { date: '2023-06-12', title: 'Interim stay order (demo)', kind: 'Interim', number: '1', hasDocument: false },
+    ],
     iaBusiness: [],
   },
   {
@@ -74,7 +80,7 @@ export const DEMO_CASES: CaseRecord[] = [
     court: court('Tamil Nadu', 'Madurai', 'District Court Complex', 'District Court'),
     courtNumberAndJudge: '3 - Demo Judge E', status: 'Disposed', firstHearing: '2023-03-14', nextHearing: null, decisionDate: '2025-02-20', stage: 'Decree passed',
     history: [{ date: '2025-02-20', businessOn: '2025-02-20', purpose: 'Judgment', judge: 'Demo Judge E' }],
-    orders: [{ date: '2025-02-20', title: 'Decree (demo)' }],
+    orders: [{ date: '2025-02-20', title: 'Decree (demo)', kind: 'Final', number: '1', hasDocument: false }],
     iaBusiness: [],
   },
   {
@@ -87,7 +93,7 @@ export const DEMO_CASES: CaseRecord[] = [
     court: court('Maharashtra', 'Pune', 'District and Sessions Court', 'Sessions Court'),
     courtNumberAndJudge: '9 - Demo Judge F', status: 'Pending', firstHearing: '2026-03-10', nextHearing: '2026-10-28', decisionDate: null, stage: 'Charge framing',
     history: [{ date: '2026-08-20', businessOn: '2026-10-28', purpose: 'Charge framing', judge: 'Demo Judge F' }],
-    orders: [{ date: '2026-08-20', title: 'Order on charge (demo)' }],
+    orders: [{ date: '2026-08-20', title: 'Order on charge (demo)', kind: 'Interim', number: '1', hasDocument: false }],
     iaBusiness: [],
   },
   {

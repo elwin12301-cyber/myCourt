@@ -47,3 +47,6 @@ html.lowsat{filter:saturate(.35)}html.lowsat.gray{filter:grayscale(1)}
 .captcha{font:700 26px/1 "Courier New",monospace;letter-spacing:6px;padding:12px 16px;border-radius:9px;background:repeating-linear-gradient(135deg,#eef2fb 0 6px,#f8faff 6px 12px);border:1px solid #cdd7ee;color:#14213d;text-decoration:line-through;text-decoration-color:#9fb0d9;user-select:none}
 .howto{margin-bottom:12px;background:#f8faff;border:1px solid #dce5ff;border-radius:10px;padding:8px 12px}.howto summary{cursor:pointer;font-weight:650;color:var(--blue)}
 @media(max-width:560px){.captcharow{grid-template-columns:1fr}}
+
+/* Keep a clear keyboard focus ring on form fields; earlier rules set outline:none with higher specificity. */
+input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #f59e0b!important;outline-offset:2px}

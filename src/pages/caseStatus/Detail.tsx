@@ -88,8 +88,10 @@ export default function CaseDetail({ c, onBack }: { c: CaseRecord; onBack: () =>
         <div className="list">
           {c.orders.map((o, i) => (
             <div className="listrow" key={i}>
-              <div><strong>{o.title}</strong><small>{fmt(o.date)}</small></div>
-              <button className="btn small" disabled title="No document exists in demonstration data">View PDF unavailable</button>
+              <div><strong>Order {o.number}: {o.title}</strong><small>{o.kind} order · {fmt(o.date)}</small></div>
+              {o.hasDocument
+                ? <button className="btn small">View PDF</button>
+                : <button className="btn small" disabled title="No document exists in demonstration data">View PDF unavailable</button>}
             </div>
           ))}
         </div>

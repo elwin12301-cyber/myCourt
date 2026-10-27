@@ -83,7 +83,7 @@ export default function CauseListPage() {
 
           <CourtPicker v={v} set={patch} errors={errors} />
 
-          <div className="grid layout2" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))' }}>
+          <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))' }}>
             <Field id="roomId" label="Court Name" required error={errors.roomId} hint="Court number, judge name and designation.">
               <select id="roomId" value={roomSel} disabled={!rooms.length} aria-invalid={!!errors.roomId} aria-describedby={errors.roomId ? 'roomId-err' : undefined} onChange={(e) => setRoomSel(e.target.value)}>
                 <option value="">Select court</option>

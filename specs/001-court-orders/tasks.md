@@ -25,8 +25,8 @@ description: "Task list for the Court Orders Search feature"
 
 **Purpose**: confirm the starting point and create the folders.
 
-- [ ] T001 Run `npm test` and `npm run build` at the repository root and record the baseline (72 tests passing, build succeeding) in the commit message of the first change
-- [ ] T002 [P] Create the folders `src/features/courtOrders/` and `src/pages/courtOrders/`
+- [X] T001 Run `npm test` and `npm run build` at the repository root and record the baseline (72 tests passing, build succeeding) in the commit message of the first change
+- [X] T002 [P] Create the folders `src/features/courtOrders/` and `src/pages/courtOrders/`
 
 ---
 
@@ -36,17 +36,17 @@ description: "Task list for the Court Orders Search feature"
 
 **CRITICAL**: no user story work starts until this phase is complete.
 
-- [ ] T003 Extend the order entry in `src/features/caseStatus/types.ts`: export `OrderKind = 'Interim' | 'Final'` and add `kind`, `number` and `hasDocument` to `OrderEntry` (data-model: Order)
-- [ ] T004 Update every order in `src/features/caseStatus/mockData.ts` to carry `kind`, a sequential `number` per case in date order, and `hasDocument: false`; add one interim order to case `MHMU019999992022` so at least one case has both kinds, and keep case `DLND019999992023` with no orders
-- [ ] T005 [P] Add a fictional `period` field to every court in `src/features/causeList/courtRooms.ts` and export `courtNumberLabel(room)` returning `number - judge - designation (period)`; keep `roomLabel` unchanged
-- [ ] T006 [P] Export `Radios`, `YearField`, `CaseTypeField` and the `Setter` type from `src/pages/caseStatus/form.tsx` (research D1, D7)
-- [ ] T007 [P] Create `src/features/courtOrders/types.ts` with `OrderFilter`, the `OrderQuery` union (`party`, `caseNumber`, `courtNumber`, `orderDate`), `OrderResult` and `OrderSearchAdapter` exactly as in `contracts/order-search-adapter.md`
-- [ ] T008 [P] Update the Orders section of `src/pages/caseStatus/Detail.tsx` to show `Order {number}: {title}`, the order type and date, and a disabled document control driven by `hasDocument` with the text "No document exists in demonstration data" (FR-013)
-- [ ] T009 [P] Add the page id `'courtOrders'` to `src/types.ts` and to `PAGE_IDS` in `src/router.ts`
-- [ ] T010 Create the page shell `src/pages/CourtOrders.tsx`: heading and Reset button, the demonstration notice with `role="note"` (FR-014), the four search-type tabs (Party Name, Case Number, Court Number, Order Date) and the idle prompt (depends on T007)
-- [ ] T011 Register the page in `src/App.tsx`: import `CourtOrdersPage`, add the sidebar entry "Court orders", add it to the `PAGES` map, and route top-search text containing "court order" to it (depends on T009, T010)
-- [ ] T012 [P] Add "Court orders (demo)" to the portal index in `src/features/portal/search.ts` and set `page: 'courtOrders'` on the Court Orders entry of `SEARCH_MENU_LINKS` in `src/features/caseStatus/referenceData.ts` (FR-019)
-- [ ] T013 Run `npm test` and `npm run build`; all 72 existing tests must still pass and the build must succeed
+- [X] T003 Extend the order entry in `src/features/caseStatus/types.ts`: export `OrderKind = 'Interim' | 'Final'` and add `kind`, `number` and `hasDocument` to `OrderEntry` (data-model: Order)
+- [X] T004 Update every order in `src/features/caseStatus/mockData.ts` to carry `kind`, a sequential `number` per case in date order, and `hasDocument: false`; add one interim order to case `MHMU019999992022` so at least one case has both kinds, and keep case `DLND019999992023` with no orders
+- [X] T005 [P] Add a fictional `period` field to every court in `src/features/causeList/courtRooms.ts` and export `courtNumberLabel(room)` returning `number - judge - designation (period)`; keep `roomLabel` unchanged
+- [X] T006 [P] Export `Radios`, `YearField`, `CaseTypeField` and the `Setter` type from `src/pages/caseStatus/form.tsx` (research D1, D7)
+- [X] T007 [P] Create `src/features/courtOrders/types.ts` with `OrderFilter`, the `OrderQuery` union (`party`, `caseNumber`, `courtNumber`, `orderDate`), `OrderResult` and `OrderSearchAdapter` exactly as in `contracts/order-search-adapter.md`
+- [X] T008 [P] Update the Orders section of `src/pages/caseStatus/Detail.tsx` to show `Order {number}: {title}`, the order type and date, and a disabled document control driven by `hasDocument` with the text "No document exists in demonstration data" (FR-013)
+- [X] T009 [P] Add the page id `'courtOrders'` to `src/types.ts` and to `PAGE_IDS` in `src/router.ts`
+- [X] T010 Create the page shell `src/pages/CourtOrders.tsx`: heading and Reset button, the demonstration notice with `role="note"` (FR-014), the four search-type tabs (Party Name, Case Number, Court Number, Order Date) and the idle prompt (depends on T007)
+- [X] T011 Register the page in `src/App.tsx`: import `CourtOrdersPage`, add the sidebar entry "Court orders", add it to the `PAGES` map, and route top-search text containing "court order" to it (depends on T009, T010)
+- [X] T012 [P] Add "Court orders (demo)" to the portal index in `src/features/portal/search.ts` and set `page: 'courtOrders'` on the Court Orders entry of `SEARCH_MENU_LINKS` in `src/features/caseStatus/referenceData.ts` (FR-019)
+- [X] T013 Run `npm test` and `npm run build`; all 72 existing tests must still pass and the build must succeed
 
 **Checkpoint**: foundation ready; user stories can begin.
 
@@ -60,18 +60,18 @@ description: "Task list for the Court Orders Search feature"
 
 ### Tests for User Story 1 (write first, confirm they fail)
 
-- [ ] T014 [P] [US1] Validation tests in `src/features/courtOrders/validation.test.ts`: party name needs 3+ characters and a year; case number needs type, 1-7 digits and a year; state, district and complex required; establishment optional; default filter is Both
-- [ ] T015 [P] [US1] Search tests in `src/features/courtOrders/search.test.ts`: party match on petitioner or respondent but not on advocates; case-number match; Interim, Final and Both filters; empty result is an empty list, not an error; newest-first ordering; abort rejects
-- [ ] T016 [P] [US1] Render tests in `src/features/courtOrders/render.test.tsx` for the Party Name and Case Number tabs: required markers, court selectors, order-type radios, captcha controls and the Go button
+- [X] T014 [P] [US1] Validation tests in `src/features/courtOrders/validation.test.ts`: party name needs 3+ characters and a year; case number needs type, 1-7 digits and a year; state, district and complex required; establishment optional; default filter is Both
+- [X] T015 [P] [US1] Search tests in `src/features/courtOrders/search.test.ts`: party match on petitioner or respondent but not on advocates; case-number match; Interim, Final and Both filters; empty result is an empty list, not an error; newest-first ordering; abort rejects
+- [X] T016 [P] [US1] Render tests in `src/features/courtOrders/render.test.tsx` for the Party Name and Case Number tabs: required markers, court selectors, order-type radios, captcha controls and the Go button
 
 ### Implementation for User Story 1
 
-- [ ] T017 [US1] Implement `validateOrderQuery` for the `party` and `caseNumber` modes in `src/features/courtOrders/validation.ts`, reusing the court and year rules from `src/features/caseStatus/validation.ts` (depends on T007)
-- [ ] T018 [US1] Implement matching, flattening, filtering and sorting for the `party` and `caseNumber` modes, plus `createMockOrderAdapter(latencyMs)` with abort support, in `src/features/courtOrders/courtOrders.ts` (depends on T003, T004, T007)
-- [ ] T019 [P] [US1] Build the controlled results table in `src/pages/courtOrders/OrderResults.tsx`: props `results`, `filter`, `sort`, `onFilter`, `onSort`, `onView`; columns per `contracts/page-ui-contract.md`; the document control disabled with an explanation (research D6)
-- [ ] T020 [US1] Add the Party Name and Case Number forms to `src/pages/CourtOrders.tsx`: `CourtPicker`, fields, order-type radios (Interim Orders, Final Orders, Both; default Both), `CaptchaField`, Go and Reset (depends on T006, T010)
-- [ ] T021 [US1] Wire the search lifecycle in `src/pages/CourtOrders.tsx`: validate, check the captcha and refresh it, abort on a new search, tab change or reset, states idle, loading, error with Retry and done, and hold filter and sort state in the page (depends on T017, T018, T019, T020)
-- [ ] T022 [US1] Show the empty-result wording "No matching order in the demonstration data. This does not mean no real order exists." and keep the "no demonstration data for this state" message in `src/pages/CourtOrders.tsx`
+- [X] T017 [US1] Implement `validateOrderQuery` for the `party` and `caseNumber` modes in `src/features/courtOrders/validation.ts`, reusing the court and year rules from `src/features/caseStatus/validation.ts` (depends on T007)
+- [X] T018 [US1] Implement matching, flattening, filtering and sorting for the `party` and `caseNumber` modes, plus `createMockOrderAdapter(latencyMs)` with abort support, in `src/features/courtOrders/courtOrders.ts` (depends on T003, T004, T007)
+- [X] T019 [P] [US1] Build the controlled results table in `src/pages/courtOrders/OrderResults.tsx`: props `results`, `filter`, `sort`, `onFilter`, `onSort`, `onView`; columns per `contracts/page-ui-contract.md`; the document control disabled with an explanation (research D6)
+- [X] T020 [US1] Add the Party Name and Case Number forms to `src/pages/CourtOrders.tsx`: `CourtPicker`, fields, order-type radios (Interim Orders, Final Orders, Both; default Both), `CaptchaField`, Go and Reset (depends on T006, T010)
+- [X] T021 [US1] Wire the search lifecycle in `src/pages/CourtOrders.tsx`: validate, check the captcha and refresh it, abort on a new search, tab change or reset, states idle, loading, error with Retry and done, and hold filter and sort state in the page (depends on T017, T018, T019, T020)
+- [X] T022 [US1] Show the empty-result wording "No matching order in the demonstration data. This does not mean no real order exists." and keep the "no demonstration data for this state" message in `src/pages/CourtOrders.tsx`
 
 **Checkpoint**: User Story 1 works on its own; this is the minimum viable slice.
 
@@ -83,8 +83,8 @@ description: "Task list for the Court Orders Search feature"
 
 **Independent Test**: quickstart scenario 11.
 
-- [ ] T023 [US4] Add render tests to `src/features/courtOrders/render.test.tsx` that assert the demonstration notice and its "not affiliated" wording appear in the idle, results, empty, error and case-view renderings (depends on T016)
-- [ ] T024 [US4] Confirm in `src/pages/CourtOrders.tsx` that the notice sits outside every conditional state block and that the case view and the error state still show it; fix any state that hides it (FR-014)
+- [X] T023 [US4] Add render tests to `src/features/courtOrders/render.test.tsx` that assert the demonstration notice and its "not affiliated" wording appear in the idle, results, empty, error and case-view renderings (depends on T016)
+- [X] T024 [US4] Confirm in `src/pages/CourtOrders.tsx` that the notice sits outside every conditional state block and that the case view and the error state still show it; fix any state that hides it (FR-014)
 
 **Checkpoint**: Stories 1 and 4 together satisfy both P1 stories.
 
@@ -98,15 +98,15 @@ description: "Task list for the Court Orders Search feature"
 
 ### Tests for User Story 2 (write first, confirm they fail)
 
-- [ ] T025 [P] [US2] Validation tests in `src/features/courtOrders/validation-modes.test.ts`: the court number must belong to the chosen complex and establishment; both dates required and valid; from later than to is rejected; equal dates accepted
-- [ ] T026 [P] [US2] Search tests in `src/features/courtOrders/search-modes.test.ts`: court-number match; inclusive date range; single-day range; a range with no orders returns an empty list
+- [X] T025 [P] [US2] Validation tests in `src/features/courtOrders/validation-modes.test.ts`: the court number must belong to the chosen complex and establishment; both dates required and valid; from later than to is rejected; equal dates accepted
+- [X] T026 [P] [US2] Search tests in `src/features/courtOrders/search-modes.test.ts`: court-number match; inclusive date range; single-day range; a range with no orders returns an empty list
 
 ### Implementation for User Story 2
 
-- [ ] T027 [US2] Extend `validateOrderQuery` in `src/features/courtOrders/validation.ts` for the `courtNumber` and `orderDate` modes (depends on T017)
-- [ ] T028 [US2] Extend the matching in `src/features/courtOrders/courtOrders.ts` for the `courtNumber` and `orderDate` modes (depends on T018)
-- [ ] T029 [US2] Add the Court Number select (labels from `courtNumberLabel`, cleared when the court selection changes) and the From and To date inputs to `src/pages/CourtOrders.tsx` (depends on T005, T020)
-- [ ] T030 [US2] Extend `src/features/courtOrders/render.test.tsx` with checks for the Court Number and Order Date tabs (depends on T016)
+- [X] T027 [US2] Extend `validateOrderQuery` in `src/features/courtOrders/validation.ts` for the `courtNumber` and `orderDate` modes (depends on T017)
+- [X] T028 [US2] Extend the matching in `src/features/courtOrders/courtOrders.ts` for the `courtNumber` and `orderDate` modes (depends on T018)
+- [X] T029 [US2] Add the Court Number select (labels from `courtNumberLabel`, cleared when the court selection changes) and the From and To date inputs to `src/pages/CourtOrders.tsx` (depends on T005, T020)
+- [X] T030 [US2] Extend `src/features/courtOrders/render.test.tsx` with checks for the Court Number and Order Date tabs (depends on T016)
 
 **Checkpoint**: Stories 1, 4 and 2 all work independently.
 
@@ -118,9 +118,9 @@ description: "Task list for the Court Orders Search feature"
 
 **Independent Test**: quickstart scenario 10.
 
-- [ ] T031 [P] [US3] Render tests in `src/features/courtOrders/results.test.tsx` showing that `OrderResults` renders exactly the rows implied by its `filter` and `sort` props and shows the disabled document control with its explanation (spec SC-006, FR-013)
-- [ ] T032 [US3] Handle `onView` in `src/pages/CourtOrders.tsx`: show the existing `CaseDetail` for the chosen row, and on Back restore the same results, filter and sort (depends on T008, T021)
-- [ ] T033 [US3] Verify against the spec that returning from a case keeps the order-type filter, the sort and the result list unchanged; fix any reset in `src/pages/CourtOrders.tsx`
+- [X] T031 [P] [US3] Render tests in `src/features/courtOrders/results.test.tsx` showing that `OrderResults` renders exactly the rows implied by its `filter` and `sort` props and shows the disabled document control with its explanation (spec SC-006, FR-013)
+- [X] T032 [US3] Handle `onView` in `src/pages/CourtOrders.tsx`: show the existing `CaseDetail` for the chosen row, and on Back restore the same results, filter and sort (depends on T008, T021)
+- [X] T033 [US3] Verify against the spec that returning from a case keeps the order-type filter, the sort and the result list unchanged; fix any reset in `src/pages/CourtOrders.tsx`
 
 **Checkpoint**: all four stories work independently.
 
@@ -128,12 +128,12 @@ description: "Task list for the Court Orders Search feature"
 
 ## Phase 7: Polish and cross-cutting concerns
 
-- [ ] T034 [P] Add the "Other search services" panel to `src/pages/CourtOrders.tsx`: Caveat Search, Process Details and Location as external links through `ExternalLink`, and Cause List and Case Status as in-app links (FR-019)
-- [ ] T035 [P] Update `docs/ecourts-reference-analysis.md` (Court Orders page review of 2026-10-27), `docs/gap-analysis.md` (new rows, Court Orders now built) and `docs/prototype-guide.md` (a Court orders section with example searches)
-- [ ] T036 [P] Check keyboard-only use and phone width (about 360 px) against quickstart scenarios 12 and 13 and record the result in `specs/001-court-orders/validation-log.md`
-- [ ] T037 Run quickstart scenarios 1-11 and record each outcome with the date in `specs/001-court-orders/validation-log.md`
-- [ ] T038 Run `npm test` and `npm run build` and confirm both pass before committing
-- [ ] T039 Re-check the finished feature against constitution Principles I-V and note the result in `specs/001-court-orders/validation-log.md`
+- [X] T034 [P] Add the "Other search services" panel to `src/pages/CourtOrders.tsx`: Caveat Search, Process Details and Location as external links through `ExternalLink`, and Cause List and Case Status as in-app links (FR-019)
+- [X] T035 [P] Update `docs/ecourts-reference-analysis.md` (Court Orders page review of 2026-10-27), `docs/gap-analysis.md` (new rows, Court Orders now built) and `docs/prototype-guide.md` (a Court orders section with example searches)
+- [X] T036 [P] Check keyboard-only use and phone width (about 360 px) against quickstart scenarios 12 and 13 and record the result in `specs/001-court-orders/validation-log.md`
+- [X] T037 Run quickstart scenarios 1-11 and record each outcome with the date in `specs/001-court-orders/validation-log.md`
+- [X] T038 Run `npm test` and `npm run build` and confirm both pass before committing
+- [X] T039 Re-check the finished feature against constitution Principles I-V and note the result in `specs/001-court-orders/validation-log.md`
 
 ---
 
@@ -185,3 +185,10 @@ Then:      T020 form  ->  T021 lifecycle  ->  T022 empty states
 - Out of scope: the existing Case Status results table resets its filter when a case is opened. Court Orders avoids this by keeping the state in the page (research D6); changing Case Status is a separate follow-up.
 - Out of scope: real eCourts data, order documents, and the official results layout, which was not observed.
 - Commit after each task or logical group, and stop at any checkpoint to validate.
+
+## Implementation notes (2026-10-27)
+- All 39 tasks are complete. Evidence is in `validation-log.md`: 128 automated tests passing, a 23-check browser run, and screenshots reviewed at desktop and 360 px width.
+- T036 and T037 were done with scripted Chrome (`browser-check.mjs`), including real Tab key presses and a 360 px emulation. They were not done by a human or with a screen reader.
+- T031 passed on its first run because the controlled results table already existed from US1; all other test groups were seen failing before their implementation.
+- Added beyond the task list: `src/features/courtOrders/modes.ts` (labels and help text), an optional `initial` prop on the page so render tests can show every state, and `browser-check.mjs`.
+- Defects found and fixed during validation: a weak focus ring on form fields (app-wide) and uneven field heights.

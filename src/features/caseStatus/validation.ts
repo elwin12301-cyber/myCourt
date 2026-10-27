@@ -17,9 +17,9 @@ export function normaliseBarCode(raw: string): string {
   return raw.replace(/\s/g, '').toUpperCase()
 }
 
-const yearOk = (y: string, max: number) => /^\d{4}$/.test(y) && +y >= 1950 && +y <= max
+export const yearOk = (y: string, max: number) => /^\d{4}$/.test(y) && +y >= 1950 && +y <= max
 
-function courtErrors(c: CourtSelection, e: FieldErrors) {
+export function courtErrors(c: CourtSelection, e: FieldErrors) {
   if (!c.state) e.state = 'Select a state.'
   if (!c.district) e.district = 'Select a district.'
   if (!c.complex) e.complex = 'Select a court complex.'
