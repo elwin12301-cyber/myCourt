@@ -4,6 +4,8 @@ import type { ChatMessage, DocItem, ModalConfig, PageId, Task } from './types'
 import { Pill, Row } from './components/ui'
 import DisplaySettings from './components/DisplaySettings'
 import { hashForPage, pageFromHash } from './router'
+import { gateState, useAuth } from './api/auth'
+import SignIn from './pages/SignIn'
 import Dashboard from './pages/Dashboard'
 import { CasesPage, CaseDetailPage } from './pages/Cases'
 import AssistantPage from './pages/Assistant'
@@ -118,6 +120,7 @@ const INITIAL_DOCS: DocItem[] = [
 ]
 
 export default function App() {
+  const auth = useAuth()
   const [page, setPage] = useState<PageId>(() => pageFromHash(window.location.hash))
   const [menuOpen, setMenuOpen] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
@@ -197,6 +200,11 @@ export default function App() {
   }
 
   const Page = PAGES[page]
+
+  // With the backend in use the workspace needs a signed-in person. The Services-site demo stays public.
+  const gate = gateState(auth.required, auth.status, page)
+  if (gate === 'loading') return <div role="status" className="page">Loading…</div>
+  if (gate === 'sign-in') return <SignIn />
   const activeNav = page === 'caseDetail' ? 'cases' : page
 
   // The eCourts Services site is a full-page prototype with its own chrome, so it replaces the workspace layout.
@@ -241,8 +249,8 @@ export default function App() {
             })}
           </nav>
           <div className="sidebottom">
-            <div className="avatar">AK</div>
-            <div><strong>Adv. A. Kumar</strong><small>Advocate workspace</small></div>
+            <div className="avatar">{auth.person ? auth.person.displayName.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase() : 'AK'}</div>
+            <div><strong>{auth.person ? auth.person.displayName : 'Adv. A. Kumar'}</strong><small>Advocate workspace</small></div>
           </div>
         </aside>
         <main className="main" id="main-content" tabIndex={-1}>
@@ -255,7 +263,8 @@ export default function App() {
               <button className="iconbtn hide-sm" onClick={() => go('calendar')}>◷ Upcoming: 3</button>
               <DisplaySettings />
               <button className="iconbtn" title="Notifications" aria-label="Notifications" onClick={showNotifications}>♧</button>
-              <div className="avatar">AK</div>
+              <div className="avatar" title={auth.person?.displayName}>{(auth.person?.displayName ?? 'AK').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</div>
+              {auth.required && auth.status === 'in' && <button className="btn small" onClick={() => void auth.signOut()}>Sign out</button>}
             </div>
           </header>
           <div className="page"><Page /></div>

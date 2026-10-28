@@ -1,4 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { apiEnabled, messageOf } from '../api/client'
+import * as W from '../api/workspace'
+import { matterIdFromHash } from '../router'
+import MatterWorkspace from './MatterWorkspace'
 import { useApp } from '../context'
 import { Btn, Card, Notice, PageHead, Pill, Quick, Stat } from '../components/ui'
 import { newMatterModal } from './modals'
@@ -9,7 +13,55 @@ const MATTERS = [
   { title: 'Aruna Foundation v. State', id: 'WP/2026/077', area: 'Writ', court: 'Madras High Court', next: '04 Nov 2026', status: 'Review', kind: 'amber' as const },
 ]
 
+
+function LiveMatters() {
+  const [items, setItems] = useState<W.Matter[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [title, setTitle] = useState('')
+  const [ref, setRef] = useState('')
+  const [busy, setBusy] = useState(false)
+  const load = () => { setLoading(true); W.matters.list().then((p) => { setItems(p.items); setError('') }).catch((e) => setError(messageOf(e))).finally(() => setLoading(false)) }
+  useEffect(load, [])
+  const create = async (e: FormEvent) => {
+    e.preventDefault(); setBusy(true)
+    try { const m = await W.matters.create(title, ref); window.location.hash = `#/caseDetail/${m.id}` } catch (err) { setError(messageOf(err)) } finally { setBusy(false) }
+  }
+  return (
+    <>
+      <PageHead title="Cases & matters" sub="Your matters, saved on the server and private to the people you share them with." />
+      <Notice>Demonstration mode: matters hold fictional data only. Do not enter real client information.</Notice>
+      <Card title="Create a matter">
+        <form onSubmit={create}>
+          <div className="field"><label htmlFor="nm-title">Matter title</label><input id="nm-title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
+          <div className="field"><label htmlFor="nm-ref">Client reference (optional)</label><input id="nm-ref" value={ref} onChange={(e) => setRef(e.target.value)} /></div>
+          <button className="btn primary" type="submit" disabled={busy}>Create matter</button>
+        </form>
+      </Card>
+      <Card title="Matter register">
+        {error && <div role="alert" className="notice">{error} <button type="button" className="btn small" onClick={load}>Retry</button></div>}
+        {loading && <div role="status" className="muted">Loading…</div>}
+        {!loading && !error && items.length === 0 && <div className="empty">You have no matters yet. Create one above.</div>}
+        {items.length > 0 && (
+          <div className="tablewrap"><table>
+            <caption className="sr-only">Your matters</caption>
+            <thead><tr><th scope="col">Matter</th><th scope="col">Status</th><th scope="col">Your access</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
+            <tbody>{items.map((m) => (
+              <tr key={m.id}>
+                <td><strong>{m.title}</strong><small>{m.clientRef || 'No client reference'}{m.isDemo ? ' · demonstration' : ''}</small></td>
+                <td><Pill kind={m.status === 'open' ? 'green' : m.status === 'on_hold' ? 'amber' : ''}>{m.status.replace('_', ' ')}</Pill></td>
+                <td>{m.myLevel}</td>
+                <td><a className="btn small" href={`#/caseDetail/${m.id}`}>Open matter<span className="sr-only">: {m.title}</span></a></td>
+              </tr>))}</tbody>
+          </table></div>
+        )}
+      </Card>
+    </>
+  )
+}
+
 export function CasesPage() {
+  if (apiEnabled()) return <LiveMatters />
   const app = useApp()
   const [q, setQ] = useState('')
   const rows = MATTERS.filter((m) => `${m.title} ${m.id} ${m.area} ${m.court} ${m.status}`.toLowerCase().includes(q.toLowerCase()))
@@ -50,6 +102,8 @@ export function CasesPage() {
 }
 
 export function CaseDetailPage() {
+  const live = apiEnabled() ? matterIdFromHash(window.location.hash) : ''
+  if (apiEnabled()) return live ? <MatterWorkspace id={live} /> : <LiveMatters />
   return (
     <>
       <PageHead title="State v. R. Kumar" sub="CR/2025/0412 · Criminal matter · Sessions Court, Chennai">

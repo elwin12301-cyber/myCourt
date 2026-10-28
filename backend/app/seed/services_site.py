@@ -5,9 +5,9 @@ from pathlib import Path
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from .models import CaseRow, CaveatRow, CourtRoomRow, LocationRow, ProcessRow
+from ..models.services import CaseRow, CaveatRow, CourtRoomRow, LocationRow, ProcessRow
 
-DATA_FILE = Path(__file__).parent / "seed" / "demo_data.json"
+DATA_FILE = Path(__file__).parent / "demo_data.json"
 
 
 def room_id(r: dict) -> str:

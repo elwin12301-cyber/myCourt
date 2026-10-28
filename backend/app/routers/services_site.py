@@ -4,11 +4,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from .. import search
+from ..services import search
 from ..config import settings
+from ..core.errors import Unavailable
 from ..db import get_session
-from ..models import CaseRow, CaveatRow, CourtRoomRow, LocationRow, ProcessRow
-from ..schemas import CaseSearch, CaveatSearch, CauseListQuery, LocationLookup, OrderSearch, ProcessLookup
+from ..models.services import CaseRow, CaveatRow, CourtRoomRow, LocationRow, ProcessRow
+from ..schemas.services_site import CaseSearch, CaveatSearch, CauseListQuery, LocationLookup, OrderSearch, ProcessLookup
 
 router = APIRouter(prefix="/api")
 
@@ -21,8 +22,11 @@ def _bodies(session: Session, model) -> list[Body]:
 
 @router.get("/health")
 def health(session: Session = Depends(get_session)) -> Body:
-    session.execute(select(1))
-    return {"status": "ok", "demo": True, "note": "Fictional demonstration data only."}
+    try:
+        session.execute(select(1))
+    except Exception as e:  # the database is not reachable
+        raise Unavailable() from e
+    return {"status": "ok", "demo": True, "mode": settings.mode, "note": "Fictional demonstration data only."}
 
 
 @router.post("/cases/search")

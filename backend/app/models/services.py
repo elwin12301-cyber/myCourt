@@ -7,7 +7,7 @@ from typing import Any
 from sqlalchemy import JSON, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .db import Base
+from ..db import Base
 
 
 class CourtColumns:

@@ -70,7 +70,7 @@ Conversation: `matter_id` (optional), `person_id`, `title`. Message: `conversati
 `matter_id`, `person_id`, `worked_on` (date), `minutes` (1 to 1 440), `rate_paise` (integer), `description`.
 
 ## Invoice
-`matter_id`, `number`, `status` (`draft`, `approved`, `sent_recorded`), `total_paise` (computed on the server from its lines), `approved_by`, `approved_at`. Lines (`InvoiceLine`): `time_entry_id` or free text, `amount_paise`. The backend records that an invoice was approved; it does not send it.
+`matter_id`, `number`, `status` (`draft`, `approved`, `sent_recorded`), `total_paise` (computed on the server from its lines), `approved_by`, `approved_at`. Lines are stored with the invoice as a list of `{description, amountPaise, timeEntryId?}` (built from time entries and free text on the server). The backend records that an invoice was approved; it does not send it.
 
 ## AuditEntry (append-only)
 | Field | Rules |

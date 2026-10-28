@@ -1,11 +1,34 @@
 import { useApp } from '../context'
 import { Banner, Btn, Card, PageHead, Pill, Quick, Row, Stat } from '../components/ui'
+import { useEffect, useState } from 'react'
+import { apiEnabled } from '../api/client'
+import * as W from '../api/workspace'
 import { newMatterModal } from './modals'
+
+function LiveSummary() {
+  const [d, setD] = useState<W.DashboardData | null>(null)
+  const [failed, setFailed] = useState(false)
+  useEffect(() => { W.dashboard().then(setD).catch(() => setFailed(true)) }, [])
+  if (failed) return <div role="alert" className="notice">Your workspace summary could not be loaded.</div>
+  if (!d) return <div role="status" className="muted">Loading your workspace…</div>
+  return (
+    <Card title="Your workspace (saved on the server)">
+      <div className="grid stats">
+        <Stat label="Matters" num={String(d.matters)} desc="You can open" ico="▣" />
+        <Stat label="Open tasks" num={String(d.openTasks)} desc="Across your matters" ico="✓" />
+        <Stat label="Drafts to approve" num={String(d.draftsAwaitingApproval)} desc="Advocate review needed" ico="!" />
+        <Stat label="Unapproved deadlines" num={String(d.unapprovedDeadlines)} desc="Confirm each date" ico="◷" />
+      </div>
+      {d.nextDates.length > 0 && <ul className="list">{d.nextDates.map((e) => <li className="listrow" key={e.id}><div><strong>{e.title}</strong><small>{e.kind} · {new Date(e.startsAt).toLocaleString('en-IN')}</small></div></li>)}</ul>}
+    </Card>
+  )
+}
 
 export default function Dashboard() {
   const app = useApp()
   return (
     <>
+      {apiEnabled() && <LiveSummary />}
       <PageHead title="Good morning, Advocate Kumar" sub="Here is your practice at a glance. Your next action is always one click away.">
         <Btn kind="primary" onClick={() => newMatterModal(app)}>+ New matter</Btn>
       </PageHead>

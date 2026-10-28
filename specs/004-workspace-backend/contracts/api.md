@@ -43,6 +43,7 @@ Base path `/api`. Bodies are JSON in camelCase. The generated OpenAPI document a
 | `GET /matters/{id}/assignments` | Who has access | view |
 | `PUT /matters/{id}/assignments/{personId}` | Share or change level `{level}` | owner |
 | `DELETE /matters/{id}/assignments/{personId}` | Remove access | owner; refused for the last owner |
+| `POST /people/lookup` | Find an existing account by exact e-mail `{email}` to share with; returns only `{id, displayName}` | signed in; POST so the address is never in a URL |
 
 ## Matter contents (all need `view` to read, `edit` to change)
 `/matters/{id}/tasks`, `/matters/{id}/calendar`, `/matters/{id}/documents`, `/matters/{id}/voice-notes`, `/matters/{id}/time-entries`, `/matters/{id}/invoices` each support `GET` (list), `POST` (create), and on `/{itemId}` `GET`, `PATCH`, `DELETE`.
@@ -50,6 +51,7 @@ Base path `/api`. Bodies are JSON in camelCase. The generated OpenAPI document a
 | Extra route | Purpose |
 |---|---|
 | `POST /matters/{id}/documents/{docId}/review` | Record that a person reviewed the extraction |
+| `POST /matters/{id}/voice-notes/{noteId}/review` | Record that a person reviewed the transcript |
 | `POST /matters/{id}/calendar/{entryId}/approve` | Approve a deadline (FR-013) |
 | `POST /matters/{id}/invoices/{invId}/approve` | Approve an invoice; totals recomputed first |
 

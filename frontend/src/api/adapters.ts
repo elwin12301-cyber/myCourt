@@ -4,6 +4,7 @@
  *
  * Process Details sends the process ID and e-mail with POST, never in the address, and the e-mail is not returned.
  */
+import { apiBase } from './client'
 import { createMockAdapter } from '../features/caseStatus/mockAdapter'
 import type { CaseSearchAdapter } from '../features/caseStatus/types'
 import { createMockCauseListAdapter, type CauseListAdapter } from '../features/causeList/causeList'
@@ -12,7 +13,7 @@ import type { OrderSearchAdapter } from '../features/courtOrders/types'
 import { createMockCaveatAdapter, type CaveatAdapter } from '../features/services/caveat'
 import { createMockProcessAdapter, type ProcessAdapter } from '../features/services/process'
 
-const base = (): string => ((import.meta as { env?: Record<string, string | undefined> }).env?.VITE_API_URL ?? '').replace(/\/+$/, '')
+const base = apiBase
 
 export class ApiError extends Error {
   constructor(readonly status: number) { super(`API error ${status}`) }

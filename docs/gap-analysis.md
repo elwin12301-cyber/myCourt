@@ -104,3 +104,15 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-061 | Dark theme form labels too dim | **Fixed** |
 | GAP-062 | Earlier 360 px checks used phone emulation, which zooms the page out and can hide overflow | **Corrected**: both browser-check scripts now measure without it; both re-run and pass |
 | GAP-063 | Real data; official colours and layout; help-video and store links; official results layouts | **Not built / Unverified**. Translations were built in spec 003 but have had no native-speaker review |
+
+## Workspace backend (spec 004)
+
+| ID | Gap | Status |
+|---|---|---|
+| GAP-064 | Workspace data lost on refresh | **Closed for the matter workspace**: matters, tasks, calendar, documents, transcripts, drafts, time entries and invoices are saved on the server when `VITE_API_URL` is set. The older standalone mock screens still keep browser state |
+| GAP-065 | No accounts, no per-matter privacy | **Implemented**: cookie sessions, CSRF, sign-in throttle, view/edit/owner access, one authorisation function, route sweep test |
+| GAP-066 | No audit trail | **Implemented**: append-only (database triggers), hash-chained, verifiable by owners |
+| GAP-067 | Generated output not marked as draft | **Implemented** for the demonstration provider: draft until approved, sources, "nothing found" wording |
+| GAP-068 | No migrations or backup | **Implemented**: Alembic revisions, logical export/import, `pg_dump` guide |
+| GAP-069 | Real AI, transcription, firm roles, multi-factor sign-in, original-file storage, security review | **Not built**; assumptions D1/D2 in `specs/004-workspace-backend/research.md` are unconfirmed |
+| GAP-070 | Voice control (browser speech recognition) | **Not built** |

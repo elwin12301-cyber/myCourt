@@ -66,11 +66,15 @@ uvicorn app.main:app --port 8000
 # 3. Frontend, pointed at the API
 cd ../frontend
 npm install
-set VITE_API_URL=http://127.0.0.1:8000    # macOS/Linux: export VITE_API_URL=http://127.0.0.1:8000
+set VITE_API_URL=http://localhost:8000    # macOS/Linux: export VITE_API_URL=http://localhost:8000
 npm run dev
 ```
 
-On first start the backend creates the tables and loads the fictional demonstration data (8 cases, 8 court rooms, 6 caveats, 3 processes, 14 locations). Without `VITE_API_URL` the frontend uses its mock data as before.
+Use `localhost` (not `127.0.0.1`) for both the page and `VITE_API_URL`: the session cookie only travels between pages on the same site.
+
+With the API address set, the workspace asks you to **create an account or sign in**. Your matters, tasks, calendar entries, documents, drafts, time entries and invoices are then saved on the server and are visible only to the people you share each matter with (view, edit or owner). Every action is recorded in an append-only audit trail that owners can read and verify. The eCourts Services site, Case status, Cause list and Court orders stay open without signing in. To try it with ready-made fictional data: `python -m app.cli seed-demo` (prints a password once), then sign in as `demo.advocate.one@example.invalid`.
+
+On start the backend applies its database migrations and loads the fictional Services-site data (8 cases, 8 court rooms, 6 caveats, 3 processes, 14 locations). Without `VITE_API_URL` the frontend uses its mock data as before.
 
 PostgreSQL is published on **port 5433** (not 5432) so it does not clash with a PostgreSQL already installed on your machine. Settings can be changed with `MYCOURT_*` variables; see `backend/.env.example`.
 
@@ -81,7 +85,9 @@ PostgreSQL is published on **port 5433** (not 5432) so it does not clash with a 
 | `frontend/` | `npm run dev` | Dev server with hot reload |
 | `frontend/` | `npm run build` | Type-check and build to `dist/` |
 | `frontend/` | `npm test` | Unit tests (Vitest) |
-| `backend/` | `python -m pytest` | API tests (use an in-memory SQLite copy; no Docker needed) |
+| `backend/` | `python -m pytest` | API tests (in-memory SQLite; no Docker needed) |
+| `backend/` | `python -m pytest -m postgres tests/postgres` | Triggers and concurrency on real PostgreSQL (needs `docker compose up -d --wait`) |
+| `backend/` | `python -m app.cli migrate` | Apply database migrations |
 | `backend/` | `uvicorn app.main:app --reload` | API with auto-reload |
 | repo root | `docker compose down` | Stop PostgreSQL (add `-v` to delete its data) |
 
@@ -89,19 +95,32 @@ The browser checks drive headless Chrome and need the frontend (and optionally t
 
 ## The API
 
-All endpoints are under `/api`. Searches use `POST`, so names, process IDs and e-mail addresses never appear in a URL or access log.
+All endpoints are under `/api`; the interactive reference is at `/docs`, and the full contract is [specs/004-workspace-backend/contracts/api.md](specs/004-workspace-backend/contracts/api.md). Anything that carries a name, process ID or e-mail address is a `POST` with a body, so it never appears in a URL or access log. Every error has the same body: `{code, message, fields}`.
+
+**Public (fictional data, no sign-in)**
 
 | Endpoint | Purpose |
 |---|---|
-| `GET /health` | Database check |
-| `POST /cases/search` | The eight Case Status searches (CNR, party, case number, filing number, advocate, FIR, act, case type) |
-| `POST /orders/search` | Court Orders by party, case number, court number or order date |
+| `GET /health` | Database check and mode (`demonstration-only` unless real data is enabled) |
+| `POST /cases/search`, `/orders/search`, `/caveats/search`, `/locations/find` | Case Status (eight searches), Court Orders, active caveats, fictional court addresses |
 | `GET /court-rooms`, `POST /cause-lists` | Courts and their cause list for a date |
-| `POST /caveats/search` | Active caveats only |
 | `POST /processes/lookup` | Needs process ID **and** the registered e-mail; a wrong e-mail and an unknown ID give the same answer; the e-mail is never returned |
-| `POST /locations/find` | Fictional court address |
+
+**Signed in (cookie session plus CSRF token)**
+
+| Area | Endpoints |
+|---|---|
+| Accounts | `/auth/register`, `/auth/login`, `/auth/logout`, `/auth/me`, `/auth/password`, operator-only `/admin/people/{id}/deactivate` |
+| Matters and access | `/matters`, `/matters/{id}`, `/matters/{id}/assignments`, `/people/lookup`. Someone with no access gets exactly the answer for a matter that does not exist |
+| Matter contents | `tasks`, `calendar`, `documents`, `voice-notes`, `time-entries`, `invoices`, each under `/matters/{id}/` |
+| Drafts | `/matters/{id}/drafts` (+ `approve`), `/research`, `/mappings`, `/conversations`. Everything generated is a draft until someone with edit access approves it |
+| Intake | `/intake` and `/intake/{id}/conflict-check/confirm` (a conflict check can only be cleared by a recorded confirmation) |
+| Audit | `/matters/{id}/audit` and `/audit/verify` (owners only; entries cannot be edited or removed) |
+| Summary | `/dashboard`, `/calendar` |
 
 The server validates every request again (unknown fields are rejected), so the front end's checks are a convenience, not the control. Searching the CNR `ERROR00000000000` returns 503 to exercise the retry state.
+
+Operator commands (`python -m app.cli ...`: `migrate`, `seed-demo`, `remove-demo`, `export`, `import`, `check-real-data`) are described in [docs/backend-operations.md](docs/backend-operations.md).
 
 ## What's in the app
 
@@ -125,4 +144,9 @@ The backend serves fictional data only. A real integration must read from an aut
 
 ## Known limitations
 
-No login: the API has no authentication, so it must not be exposed beyond localhost or hold anything but fictional data. Workspace screens (matters, documents, billing, and so on) still keep their state in the browser and reset on refresh; only the Services-site searches use the backend. **Voice control is not built:** the Voice page does not use the browser's speech recognition yet, although a microphone is listed above for that purpose. Tables are created with `create_all` on start-up; there are no database migrations yet. The non-English translations are unreviewed. No linter is configured.
+- **Demonstration only.** The API refuses real client data unless `MYCOURT_ALLOW_REAL_DATA=true` **and** `python -m app.cli check-real-data` passes (changed secret, HTTPS cookies, audit triggers). Passing it is necessary, not sufficient: there are no firm roles, no multi-factor sign-in, no rate limiting beyond sign-in, and no security review yet. Keep it on localhost with fictional data.
+- **Backend-backed screens.** With `VITE_API_URL` set, the Cases screen, the Dashboard summary and the new matter workspace (tasks, calendar, documents, drafts, time and invoices, access, audit) are saved on the server. The older standalone screens (Assistant, Research, Mapping, Voice, Hearing, Calendar, Intake, Billing, Documents) are still demonstration mock-ups that keep their state in the browser.
+- **No real AI.** Assistant, research and mapping return labelled demonstration drafts; no matter text leaves the system. Original files are not stored, only register entries and extracted text.
+- **Voice control is not built:** the Voice page does not use the browser's speech recognition yet, although a microphone is listed above for that purpose.
+- Migrations create a fixed list of tables per revision; a later table change needs its own revision.
+- The non-English translations are unreviewed. No linter is configured.

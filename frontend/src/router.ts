@@ -20,6 +20,12 @@ export function hashForPage(p: PageId): string {
   return `#/${p}`
 }
 
+/** `#/caseDetail/<matter id>` opens one matter from the backend. */
+export function matterIdFromHash(hash: string): string {
+  const m = /^#\/?caseDetail\/([^/?#]+)/.exec(hash)
+  return m ? decodeURIComponent(m[1]) : ''
+}
+
 /** The eCourts Services site keeps its own sub-pages at `#/services/<slug>`. */
 export function servicesHash(slug: string): string {
   return `#/services/${slug}`

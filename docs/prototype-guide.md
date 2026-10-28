@@ -63,3 +63,8 @@ Sidebar -> **eCourts Services site** (address `#/services`). It replaces the wor
 - **Location:** choose a court, then View location (pop-up; Escape closes).
 - **Tools:** gear icon (theme), Aa (accessibility), language selector (translates the whole site; a notice says the translation is unreviewed), notice Dismiss, Search this site. Choices are remembered.
 - Code: `src/features/services/`, `src/pages/services/`. Check it with `node specs/002-services-site-prototype/browser-check.mjs <output-folder>` while `npm run dev` (in `frontend/`) is running (needs Google Chrome).
+
+## Workspace backend (accounts, matters, audit)
+- Run the backend and PostgreSQL as in the README, set `VITE_API_URL=http://localhost:8000`, and open `http://localhost:5173`. Create an account, create a matter, and use its tabs.
+- Spec, plan, contract and validation: `specs/004-workspace-backend/`. Operations: `docs/backend-operations.md`.
+- Check it with `node specs/004-workspace-backend/browser-check.mjs <output-folder>` while the backend (on a throw-away database) and the front end (with `VITE_API_URL`) are running; it needs Google Chrome.
