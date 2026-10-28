@@ -18,6 +18,8 @@ export default function SignIn() {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
+  const [code, setCode] = useState('')
+  const [needCode, setNeedCode] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [fields, setFields] = useState<Record<string, string>>({})
@@ -26,10 +28,11 @@ export default function SignIn() {
     e.preventDefault()
     setBusy(true); setError(''); setFields({})
     try {
-      if (mode === 'in') await signIn(email, password)
+      if (mode === 'in') await signIn(email, password, needCode ? code : undefined)
       else await register(email, name, password)
     } catch (err) {
-      setError(messageOf(err))
+      if (err instanceof ApiError && err.code === 'mfa_required') { setNeedCode(true); setError('') }
+      else setError(messageOf(err))
       if (err instanceof ApiError) setFields(err.fields)
     } finally { setBusy(false) }
   }
@@ -57,6 +60,10 @@ export default function SignIn() {
                 value={password} onChange={(e) => setPassword(e.target.value)} error={!!fields.password}
                 helperText={fields.password || (mode === 'new' ? 'At least 12 characters.' : undefined)}
                 slotProps={{ formHelperText: { role: fields.password ? 'alert' : undefined } }} />
+              {needCode && mode === 'in' && (
+                <TextField id="su-code" label="Authenticator code" autoFocus autoComplete="one-time-code" value={code} onChange={(e) => setCode(e.target.value)}
+                  helperText="Enter the 6-digit code from your authenticator app." slotProps={{ htmlInput: { inputMode: 'numeric', maxLength: 6 } }} />
+              )}
               {error && <Message severity="warning">{error}</Message>}
               <Stack direction="row" spacing={1} useFlexGap sx={{ mt: 2, flexWrap: 'wrap' }}>
                 <Button type="submit" variant="contained" disabled={busy}>{busy ? 'Please wait…' : mode === 'in' ? 'Sign in' : 'Create account'}</Button>

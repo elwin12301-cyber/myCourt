@@ -3,15 +3,15 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..config import settings
-from ..core import throttle
+from ..core import throttle, totp
 from ..core.audit import append_audit
 from ..core.deps import Auth, check_origin, current_auth, is_operator
-from ..core.errors import Forbidden, Invalid, NotFound
+from ..core.errors import Forbidden, Invalid, MfaRequired, NotFound
 from ..core.security import DUMMY_HASH, hash_password, password_problem, verify_password
 from ..core.sessions import COOKIE, create_session, revoke_all
 from ..db import get_session
 from ..models.accounts import Person
-from ..schemas.workspace import LoginIn, PasswordIn, RegisterIn
+from ..schemas.workspace import LoginIn, MfaCodeIn, MfaDisableIn, PasswordIn, RegisterIn
 
 router = APIRouter(prefix="/api")
 
@@ -19,7 +19,7 @@ GENERIC_FAILURE = "Sign-in failed. Check your e-mail address and password."
 
 
 def _person_out(p: Person) -> dict:
-    return {"id": p.id, "email": p.email, "displayName": p.display_name, "isOperator": is_operator(p)}
+    return {"id": p.id, "email": p.email, "displayName": p.display_name, "isOperator": is_operator(p), "mfaEnabled": bool(p.totp_enabled)}
 
 
 def _client(request: Request) -> str:
@@ -48,7 +48,12 @@ def login(req: LoginIn, request: Request, response: Response, db: Session = Depe
     throttle.check(db, email, client)
     person = db.scalars(select(Person).where(Person.email == email)).first()
     stored = person.password_hash if person else DUMMY_HASH
-    ok = verify_password(req.password, stored) and person is not None and person.active
+    password_ok = verify_password(req.password, stored) and person is not None and person.active
+    needs_code = password_ok and person.totp_enabled
+    if needs_code and not req.code:
+        db.commit()
+        raise MfaRequired()  # the password was right, so this reveals nothing new
+    ok = password_ok and (not needs_code or totp.verify(person.totp_secret, req.code))
     throttle.record(db, email, client, ok)
     if not ok:
         db.commit()
@@ -100,3 +105,37 @@ def deactivate(person_id: str, auth: Auth = Depends(current_auth), db: Session =
     revoke_all(db, target.id)
     db.commit()
     return {"status": "deactivated"}
+
+
+@router.post("/auth/mfa/setup")
+def mfa_setup(auth: Auth = Depends(current_auth), db: Session = Depends(get_session)) -> dict:
+    """Start enrolment: returns a new secret and the otpauth address for an authenticator app. Not active until confirmed."""
+    if auth.person.totp_enabled:
+        raise Invalid(fields={"code": "Two-step sign-in is already on."})
+    auth.person.totp_secret = totp.new_secret()
+    db.commit()
+    return {"secret": auth.person.totp_secret, "otpauthUri": totp.uri(auth.person.totp_secret, auth.person.email)}
+
+
+@router.post("/auth/mfa/enable")
+def mfa_enable(req: MfaCodeIn, auth: Auth = Depends(current_auth), db: Session = Depends(get_session)) -> dict:
+    if not auth.person.totp_secret or not totp.verify(auth.person.totp_secret, req.code):
+        raise Invalid(fields={"code": "That code is not right. Check the time on your phone and try again."})
+    auth.person.totp_enabled = True
+    append_audit(db, auth.person.id, None, "update", "person", auth.person.id, "two-step sign-in turned on")
+    revoke_all(db, auth.person.id, except_id=auth.session.id)
+    db.commit()
+    return {"status": "enabled"}
+
+
+@router.post("/auth/mfa/disable")
+def mfa_disable(req: MfaDisableIn, auth: Auth = Depends(current_auth), db: Session = Depends(get_session)) -> dict:
+    if not verify_password(req.password, auth.person.password_hash):
+        raise Invalid(fields={"password": "That is not your password."})
+    if not totp.verify(auth.person.totp_secret, req.code):
+        raise Invalid(fields={"code": "That code is not right."})
+    auth.person.totp_enabled = False
+    auth.person.totp_secret = None
+    append_audit(db, auth.person.id, None, "update", "person", auth.person.id, "two-step sign-in turned off")
+    db.commit()
+    return {"status": "disabled"}

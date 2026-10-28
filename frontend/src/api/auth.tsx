@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { api, apiEnabled, setCsrf } from './client'
 
-export interface Person { id: string; email: string; displayName: string; isOperator: boolean }
+export interface Person { id: string; email: string; displayName: string; isOperator: boolean; mfaEnabled?: boolean }
 type Status = 'loading' | 'out' | 'in'
 
 interface AuthValue {
@@ -9,7 +9,9 @@ interface AuthValue {
   required: boolean
   status: Status
   person: Person | null
-  signIn: (email: string, password: string) => Promise<void>
+  signIn: (email: string, password: string, code?: string) => Promise<void>
+  /** Re-read the signed-in person (after turning two-step sign-in on or off). */
+  refresh: () => Promise<void>
   register: (email: string, displayName: string, password: string) => Promise<void>
   signOut: () => Promise<void>
 }
@@ -40,8 +42,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .catch(() => setStatus('out'))
   }, [required])
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    const r = await api<{ person: Person; csrfToken: string }>('POST', '/auth/login', { email, password })
+  const refresh = useCallback(async () => {
+    const r = await api<{ person: Person; csrfToken: string }>('GET', '/auth/me')
+    setCsrf(r.csrfToken); setPerson(r.person)
+  }, [])
+  const signIn = useCallback(async (email: string, password: string, code?: string) => {
+    const r = await api<{ person: Person; csrfToken: string }>('POST', '/auth/login', code ? { email, password, code } : { email, password })
     setCsrf(r.csrfToken); setPerson(r.person); setStatus('in')
   }, [])
   const register = useCallback(async (email: string, displayName: string, password: string) => {
@@ -52,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try { await api('POST', '/auth/logout') } finally { setCsrf(''); setPerson(null); setStatus('out') }
   }, [])
 
-  const value = useMemo(() => ({ required, status, person, signIn, register, signOut }), [required, status, person, signIn, register, signOut])
+  const value = useMemo(() => ({ required, status, person, signIn, register, signOut, refresh }), [required, status, person, signIn, register, signOut, refresh])
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 

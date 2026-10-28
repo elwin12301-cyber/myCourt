@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography'
 import AddIcon from '@mui/icons-material/Add'
 import { Message, Section, Status } from '../components/mui'
 import { useApp } from '../context'
-import { Btn, Card, Notice, PageHead, Pill, Quick, Stat } from '../components/ui'
+import { Btn, Card, Notice, PageHead, Pill, Quick, Stat, Input } from '../components/ui'
 import { newMatterModal } from './modals'
 
 const MATTERS = [
@@ -91,7 +91,10 @@ function LiveMatters() {
 }
 
 export function CasesPage() {
-  if (apiEnabled()) return <LiveMatters />
+  return apiEnabled() ? <LiveMatters /> : <MockMatters />
+}
+
+function MockMatters() {
   const app = useApp()
   const [q, setQ] = useState('')
   const rows = MATTERS.filter((m) => `${m.title} ${m.id} ${m.area} ${m.court} ${m.status}`.toLowerCase().includes(q.toLowerCase()))
@@ -108,23 +111,23 @@ export function CasesPage() {
       </div>
       <Card title="Matter register">
         <div className="field">
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter by case number, party, court or practice area…" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter by case number, party, court or practice area…" />
         </div>
         <div className="tablewrap">
-          <table>
-            <thead><tr><th>Matter</th><th>Jurisdiction</th><th>Next event</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
+          <Table size="small">
+            <TableHead><TableRow><TableCell>Matter</TableCell><TableCell>Jurisdiction</TableCell><TableCell>Next event</TableCell><TableCell>Status</TableCell><TableCell>Actions</TableCell></TableRow></TableHead>
+            <TableBody>
               {rows.map((m) => (
-                <tr key={m.id}>
-                  <td><strong>{m.title}</strong><small>{m.id} · {m.area}</small></td>
-                  <td>{m.court}</td>
-                  <td>{m.next}</td>
-                  <td><Pill kind={m.kind}>{m.status}</Pill></td>
-                  <td><Btn className="small" to="caseDetail">Open matter</Btn></td>
-                </tr>
+                <TableRow key={m.id}>
+                  <TableCell><strong>{m.title}</strong><small>{m.id} · {m.area}</small></TableCell>
+                  <TableCell>{m.court}</TableCell>
+                  <TableCell>{m.next}</TableCell>
+                  <TableCell><Pill kind={m.kind}>{m.status}</Pill></TableCell>
+                  <TableCell><Btn className="small" to="caseDetail">Open matter</Btn></TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </Card>
     </>

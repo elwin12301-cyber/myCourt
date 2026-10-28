@@ -132,3 +132,25 @@ html.hc .svc.svc .card{background:#fff;color:#000;border-color:#000}
 .MuiModal-root .MuiPaper-root{max-width:560px}
 .stats{margin-bottom:20px}
 .dispmenu .MuiFormControlLabel-root{display:flex}
+
+/* Classic legal look: navy, antique gold, ivory paper, serif headings */
+:root{--navy:#10203f;--navy2:#1a2f58;--blue:#1f3a6e;--blue2:#eef1f8;--bg:#faf7f0;--line:#e7e0d0;--gold:#b8893b;--shadow:0 6px 18px #3a2f140d}
+body{background:var(--bg)}
+.protobar{background:#10203f;border-bottom:2px solid var(--gold)}
+.sidebar{background:linear-gradient(180deg,#10203f 0%,#0b1630 100%);border-right:3px solid var(--gold)}
+.brand h1,.page h2,.card h3{font-family:Georgia,"Times New Roman","Noto Serif",serif}
+.brand h1{letter-spacing:.3px}
+.brandmark{background:linear-gradient(135deg,#d9b46a,#b8893b);color:#10203f;font-family:Georgia,serif;border-radius:8px}
+.navlabel{color:#c9a85f;letter-spacing:2px}
+.nav .MuiListItemButton-root{border-radius:6px;border-left:3px solid transparent}
+.nav .MuiListItemButton-root.Mui-selected,.nav .MuiListItemButton-root:hover{background:#1b3160;border-left-color:var(--gold)}
+.nav .MuiListItemButton-root.Mui-selected{color:#fff;font-weight:600}
+.topbar{background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 0 var(--gold)}
+.eyebrow{color:var(--gold)!important}
+.page h2{color:#14264d;font-weight:700;letter-spacing:-.2px}
+.pagehead{border-bottom:1px solid var(--line);padding-bottom:16px}
+.avatar,.sidebottom .MuiAvatar-root{background:#e9dcbc!important;color:#14264d!important}
+.feature-banner{border-left:4px solid var(--gold)}
+.feature-banner .MuiButton-root{background:var(--gold);color:#10203f;border-color:var(--gold);font-weight:700}
+.feature-banner .MuiButton-root:hover{background:#cfa04d;border-color:#cfa04d}
+@media (max-width:760px){.topbar{height:auto;min-height:60px;padding:8px 12px;flex-wrap:wrap;gap:8px}.topactions{flex-wrap:wrap;gap:6px;max-width:100%}.search{flex:1 1 100%;max-width:none;order:3}}

@@ -27,6 +27,16 @@ class RegisterIn(Camel):
 class LoginIn(Camel):
     email: str = Field(max_length=254)
     password: str = Field(max_length=200)
+    code: str | None = Field(default=None, max_length=12)  # authenticator code, when the account uses one
+
+
+class MfaCodeIn(Camel):
+    code: str = Field(max_length=12)
+
+
+class MfaDisableIn(Camel):
+    password: str = Field(max_length=200)
+    code: str = Field(max_length=12)
 
 
 class PasswordIn(Camel):

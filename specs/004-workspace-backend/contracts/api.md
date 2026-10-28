@@ -26,10 +26,13 @@ Base path `/api`. Bodies are JSON in camelCase. The generated OpenAPI document a
 | Method and path | Purpose | Notes |
 |---|---|---|
 | `POST /auth/register` | Create an account | `{email, displayName, password}`; same 202 response whether or not the address exists |
-| `POST /auth/login` | Sign in | `{email, password}` → `{person, csrfToken}` and sets the cookie; one generic 401 for any failure |
+| `POST /auth/login` | Sign in | `{email, password, code?}`; when the account uses two-step sign-in and the password is right but `code` is missing: 401 `mfa_required`. → `{person, csrfToken}` and sets the cookie; one generic 401 for any failure |
 | `POST /auth/logout` | Sign out | Deletes the session |
 | `GET /auth/me` | Current person | |
 | `POST /auth/password` | Change password | Ends other sessions |
+| `POST /auth/mfa/setup` | Start two-step sign-in enrolment | Returns `{secret, otpauthUri}`; not active until confirmed |
+| `POST /auth/mfa/enable` | Confirm with a code `{code}` | Ends other sessions |
+| `POST /auth/mfa/disable` | Turn off `{password, code}` | |
 | `POST /admin/people/{id}/deactivate` | Deactivate | Allowed only for an operator account (set at install); ends sessions at once |
 
 ## Matters and access

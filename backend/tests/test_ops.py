@@ -74,7 +74,7 @@ def test_upgrade_works_on_a_database_created_before_alembic(tmp_path):
     Base.metadata.create_all(engine)  # how the previous release made its tables
     upgrade(url)
     with engine.connect() as c:
-        assert c.execute(text("SELECT version_num FROM alembic_version")).scalar() == "0006"
+        assert c.execute(text("SELECT version_num FROM alembic_version")).scalar() == "0007"
 
 
 # ---------- demonstration set (FR-018) ----------

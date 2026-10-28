@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, ForeignKey, Integer, String
+from sqlalchemy import Boolean, ForeignKey, Integer, String, false
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ..db import Base
@@ -13,6 +13,9 @@ class Person(IdMixin, Base):
     display_name: Mapped[str] = mapped_column(String(120))
     password_hash: Mapped[str] = mapped_column(String(300))
     active: Mapped[bool] = mapped_column(Boolean, default=True)
+    # Optional second step at sign-in (authenticator app). The secret is only used once `totp_enabled` is true.
+    totp_secret: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    totp_enabled: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
 
 
 class SessionRow(Base):

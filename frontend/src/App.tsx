@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent, type KeyboardEvent } from 'react'
 import { AppContext } from './context'
 import type { ChatMessage, DocItem, ModalConfig, PageId, Task } from './types'
 import Avatar from '@mui/material/Avatar'
@@ -9,33 +9,58 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import Snackbar from '@mui/material/Snackbar'
 import { Modal, Pill, Row } from './components/ui'
 import DisplaySettings from './components/DisplaySettings'
+import Security from './components/Security'
 import { hashForPage, pageFromHash } from './router'
 import { gateState, useAuth } from './api/auth'
+import { apiEnabled } from './api/client'
 import SignIn from './pages/SignIn'
-import Dashboard from './pages/Dashboard'
-import { CasesPage, CaseDetailPage } from './pages/Cases'
-import AssistantPage from './pages/Assistant'
-import ResearchPage from './pages/Research'
-import DocumentsPage from './pages/Documents'
-import MappingPage from './pages/Mapping'
-import VoicePage from './pages/Voice'
-import HearingPage from './pages/Hearing'
-import CaseStatusPage from './pages/CaseStatus'
-import CauseListPage from './pages/CauseList'
-import CourtOrdersPage from './pages/CourtOrders'
-import ServicesApp from './pages/services/ServicesApp'
-import {
-  PortalBrochures, PortalHelpVideos, PortalKnowledge, PortalManuals, PortalNewsletter, PortalPolicy,
-  PortalScreenReader, PortalSitemap, PortalWebInfo,
-} from './pages/PortalPages'
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const CasesPage = lazy(() => import('./pages/Cases').then((m) => ({ default: m.CasesPage })))
+const CaseDetailPage = lazy(() => import('./pages/Cases').then((m) => ({ default: m.CaseDetailPage })))
+const AssistantPage = lazy(() => import('./pages/Assistant'))
+const ResearchPage = lazy(() => import('./pages/Research'))
+const DocumentsPage = lazy(() => import('./pages/Documents'))
+const MappingPage = lazy(() => import('./pages/Mapping'))
+const VoicePage = lazy(() => import('./pages/Voice'))
+const HearingPage = lazy(() => import('./pages/Hearing'))
+const CaseStatusPage = lazy(() => import('./pages/CaseStatus'))
+const CauseListPage = lazy(() => import('./pages/CauseList'))
+const CourtOrdersPage = lazy(() => import('./pages/CourtOrders'))
+const live = () => import('./pages/live/LiveScreens')
+const LiveAssistant = lazy(() => live().then((m) => ({ default: m.LiveAssistant })))
+const LiveResearch = lazy(() => live().then((m) => ({ default: m.LiveResearch })))
+const LiveDocuments = lazy(() => live().then((m) => ({ default: m.LiveDocuments })))
+const LiveMapping = lazy(() => live().then((m) => ({ default: m.LiveMapping })))
+const LiveVoice = lazy(() => live().then((m) => ({ default: m.LiveVoice })))
+const LiveHearing = lazy(() => live().then((m) => ({ default: m.LiveHearing })))
+const LiveCalendar = lazy(() => live().then((m) => ({ default: m.LiveCalendar })))
+const LiveIntake = lazy(() => live().then((m) => ({ default: m.LiveIntake })))
+const LiveBilling = lazy(() => live().then((m) => ({ default: m.LiveBilling })))
+const ServicesApp = lazy(() => import('./pages/services/ServicesApp'))
+const portalPages = () => import('./pages/PortalPages')
+const PortalBrochures = lazy(() => portalPages().then((m) => ({ default: m.PortalBrochures })))
+const PortalHelpVideos = lazy(() => portalPages().then((m) => ({ default: m.PortalHelpVideos })))
+const PortalKnowledge = lazy(() => portalPages().then((m) => ({ default: m.PortalKnowledge })))
+const PortalManuals = lazy(() => portalPages().then((m) => ({ default: m.PortalManuals })))
+const PortalNewsletter = lazy(() => portalPages().then((m) => ({ default: m.PortalNewsletter })))
+const PortalPolicy = lazy(() => portalPages().then((m) => ({ default: m.PortalPolicy })))
+const PortalScreenReader = lazy(() => portalPages().then((m) => ({ default: m.PortalScreenReader })))
+const PortalSitemap = lazy(() => portalPages().then((m) => ({ default: m.PortalSitemap })))
+const PortalWebInfo = lazy(() => portalPages().then((m) => ({ default: m.PortalWebInfo })))
 import ExternalLink from './components/ExternalLink'
 import { MAIN_MENU, USEFUL_LINKS } from './features/portal/data'
-import {
-  PortalAbout, PortalContact, PortalDistrict, PortalForms, PortalHelp, PortalHighCourts, PortalHome, PortalSearch,
-} from './pages/Portal'
-import CalendarPage from './pages/Calendar'
-import IntakePage from './pages/Intake'
-import BillingPage from './pages/Billing'
+const portal = () => import('./pages/Portal')
+const PortalAbout = lazy(() => portal().then((m) => ({ default: m.PortalAbout })))
+const PortalContact = lazy(() => portal().then((m) => ({ default: m.PortalContact })))
+const PortalDistrict = lazy(() => portal().then((m) => ({ default: m.PortalDistrict })))
+const PortalForms = lazy(() => portal().then((m) => ({ default: m.PortalForms })))
+const PortalHelp = lazy(() => portal().then((m) => ({ default: m.PortalHelp })))
+const PortalHighCourts = lazy(() => portal().then((m) => ({ default: m.PortalHighCourts })))
+const PortalHome = lazy(() => portal().then((m) => ({ default: m.PortalHome })))
+const PortalSearch = lazy(() => portal().then((m) => ({ default: m.PortalSearch })))
+const CalendarPage = lazy(() => import('./pages/Calendar'))
+const IntakePage = lazy(() => import('./pages/Intake'))
+const BillingPage = lazy(() => import('./pages/Billing'))
 
 const NAV: { id: PageId; ico: string; label: string }[] = [
   { id: 'dashboard', ico: '▦', label: 'Dashboard' },
@@ -66,7 +91,7 @@ const PORTAL_NAV: { label: string; ico: string; id?: PageId; url?: string }[] = 
 ]
 const POLICY_PAGES: PageId[] = ['portalDisclaimer', 'portalPrivacy', 'portalTerms', 'portalCopyright', 'portalHyperlink', 'portalAccessibility']
 
-const PAGES: Record<PageId, () => JSX.Element> = {
+const PAGES: Record<PageId, ComponentType> = {
   portalHelpVideos: PortalHelpVideos,
   portalManuals: PortalManuals,
   portalBrochures: PortalBrochures,
@@ -96,15 +121,15 @@ const PAGES: Record<PageId, () => JSX.Element> = {
   causeList: CauseListPage,
   courtOrders: () => <CourtOrdersPage />,
   services: () => <ServicesApp />,
-  assistant: AssistantPage,
-  research: ResearchPage,
-  documents: DocumentsPage,
-  mapping: MappingPage,
-  voice: VoicePage,
-  hearing: HearingPage,
-  calendar: CalendarPage,
-  intake: IntakePage,
-  billing: BillingPage,
+  assistant: () => (apiEnabled() ? <LiveAssistant /> : <AssistantPage />),
+  research: () => (apiEnabled() ? <LiveResearch /> : <ResearchPage />),
+  documents: () => (apiEnabled() ? <LiveDocuments /> : <DocumentsPage />),
+  mapping: () => (apiEnabled() ? <LiveMapping /> : <MappingPage />),
+  voice: () => (apiEnabled() ? <LiveVoice /> : <VoicePage />),
+  hearing: () => (apiEnabled() ? <LiveHearing /> : <HearingPage />),
+  calendar: () => (apiEnabled() ? <LiveCalendar /> : <CalendarPage />),
+  intake: () => (apiEnabled() ? <LiveIntake /> : <IntakePage />),
+  billing: () => (apiEnabled() ? <LiveBilling /> : <BillingPage />),
 }
 
 const INITIAL_MESSAGES: ChatMessage[] = [{
@@ -129,6 +154,7 @@ export default function App() {
   const auth = useAuth()
   const [page, setPage] = useState<PageId>(() => pageFromHash(window.location.hash))
   const [menuOpen, setMenuOpen] = useState(false)
+  const [securityOpen, setSecurityOpen] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
   const [toastShow, setToastShow] = useState(false)
   const [modal, setModal] = useState<ModalConfig | null>(null)
@@ -217,7 +243,7 @@ export default function App() {
   if (page === 'services') {
     return (
       <AppContext.Provider value={ctx}>
-        <ServicesApp />
+        <Suspense fallback={<div role="status" className="page">Loading…</div>}><ServicesApp /></Suspense>
         <Snackbar open={toastShow} message={toastMsg} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} />
       </AppContext.Provider>
     )
@@ -270,15 +296,17 @@ export default function App() {
               <DisplaySettings />
               <IconButton title="Notifications" aria-label="Notifications" onClick={showNotifications}>♧</IconButton>
               <Avatar title={auth.person?.displayName} sx={{ bgcolor: '#dbe6ff', color: '#2947a2', fontWeight: 700, width: 36, height: 36 }}>{(auth.person?.displayName ?? 'AK').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</Avatar>
+              {auth.required && auth.status === 'in' && <Button size="small" variant="outlined" onClick={() => setSecurityOpen(true)}>Security</Button>}
               {auth.required && auth.status === 'in' && <Button size="small" variant="outlined" onClick={() => void auth.signOut()}>Sign out</Button>}
             </div>
           </header>
-          <div className="page"><Page /></div>
+          <div className="page"><Suspense fallback={<div role="status">Loading…</div>}><Page /></Suspense></div>
         </main>
       </div>
 
       <Snackbar open={toastShow} message={toastMsg} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} />
 
+      {securityOpen && <Security onClose={() => setSecurityOpen(false)} />}
       <Modal
         open={!!modal} onClose={() => setModal(null)} titleId="modal-title" title={modal?.title} closeLabel="Close dialog" onSubmit={submitModal}
         actions={<><Button variant="outlined" onClick={() => setModal(null)}>Cancel</Button><Button type="submit" variant="contained">Save</Button></>}

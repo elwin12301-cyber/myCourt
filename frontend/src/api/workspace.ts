@@ -71,3 +71,27 @@ export const dashboard = () => api<DashboardData>('GET', '/dashboard')
 
 export const rupees = (paise: number) => `₹${(paise / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 export const canEdit = (level: Level) => level === 'edit' || level === 'owner'
+
+export interface ChatMessage { role: 'user' | 'assistant'; body: string; position: number }
+export interface Conversation { id: string; title: string; matterId: string | null; messages?: ChatMessage[] }
+export const conversations = {
+  list: () => api<Page<Conversation>>('GET', '/conversations'),
+  create: (title: string, matterId: string | null) => api<Conversation>('POST', '/conversations', { title, matterId }),
+  get: (id: string) => api<Conversation>('GET', `/conversations/${q(id)}`),
+  send: (id: string, body: string) => api<Conversation>('POST', `/conversations/${q(id)}/messages`, { body }),
+}
+
+export type Conflict = 'not_checked' | 'needs_review' | 'clear'
+export interface Intake {
+  id: string; version: number; prospectName: string; contact: string; summary: string
+  conflictCheck: Conflict; conflictNote: string; confirmedAt: string | null; matterId: string | null
+}
+export const intake = {
+  list: () => api<Page<Intake>>('GET', '/intake'),
+  create: (prospectName: string, contact: string, summary: string) => api<Intake>('POST', '/intake', { prospectName, contact, summary }),
+  confirm: (id: string, result: 'clear' | 'needs_review', note: string) => api<Intake>('POST', `/intake/${q(id)}/conflict-check/confirm`, { result, note }),
+  convert: (id: string) => api<Matter>('POST', `/intake/${q(id)}/convert`, {}),
+}
+
+/** Calendar entries across every matter the person can see (default: from yesterday for about two months). */
+export const calendarAll = () => api<Page<CalendarEntry & { matterId?: string }>>('GET', '/calendar')

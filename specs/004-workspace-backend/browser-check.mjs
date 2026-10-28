@@ -155,6 +155,43 @@ try {
   for (const t of tabs) { await click(t, '[role=tablist]', 700); const o = await ev('__t.overflow()'); if (o > 0) bad.push(`${t}:+${o}px`) }
   log('W23 no horizontal scroll at 360 px on every matter tab', bad.length === 0, bad.join(', '))
   await shot('w-matter-phone.png')
+
+  // ---------- 7. the former browser-only screens now save on the server (gaps G1-G3) ----------
+  await load('#/calendar', 1280, 1000, false)
+  log('W24 Calendar lists dates across matters and the matter\'s own entries', (await has('Next dates across all your matters')) && (await has('Reply deadline (demo)')) && (await ev(`!!document.querySelector('#scope-matter')`)))
+  await load('#/research', 1280, 1000, false)
+  await set('#research-q', 'bail bond'); await click('Run', 'form', 1400)
+  log('W25 Research saves a labelled draft on the matter', (await has('Draft: advocate verification required')) && (await has('Demonstration content')))
+  await load('#/mapping', 1280, 1000, false)
+  await set('#mapping-q', 'IPC 420'); await click('Run', 'form', 1400)
+  log('W26 Section mapping saves a labelled draft on the matter', await has('Draft: advocate verification required'))
+  await load('#/assistant', 1280, 1000, false)
+  await set('#chat-q', 'Summarise this matter'); await click('Send', 'form', 1500)
+  log('W27 Assistant keeps the conversation and shows the reply as a draft', (await has('myCourt AI (demonstration)')) && (await has('Saved as a draft on this matter')))
+  await load('#/voice', 1280, 1000, false)
+  const startDisabled = await ev(`[...document.querySelectorAll('button')].find((b) => b.textContent.includes('Start dictation')).disabled`)
+  log('W28 Voice: dictation stays off until the person accepts the speech-service warning', (await has("browser's own service")) && startDisabled === true)
+  await set('#voice-text', 'Client called about the hearing date (demo)'); await click('Save as a voice note', 'body', 1200)
+  log('W29 a voice note is saved as "needs review" and can be marked reviewed', (await has('Needs review')) && await (async () => { await click('Mark reviewed', 'body', 1000); return has('Reviewed') })())
+  await load('#/hearing', 1280, 1000, false)
+  await set('#hb-issues', 'Whether the notice was served'); await click('Save brief draft', 'body', 1400)
+  log('W30 Hearing preparation saves the brief as a draft awaiting approval', (await has('Hearing brief')) && (await has('Draft: advocate verification required')))
+  await load('#/intake', 1280, 1000, false)
+  await set('#in-name', 'Prospect Demo'); await click('Save intake', 'form', 1200)
+  const createOff = await ev(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Create matter').disabled`)
+  await click('Confirm clear', 'body', 1200)
+  const clearShown = await has('Conflict check clear')
+  await click('Create matter', 'body', 1500)
+  log('W31 Intake: a matter can only be created after the conflict check is confirmed clear', createOff === true && clearShown && (await has('Open the matter created from this intake')))
+  await load('#/billing', 1280, 1000, false)
+  await load('#/documents', 1280, 1000, false)
+  log('W32 Documents and Billing are scoped to a matter', await ev(`!!document.querySelector('#scope-matter')`))
+  const bad2 = []
+  for (const pg of ['calendar', 'research', 'mapping', 'assistant', 'voice', 'hearing', 'intake', 'billing', 'documents']) {
+    await load('#/' + pg, 360, 800, false)
+    const o = await ev('__t.overflow()'); if (o > 0) bad2.push(`${pg}:+${o}px`)
+  }
+  log('W33 no horizontal scroll at 360 px on the newly server-backed screens', bad2.length === 0, bad2.join(', '))
 } catch (e) {
   log('script error', false, String(e.message || e))
 } finally {

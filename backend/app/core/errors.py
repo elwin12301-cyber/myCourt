@@ -23,6 +23,14 @@ class NotSignedIn(AppError):
         super().__init__(message)
 
 
+class MfaRequired(AppError):
+    """Only raised after the password was right, so it reveals nothing an attacker could not already prove."""
+    status, code = 401, "mfa_required"
+
+    def __init__(self):
+        super().__init__("Enter the 6-digit code from your authenticator app.")
+
+
 class Forbidden(AppError):
     status, code = 403, "forbidden"
 

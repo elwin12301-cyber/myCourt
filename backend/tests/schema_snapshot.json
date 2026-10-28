@@ -1,0 +1,229 @@
+{
+  "assignments": {
+    "granted_at": "UTCDateTime NOT NULL",
+    "granted_by": "String NOT NULL",
+    "level": "String NOT NULL",
+    "matter_id": "String NOT NULL",
+    "person_id": "String NOT NULL"
+  },
+  "audit_entry": {
+    "action": "String NOT NULL",
+    "detail": "String NOT NULL",
+    "hash": "String NOT NULL",
+    "id": "String NOT NULL",
+    "matter_id": "String",
+    "person_id": "String",
+    "prev_hash": "String NOT NULL",
+    "seq": "Integer NOT NULL",
+    "target_id": "String NOT NULL",
+    "target_type": "String NOT NULL",
+    "time": "UTCDateTime NOT NULL"
+  },
+  "calendar_entries": {
+    "approved_at": "UTCDateTime",
+    "approved_by": "String",
+    "created_at": "UTCDateTime NOT NULL",
+    "ends_at": "UTCDateTime",
+    "id": "String NOT NULL",
+    "kind": "String NOT NULL",
+    "matter_id": "String NOT NULL",
+    "note": "String NOT NULL",
+    "starts_at": "UTCDateTime NOT NULL",
+    "title": "String NOT NULL",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  },
+  "cases": {
+    "body": "JSON NOT NULL",
+    "cnr": "String NOT NULL",
+    "complex": "String NOT NULL",
+    "district": "String NOT NULL",
+    "establishment": "String NOT NULL",
+    "state": "String NOT NULL"
+  },
+  "caveats": {
+    "body": "JSON NOT NULL",
+    "complex": "String NOT NULL",
+    "district": "String NOT NULL",
+    "establishment": "String NOT NULL",
+    "id": "Integer NOT NULL",
+    "state": "String NOT NULL",
+    "status": "String NOT NULL"
+  },
+  "conversations": {
+    "created_at": "UTCDateTime NOT NULL",
+    "id": "String NOT NULL",
+    "matter_id": "String",
+    "person_id": "String NOT NULL",
+    "title": "String NOT NULL",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  },
+  "court_rooms": {
+    "body": "JSON NOT NULL",
+    "complex": "String NOT NULL",
+    "district": "String NOT NULL",
+    "establishment": "String NOT NULL",
+    "id": "String NOT NULL",
+    "state": "String NOT NULL"
+  },
+  "documents": {
+    "created_at": "UTCDateTime NOT NULL",
+    "extracted_text": "Text NOT NULL",
+    "extraction_confidence": "Float",
+    "file_type": "String NOT NULL",
+    "id": "String NOT NULL",
+    "matter_id": "String NOT NULL",
+    "name": "String NOT NULL",
+    "review_status": "String NOT NULL",
+    "reviewed_at": "UTCDateTime",
+    "reviewed_by": "String",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  },
+  "draft_approvals": {
+    "approved_at": "UTCDateTime NOT NULL",
+    "approved_by": "String NOT NULL",
+    "draft_id": "String NOT NULL",
+    "id": "String NOT NULL",
+    "revoked_at": "UTCDateTime"
+  },
+  "draft_items": {
+    "body": "Text NOT NULL",
+    "created_at": "UTCDateTime NOT NULL",
+    "generated_by": "String NOT NULL",
+    "id": "String NOT NULL",
+    "is_demo_content": "Boolean NOT NULL",
+    "kind": "String NOT NULL",
+    "matter_id": "String NOT NULL",
+    "sources": "JSON NOT NULL",
+    "status": "String NOT NULL",
+    "title": "String NOT NULL",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  },
+  "intake_records": {
+    "confirmed_at": "UTCDateTime",
+    "confirmed_by": "String",
+    "conflict_check": "String NOT NULL",
+    "conflict_note": "String NOT NULL",
+    "contact": "String NOT NULL",
+    "created_at": "UTCDateTime NOT NULL",
+    "id": "String NOT NULL",
+    "matter_id": "String",
+    "person_id": "String NOT NULL",
+    "prospect_name": "String NOT NULL",
+    "summary": "String NOT NULL",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  },
+  "invoices": {
+    "approved_at": "UTCDateTime",
+    "approved_by": "String",
+    "created_at": "UTCDateTime NOT NULL",
+    "id": "String NOT NULL",
+    "lines": "JSON NOT NULL",
+    "matter_id": "String NOT NULL",
+    "number": "String NOT NULL",
+    "status": "String NOT NULL",
+    "total_paise": "Integer NOT NULL",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  },
+  "locations": {
+    "body": "JSON NOT NULL",
+    "complex": "String NOT NULL",
+    "district": "String NOT NULL",
+    "establishment": "String NOT NULL",
+    "id": "Integer NOT NULL",
+    "state": "String NOT NULL"
+  },
+  "login_attempts": {
+    "client_hash": "String NOT NULL",
+    "email_hash": "String NOT NULL",
+    "id": "Integer NOT NULL",
+    "success": "Boolean NOT NULL",
+    "time": "UTCDateTime NOT NULL"
+  },
+  "matters": {
+    "client_ref": "String NOT NULL",
+    "court_case_ref": "String NOT NULL",
+    "created_at": "UTCDateTime NOT NULL",
+    "created_by": "String NOT NULL",
+    "id": "String NOT NULL",
+    "is_demo": "Boolean NOT NULL",
+    "status": "String NOT NULL",
+    "title": "String NOT NULL",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  },
+  "messages": {
+    "body": "Text NOT NULL",
+    "conversation_id": "String NOT NULL",
+    "created_at": "UTCDateTime NOT NULL",
+    "draft_id": "String",
+    "id": "String NOT NULL",
+    "position": "Integer NOT NULL",
+    "role": "String NOT NULL"
+  },
+  "persons": {
+    "active": "Boolean NOT NULL",
+    "created_at": "UTCDateTime NOT NULL",
+    "display_name": "String NOT NULL",
+    "email": "String NOT NULL",
+    "id": "String NOT NULL",
+    "password_hash": "String NOT NULL",
+    "totp_enabled": "Boolean NOT NULL",
+    "totp_secret": "String",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  },
+  "processes": {
+    "body": "JSON NOT NULL",
+    "email": "String NOT NULL",
+    "process_id": "String NOT NULL"
+  },
+  "sessions": {
+    "created_at": "UTCDateTime NOT NULL",
+    "csrf_token": "String NOT NULL",
+    "expires_at": "UTCDateTime NOT NULL",
+    "id": "String NOT NULL",
+    "last_seen_at": "UTCDateTime NOT NULL",
+    "person_id": "String NOT NULL",
+    "token_hash": "String NOT NULL"
+  },
+  "tasks": {
+    "created_at": "UTCDateTime NOT NULL",
+    "done": "Boolean NOT NULL",
+    "due": "Date",
+    "id": "String NOT NULL",
+    "matter_id": "String NOT NULL",
+    "title": "String NOT NULL",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  },
+  "time_entries": {
+    "created_at": "UTCDateTime NOT NULL",
+    "description": "String NOT NULL",
+    "id": "String NOT NULL",
+    "matter_id": "String NOT NULL",
+    "minutes": "Integer NOT NULL",
+    "person_id": "String NOT NULL",
+    "rate_paise": "Integer NOT NULL",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL",
+    "worked_on": "Date NOT NULL"
+  },
+  "voice_notes": {
+    "created_at": "UTCDateTime NOT NULL",
+    "id": "String NOT NULL",
+    "language": "String NOT NULL",
+    "matter_id": "String NOT NULL",
+    "review_status": "String NOT NULL",
+    "reviewed_at": "UTCDateTime",
+    "reviewed_by": "String",
+    "transcript": "Text NOT NULL",
+    "updated_at": "UTCDateTime NOT NULL",
+    "version": "Integer NOT NULL"
+  }
+}

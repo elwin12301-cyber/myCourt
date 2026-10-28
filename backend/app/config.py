@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     login_max_failures: int = 5
     login_window_minutes: int = 15
     cookie_secure: bool = False
+    # Requests per minute per client address across the whole API (0 turns the limit off); /health is exempt.
+    rate_limit_per_minute: int = 600
     # Addresses allowed to use the operator-only routes (for example deactivating an account).
     operator_emails: list[str] = []
 

@@ -65,6 +65,7 @@ describe('names are translated but stored values stay English', () => {
       const html = render('case-status', code)
       const values = [...html.matchAll(/<option value="([^"]+)"/g)].map((m) => m[1])
       expect(values).toContain('Tamil Nadu')
+      // eslint-disable-next-line no-control-regex -- the range is the ASCII block on purpose
       expect(values.filter((v) => /[^\u0000-\u007f]/.test(v))).toEqual([])
     })
   }

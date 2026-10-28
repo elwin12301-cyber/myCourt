@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app import models  # noqa: F401
-from app.core import clock
+from app.core import clock, ratelimit
 from app.db import Base, get_session
 from app.main import app
 from app.seed import seed
@@ -35,6 +35,7 @@ def client(sm):
 
     app.dependency_overrides[get_session] = override
     clock.reset()
+    ratelimit.reset()
     yield TestClient(app)
     app.dependency_overrides.clear()
     clock.reset()

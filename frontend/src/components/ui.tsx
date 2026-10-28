@@ -133,7 +133,7 @@ export function Check({ title, sub, defaultChecked = false }: { title: string; s
 
 export function Banner({ eyebrow, title, text, children }: { eyebrow: string; title: string; text: string; children?: ReactNode }) {
   return (
-    <Paper className="feature-banner" elevation={0} sx={{ background: 'linear-gradient(120deg,#172747,#2d4ca3)', color: '#fff', p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2.5, mb: 2.5, borderRadius: 3 }}>
+    <Paper className="feature-banner" elevation={0} sx={{ background: 'linear-gradient(120deg,#10203f,#1f3a6e)', borderLeft: '4px solid #b8893b', color: '#fff', p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2.5, mb: 2.5, borderRadius: 3 }}>
       <Box sx={{ minWidth: 0 }}>
         <Typography className="eyebrow" sx={{ color: '#bdccff', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>{eyebrow}</Typography>
         <Typography variant="h3" component="h3" sx={{ fontSize: 20, my: 0.75 }}>{title}</Typography>

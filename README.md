@@ -93,6 +93,7 @@ PostgreSQL is published on **port 5433** (not 5432) so it does not clash with a 
 | `frontend/` | `npm run dev` | Dev server with hot reload |
 | `frontend/` | `npm run build` | Type-check and build to `dist/` |
 | `frontend/` | `npm test` | Unit tests (Vitest) |
+| `frontend/` | `npm run lint` | ESLint (TypeScript and React-hooks rules) |
 | `backend/` | `python -m pytest` | API tests (in-memory SQLite; no Docker needed) |
 | `backend/` | `python -m pytest -m postgres tests/postgres` | Triggers and concurrency on real PostgreSQL (needs `docker compose up -d --wait`) |
 | `backend/` | `python -m app.cli migrate` | Apply database migrations |
@@ -132,7 +133,7 @@ Operator commands (`python -m app.cli ...`: `migrate`, `seed-demo`, `remove-demo
 
 ## User interface library
 
-The signed-in screens (sign-in, Cases, the Dashboard summary and the matter workspace) use **Material UI** (`@mui/material`, with Emotion and `@mui/icons-material`). Why a library: it gives these data-heavy screens accessible tabs, tables with pagination, form fields with labels and error text, alerts and status chips without hand-writing each one. The theme is in `frontend/src/theme.ts` (the myCourt colours, sentence-case buttons). `CssBaseline` is deliberately not used, so the older screens and the Services site keep their own styles. Cost: the production bundle grew from about 184 kB to about 294 kB gzipped; code-splitting the signed-in screens is a possible follow-up. The older screens have not been migrated.
+The app uses **Material UI** (`@mui/material`, with Emotion and `@mui/icons-material`). Why a library: it gives these data-heavy screens accessible tabs, tables with pagination, form fields with labels and error text, alerts and status chips without hand-writing each one. The theme is in `frontend/src/theme.ts` (the myCourt colours, sentence-case buttons). `CssBaseline` is deliberately not used, so the older screens and the Services site keep their own styles. Pages load on demand and React and Material UI are separate cached chunks, so the first screen is about 250 kB gzipped.
 
 ## What's in the app
 
@@ -157,8 +158,9 @@ The backend serves fictional data only. A real integration must read from an aut
 ## Known limitations
 
 - **Demonstration only.** The API refuses real client data unless `MYCOURT_ALLOW_REAL_DATA=true` **and** `python -m app.cli check-real-data` passes (changed secret, HTTPS cookies, audit triggers). Passing it is necessary, not sufficient: there are no firm roles, no multi-factor sign-in, no rate limiting beyond sign-in, and no security review yet. Keep it on localhost with fictional data.
-- **Backend-backed screens.** With `VITE_API_URL` set, the Cases screen, the Dashboard summary and the new matter workspace (tasks, calendar, documents, drafts, time and invoices, access, audit) are saved on the server. The older standalone screens (Assistant, Research, Mapping, Voice, Hearing, Calendar, Intake, Billing, Documents) are still demonstration mock-ups that keep their state in the browser.
+- **Backend-backed screens.** With `VITE_API_URL` set, every workspace screen is saved on the server: Cases, Dashboard, the matter workspace, and the Assistant, Research, Mapping, Voice, Hearing, Calendar, Intake, Billing and Documents screens (each works on a matter you pick). Without it they stay browser demonstrations.
 - **No real AI.** Assistant, research and mapping return labelled demonstration drafts; no matter text leaves the system. Original files are not stored, only register entries and extracted text.
-- **Voice control is not built:** the Voice page does not use the browser's speech recognition yet, although a microphone is listed above for that purpose.
-- Migrations create a fixed list of tables per revision; a later table change needs its own revision.
-- The non-English translations are unreviewed. No linter is configured.
+- **Dictation is not private.** The Voice screen can use the browser's speech recognition (opt-in, with voice commands such as "open calendar"). In Chrome and Edge the audio goes to the browser vendor; use it for demonstration material only.
+- **Two-step sign-in** (authenticator app) is optional per account (Security button). Its secret is stored readable in the database. There is no single sign-on and no firm-wide roles; the general request limit is per process.
+- Migrations create a fixed list of tables per revision; a later table change needs its own revision (a test fails if you forget).
+- The non-English translations are unreviewed.

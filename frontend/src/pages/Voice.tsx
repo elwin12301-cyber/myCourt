@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useApp } from '../context'
 import { Btn, Card, Field, Notice, PageHead, Pill, Select, Textarea } from '../components/ui'
+import { commandFor, SPEECH_LANGUAGES, useSpeech } from '../features/speech'
+import type { PageId } from '../types'
 
 type RecState = 'ready' | 'recording' | 'paused' | 'stopped'
 
@@ -12,8 +14,16 @@ const STATUS: Record<RecState, string> = {
 }
 
 export default function VoicePage() {
-  const { transcript, setTranscript, toast } = useApp()
+  const { transcript, setTranscript, toast, go } = useApp()
   const [rec, setRec] = useState<RecState>('ready')
+  const [lang, setLang] = useState('en-IN')
+  const [consent, setConsent] = useState(false)
+  const [commands, setCommands] = useState(false)
+  const sp = useSpeech(lang, (said) => {
+    const page = commands ? commandFor(said) : null
+    if (page) { toast(`Opening ${page}`); go(page as PageId) } else if (said) setTranscript(`${transcript} ${said}`.trim())
+  })
+  const real = sp.supported && consent
   const [output, setOutput] = useState('Case note')
   const [result, setResult] = useState<{ type: string; text: string } | null>(null)
 
@@ -26,24 +36,24 @@ export default function VoicePage() {
         <div className="grid" style={{ alignContent: 'start' }}>
           <Card title="Recorder">
             <div style={{ textAlign: 'center', padding: '15px 0' }}>
-              <div className={`recordcircle ${rec === 'recording' ? 'recording' : ''}`}>●</div>
-              <strong>{STATUS[rec]}</strong>
-              <p className="muted tiny">{rec === 'recording' ? 'Demo mode · no audio captured' : 'Demo recorder · no audio is uploaded'}</p>
+              <div className={`recordcircle ${rec === 'recording' || sp.listening ? 'recording' : ''}`}>●</div>
+              <strong>{sp.listening ? 'Listening… speak now' : STATUS[rec]}</strong>
+              <p className="muted tiny">{real ? 'Your browser\'s speech service transcribes the audio. Nothing is stored here.' : 'Demo recorder · no audio is captured'}</p>
               <div className="actions" style={{ justifyContent: 'center', marginTop: 18 }}>
-                <Btn kind="primary" onClick={() => { setRec('recording'); toast('Simulated recording started') }}>● Start recording</Btn>
-                <Btn onClick={() => setRec('paused')}>Ⅱ Pause</Btn>
-                <Btn onClick={() => setRec('stopped')}>■ Stop</Btn>
+                <Btn kind="primary" onClick={() => { setRec('recording'); if (real) sp.start(); else toast('Simulated recording started') }}>● Start recording</Btn>
+                <Btn onClick={() => { setRec('paused'); sp.stop() }}>Ⅱ Pause</Btn>
+                <Btn onClick={() => { setRec('stopped'); sp.stop() }}>■ Stop</Btn>
               </div>
             </div>
             <Field label="Dictation language">
-              <Select>
-                <option>English (India)</option>
-                <option>Hindi — if supported by connected transcription service</option>
-                <option>Tamil — if supported by connected transcription service</option>
-                <option>Other supported language</option>
+              <Select value={lang} onChange={(e) => setLang(e.target.value)}>
+                {SPEECH_LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
               </Select>
             </Field>
-            <Notice>This prototype simulates recording states; it does not access a microphone or run a speech-recognition service.</Notice>
+            <label className="checkrow"><input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} /><div><strong>Use my browser's speech recognition</strong><small>In Chrome and Edge the audio is sent to the browser vendor to be transcribed. Demonstration material only.</small></div></label>
+            <label className="checkrow"><input type="checkbox" checked={commands} onChange={(e) => setCommands(e.target.checked)} /><div><strong>Voice commands</strong><small>Say “open calendar”, “go to cases” or “show billing” while dictating.</small></div></label>
+            {sp.error && <Notice>{sp.error}</Notice>}
+            <Notice>{sp.supported ? 'Without the box above ticked this stays a simulated recorder and captures no audio.' : 'This browser has no speech recognition (use Chrome or Edge), so the recorder is simulated and captures no audio.'}</Notice>
           </Card>
           <Card title="Turn into useful work">
             <Field label="Output type">

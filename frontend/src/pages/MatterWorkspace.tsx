@@ -27,7 +27,7 @@ import { PageHead } from '../components/ui'
 
 /** The matter workspace shown when the backend is in use: real records, saved on the server, private to the people assigned. */
 
-function useLoad<T>(load: () => Promise<T>, deps: unknown[]) {
+export function useLoad<T>(load: () => Promise<T>, deps: unknown[]) {
   const [data, setData] = useState<T | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -40,14 +40,14 @@ function useLoad<T>(load: () => Promise<T>, deps: unknown[]) {
   return { data, error, loading, reload }
 }
 
-function State({ loading, error, onRetry, empty, children }: { loading: boolean; error: string; onRetry: () => void; empty?: string; children: ReactNode }) {
+export function State({ loading, error, onRetry, empty, children }: { loading: boolean; error: string; onRetry: () => void; empty?: string; children: ReactNode }) {
   if (error) return <Message severity="error" onRetry={onRetry}>{error}</Message>
   if (loading) return <Typography role="status" color="text.secondary">Loading…</Typography>
   if (empty) return <Typography color="text.secondary" sx={{ py: 1 }}>{empty}</Typography>
   return <>{children}</>
 }
 
-function useAction() {
+export function useAction() {
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const run = async (fn: () => Promise<unknown>, after?: () => void) => {
@@ -57,9 +57,9 @@ function useAction() {
   return { error, busy, run }
 }
 
-const Err = ({ text }: { text: string }) => (text ? <Message severity="error">{text}</Message> : null)
-const day = (iso: string) => new Date(iso).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
-const Form = ({ onSubmit, children }: { onSubmit: (e: FormEvent) => void; children: ReactNode }) => (
+export const Err = ({ text }: { text: string }) => (text ? <Message severity="error">{text}</Message> : null)
+export const day = (iso: string) => new Date(iso).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+export const Form = ({ onSubmit, children }: { onSubmit: (e: FormEvent) => void; children: ReactNode }) => (
   <Box component="form" onSubmit={onSubmit} sx={{ mt: 1.5 }}>{children}</Box>
 )
 
@@ -125,7 +125,7 @@ function Overview({ m, reload, onDeleted }: { m: W.Matter; reload: () => void; o
   )
 }
 
-function TasksTab({ m }: { m: W.Matter }) {
+export function TasksTab({ m }: { m: W.Matter }) {
   const l = useLoad(() => W.tasks.list(m.id), [m.id])
   const { error, busy, run } = useAction()
   const [title, setTitle] = useState('')
@@ -154,7 +154,7 @@ function TasksTab({ m }: { m: W.Matter }) {
   )
 }
 
-function CalendarTab({ m }: { m: W.Matter }) {
+export function CalendarTab({ m }: { m: W.Matter }) {
   const l = useLoad(() => W.calendar.list(m.id), [m.id])
   const { error, busy, run } = useAction()
   const [kind, setKind] = useState<'hearing' | 'deadline' | 'meeting'>('hearing')
@@ -190,7 +190,7 @@ function CalendarTab({ m }: { m: W.Matter }) {
   )
 }
 
-function DocumentsTab({ m }: { m: W.Matter }) {
+export function DocumentsTab({ m }: { m: W.Matter }) {
   const docs = useLoad(() => W.documents.list(m.id), [m.id])
   const notes = useLoad(() => W.voiceNotes.list(m.id), [m.id])
   const { error, busy, run } = useAction()
@@ -250,7 +250,7 @@ function DocumentsTab({ m }: { m: W.Matter }) {
   )
 }
 
-function DraftsTab({ m }: { m: W.Matter }) {
+export function DraftsTab({ m }: { m: W.Matter }) {
   const l = useLoad(() => W.drafts.list(m.id), [m.id])
   const { error, busy, run } = useAction()
   const [query, setQuery] = useState('')
@@ -285,7 +285,7 @@ function DraftsTab({ m }: { m: W.Matter }) {
   )
 }
 
-function BillingTab({ m }: { m: W.Matter }) {
+export function BillingTab({ m }: { m: W.Matter }) {
   const te = useLoad(() => W.timeEntries.list(m.id), [m.id])
   const inv = useLoad(() => W.invoices.list(m.id), [m.id])
   const { error, busy, run } = useAction()
