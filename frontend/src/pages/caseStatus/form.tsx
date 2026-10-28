@@ -1,5 +1,5 @@
-import { Input, Select } from '../../components/ui'
-import type { ReactNode } from 'react'
+import { Btn, Input, Select } from '../../components/ui'
+import { useState, type ReactNode } from 'react'
 import { useT } from '../../i18n/context'
 import { ACTS, CASE_STATES, CASE_TYPES, LOCATIONS, POLICE_STATIONS } from '../../features/caseStatus/referenceData'
 import { normaliseBarCode, normaliseCnr, type FieldErrors } from '../../features/caseStatus/validation'
@@ -12,14 +12,14 @@ export interface FormValues {
   caseType: string; number: string
   by: AdvocateBy; barCode: string; date: string
   policeStation: string; firNumber: string; firYear: string
-  actSearch: string; actType: string; section: string
+  actSearch: string; actApplied: string; actType: string; section: string
 }
 
 export const EMPTY: FormValues = {
   cnr: '', state: '', district: '', complex: '', establishment: '',
   name: '', year: '', status: 'Both', caseType: '', number: '',
   by: 'name', barCode: '', date: '', policeStation: '', firNumber: '', firYear: '',
-  actSearch: '', actType: '', section: '',
+  actSearch: '', actApplied: '', actType: '', section: '',
 }
 
 export function courtOf(v: FormValues): CourtSelection {
@@ -210,15 +210,7 @@ export function ModeFields({ mode, v, set, errors }: { mode: SearchMode; v: Form
       {mode === 'act' && (
         <>
           <div className="grid layout3" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
-            <Field id="actSearch" label="Search Act" hint="Type at least 3 characters to narrow the list.">
-              <Input id="actSearch" value={v.actSearch} onChange={(e) => set({ actSearch: e.target.value, actType: '' })} />
-            </Field>
-            <Field id="actType" label="Act Type" required error={errors.actType}>
-              <Select id="actType" value={v.actType} aria-invalid={!!errors.actType} aria-describedby={errors.actType ? 'actType-err' : undefined} onChange={(e) => set({ actType: e.target.value })}>
-                <option value="">{t('Select Act Type')}</option>
-                {(v.actSearch.trim().length >= 3 ? ACTS.filter((a) => `${a} ${t(a)}`.toLowerCase().includes(v.actSearch.trim().toLowerCase())) : ACTS).map((a) => <option key={a} value={a}>{t(a)}</option>)}
-              </Select>
-            </Field>
+            <ActSearch v={v} set={set} errors={errors} />
             <Field id="section" label="Under Section" hint="Optional. Blank lists all sections.">
               <Input id="section" value={v.section} onChange={(e) => set({ section: e.target.value })} />
             </Field>
@@ -235,6 +227,40 @@ export function ModeFields({ mode, v, set, errors }: { mode: SearchMode; v: Form
           <Radios legend="Case status" name="status" value={(v.status === 'Both' ? 'Pending' : v.status) as 'Pending' | 'Disposed'} options={['Pending', 'Disposed']} onChange={(status) => set({ status })} />
         </>
       )}
+    </>
+  )
+}
+
+/** The official page fills the Act Type list only when "Search Act" has at least 3 characters AND Search is pressed. */
+const ACT_HINT = 'To search an Act from the Act list, enter at least 3 characters of the Act description and click Search.'
+const ACT_SHORT = 'Enter at least 3 characters of the Act description, then select Search.'
+const ACT_NONE = 'No Act matches. Try fewer characters.'
+
+function ActSearch({ v, set, errors }: { v: FormValues; set: Setter; errors: FieldErrors }) {
+  const t = useT()
+  const [short, setShort] = useState(false)
+  const applied = v.actApplied.toLowerCase()
+  const list = applied ? ACTS.filter((a) => `${a} ${t(a)}`.toLowerCase().includes(applied)) : ACTS
+  const search = () => {
+    const q = v.actSearch.trim()
+    if (q.length < 3) { setShort(true); return }
+    setShort(false); set({ actApplied: q, actType: '' })
+  }
+  return (
+    <>
+      <div>
+        <Field id="actSearch" label="Search Act" hint={ACT_HINT} error={short ? ACT_SHORT : applied && list.length === 0 ? ACT_NONE : undefined}>
+          <Input id="actSearch" value={v.actSearch} onChange={(e) => { setShort(false); set({ actSearch: e.target.value }) }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); search() } }} />
+        </Field>
+        <Btn className="small" onClick={search}>Search</Btn>
+      </div>
+      <Field id="actType" label="Act Type" required error={errors.actType}>
+        <Select id="actType" value={v.actType} aria-invalid={!!errors.actType} aria-describedby={errors.actType ? 'actType-err' : undefined} onChange={(e) => set({ actType: e.target.value })}>
+          <option value="">{t('Select Act Type')}</option>
+          {list.map((a) => <option key={a} value={a}>{t(a)}</option>)}
+        </Select>
+      </Field>
     </>
   )
 }

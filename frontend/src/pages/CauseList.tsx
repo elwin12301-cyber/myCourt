@@ -112,7 +112,7 @@ export default function CauseListPage() {
       <div style={{ marginTop: 18 }} aria-live="polite">
         {phase === 'idle' && <div className="empty">{t('Select a court and date, then choose Civil or Criminal.')}</div>}
         {phase === 'loading' && (
-          <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span className="sr-only">{t('Loading cause list')}</span></Card>
+          <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span role="status" className="muted">{t('Loading cause list')}</span></Card>
         )}
         {phase === 'error' && <Notice>{t('The demonstration service is unavailable.')} <Btn className="small" onClick={() => run(lastKind.current)}>Retry</Btn></Notice>}
 

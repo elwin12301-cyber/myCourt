@@ -129,7 +129,7 @@ export default function CaseStatusPage({
       <div style={{ marginTop: 18 }} aria-live="polite">
         {phase === 'idle' && <div className="empty">{t('Choose a search type, fill in the details and select {action}.', { action: t(submitLabel) })}</div>}
         {phase === 'loading' && (
-          <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span className="sr-only">{t('Loading results')}</span></Card>
+          <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span role="status" className="muted">{t('Loading results')}</span></Card>
         )}
         {phase === 'error' && (
           <Notice>{t('The demonstration service is unavailable.')} <Btn className="small" onClick={() => run()}>Retry</Btn></Notice>
@@ -137,7 +137,7 @@ export default function CaseStatusPage({
         {phase === 'done' && results.length === 0 && (
           <div className="empty">{t('No matching record in the demonstration data. This does not mean a real case does not exist.')}</div>
         )}
-        {phase === 'done' && results.length > 0 && !selected && <Results results={results} title={resultTitle} onView={setSelected} />}
+        {phase === 'done' && results.length > 0 && <div hidden={!!selected}><Results results={results} title={resultTitle} onView={setSelected} /></div>}
         {selected && <CaseDetail c={selected} onBack={() => setSelected(null)} />}
       </div>
 

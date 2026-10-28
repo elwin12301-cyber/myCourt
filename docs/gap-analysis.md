@@ -83,7 +83,7 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-045 | Orders had no number, type or document flag | **Fixed** — `kind`, `number` and `hasDocument` on every order; case view shows them |
 | GAP-046 | Form fields had a faint keyboard focus ring (found by browser check) | **Fixed** — visible 3 px ring on all form fields, app-wide |
 | GAP-047 | Uneven field heights in form rows | **Fixed** on Court Orders, Case Status and Cause List forms |
-| GAP-048 | Results table filter resets after opening a case (Case Status and Cause List) | **Open** — Court Orders keeps it in the page; the other two tables can adopt the same design |
+| GAP-048 | Results table filter resets after opening a case (Case Status and Cause List) | **Fixed** (2026-10-28) — Case Status keeps its results mounted while a case is open, so the status filter and sort survive Back; the Cause List table has no filter to lose |
 | GAP-049 | Order documents, official results layout | **Unverified / not built** — no documents in demonstration data |
 | GAP-037 (update) | Remaining unbuilt Search-menu services | Caveat Search, Process Details, Location (linked out) |
 
@@ -116,3 +116,16 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-068 | No migrations or backup | **Implemented**: Alembic revisions, logical export/import, `pg_dump` guide |
 | GAP-069 | Real AI, transcription, firm roles, multi-factor sign-in, original-file storage, security review | **Not built**; assumptions D1/D2 in `specs/004-workspace-backend/research.md` are unconfirmed |
 | GAP-070 | Voice control (browser speech recognition) | **Not built** |
+
+## Ninth pass — line-by-line review of the live Case Status page (2026-10-28)
+Compared `https://services.ecourts.gov.in/ecourtindia_v6/?p=casestatus/index` (public page only) with the build.
+
+| ID | Finding | Status |
+|---|---|---|
+| GAP-071 | Act tab: the official page fills the Act Type list only after "Search Act" has at least 3 characters **and** Search is pressed; ours filtered as you typed, with no Search button and different hint text | **Fixed** — Search button (Enter works too), official hint wording, "enter at least 3 characters" and "no Act matches" messages, all six languages; test added |
+| GAP-072 | The official page reports validation errors in an "OK" pop-up and shows a "Loading…" indicator | **Loading indicator fixed** — a visible "Loading results" / "Loading cause list" line now shows beside the skeleton. **OK pop-up not copied by design** — errors show beside each field and are announced to assistive technology (constitution III) |
+| GAP-073 | The official help text contradicts itself (captcha 5 or 6 characters, "5 digit numbers" on Act and Case Type; "Bar Code" vs "Bar Registration Number"; Case Number and Filing Number help videos point at the Party Name video) | **Not copied** — the prototype uses one consistent captcha and label; the inconsistencies are noted here as official-page facts |
+| GAP-074 | Headings read "Case Status : Search by …" on the official page; ours drop the "Case Status :" prefix because the page title already says it | Accepted difference |
+| GAP-075 | Empty headings PDF Viewer, Acknowledgement, History, IA Business on the official page | History and IA business are built in the case detail; PDF Viewer and Acknowledgement have no observable content, so nothing was built |
+
+Everything else observed on the page is present: the eight searches and their fields and required markers (FIR Number and Year optional, as on the official page), the Pending / Disposed / Both filters (no "Both" for Act and Case Type), the three Advocate options with the bar-code format, the cascading State to Establishment selector with the 36-entry list, the captcha with refresh and audio, Go and Back, the "How to" help and help-video links, the Search Menu, theme customizer, six languages, accessibility options and footer links. Results-table columns and the case-history layout cannot be seen without solving the official captcha, so they stay **Unverified** (GAP-038).

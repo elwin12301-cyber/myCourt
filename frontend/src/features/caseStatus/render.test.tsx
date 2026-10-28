@@ -27,6 +27,13 @@ describe('Case Status rendering', () => {
     expect(wrap(<CaseStatusPage initialMode="cnr" />)).not.toContain('Select Court Complex')
     expect(wrap(<CaseStatusPage initialMode="party" />)).toContain('Select Court Complex')
   })
+  it('Act search has its own Search button and the official hint, and no "Both" status', () => {
+    const html = wrap(<CaseStatusPage initialMode="act" />)
+    expect(html).toContain('Search Act')
+    expect(html).toContain('enter at least 3 characters of the Act description and click Search')
+    expect(html).toContain('>Search<')
+    expect(html).not.toContain('>Both<')
+  })
   it('renders results and every detail section for a demo case', () => {
     expect(wrap(<Results results={DEMO_CASES} title="Search results" onView={noop} />)).toContain('Petitioner versus Respondent')
     const html = wrap(<CaseDetail c={DEMO_CASES[0]} onBack={noop} />)
