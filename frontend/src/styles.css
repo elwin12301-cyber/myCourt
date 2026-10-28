@@ -151,6 +151,65 @@ body{background:var(--bg)}
 .pagehead{border-bottom:1px solid var(--line);padding-bottom:16px}
 .avatar,.sidebottom .MuiAvatar-root{background:#e9dcbc!important;color:#14264d!important}
 .feature-banner{border-left:4px solid var(--gold)}
-.feature-banner .MuiButton-root{background:var(--gold);color:#10203f;border-color:var(--gold);font-weight:700}
-.feature-banner .MuiButton-root:hover{background:#cfa04d;border-color:#cfa04d}
+.feature-banner:not(.carousel) .MuiButton-root{background:var(--gold);color:#10203f;border-color:var(--gold);font-weight:700}
+.feature-banner:not(.carousel) .MuiButton-root:hover{background:#cfa04d;border-color:#cfa04d}
+.carousel .MuiButton-root{color:#fff;border-color:#ffffff80;background:transparent;min-width:44px}
+.carousel .MuiButton-root:hover{background:#ffffff22;border-color:#fff}
 @media (max-width:760px){.topbar{height:auto;min-height:60px;padding:8px 12px;flex-wrap:wrap;gap:8px}.topactions{flex-wrap:wrap;gap:6px;max-width:100%}.search{flex:1 1 100%;max-width:none;order:3}}
+
+/* Legacy classes still used by a few raw elements; never applied to Material UI components */
+.iconbtn:not([class*="Mui"]){background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:#475467}
+.btn:not([class*="Mui"]){border-radius:9px;padding:10px 14px;background:#fff;border:1px solid var(--line);color:#344054;font-weight:650;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn:not([class*="Mui"]):hover{filter:brightness(.98);transform:translateY(-1px)}
+.btn:not([class*="Mui"]).primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn:not([class*="Mui"]).soft{background:var(--blue2);color:var(--blue);border-color:#dce5ff}
+.btn:not([class*="Mui"]).danger{color:var(--red)}
+.btn:not([class*="Mui"]).small{padding:7px 10px;font-size:12px}
+.stat:not([class*="Mui"]),.card:not([class*="Mui"]){background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.pill:not([class*="Mui"]){display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:20px;background:#f1f3f7;color:#475467;font-size:11px;font-weight:700;white-space:nowrap}
+.pill:not([class*="Mui"]).blue{background:#eaf0ff;color:#3157c8}
+.pill:not([class*="Mui"]).green{background:#e5f7ef;color:#087443}
+.pill:not([class*="Mui"]).amber{background:#fff4dc;color:#986314}
+.pill:not([class*="Mui"]).red{background:#feeceb;color:#b42318}
+.quick:not([class*="Mui"]){padding:14px;border:1px solid var(--line);border-radius:11px;background:#fff;text-align:left}
+.quick:not([class*="Mui"]):hover{border-color:#a9b9f4;background:#fbfcff}
+.feature-banner:not([class*="Mui"]){background:linear-gradient(120deg,#172747,#2d4ca3);border-radius:15px;color:white;padding:24px;display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:20px}
+.field:not([class*="Mui"]){display:grid;gap:6px;margin-bottom:14px}
+.field:not([class*="Mui"]) label{font-size:12px;font-weight:700;color:#475467}
+.field:not([class*="Mui"]) input,.field:not([class*="Mui"]) select,.field:not([class*="Mui"]) textarea{width:100%;border:1px solid #d8deea;border-radius:9px;padding:11px 12px;outline:none;background:#fff;color:var(--ink)}
+.field:not([class*="Mui"]) textarea{min-height:105px;resize:vertical}
+.field:not([class*="Mui"]) input:focus,.field:not([class*="Mui"]) textarea:focus,.field:not([class*="Mui"]) select:focus{border-color:#7791f1;box-shadow:0 0 0 3px #3157c814}
+.notice:not([class*="Mui"]){padding:13px 14px;border-radius:10px;background:#fff8e8;border:1px solid #f7e2ad;color:#805b13;font-size:12px;margin:12px 0}
+
+/* Readability pass: one base size, larger small text, spacing under card titles */
+body{font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.tiny{font-size:12.5px}
+td,.listrow strong,.checkrow strong,.quick strong,.result p,.msg p{font-size:14px}
+.listrow small,.checkrow small,.quick small,.event small,td small,.stat .delta{font-size:12.5px;color:#5b667c}
+.muted{color:#5b667c}
+.field:not([class*="Mui"]) label,.field label{font-size:13px;font-weight:700;color:#3b475e}
+.fielderr{font-size:13px}
+.sub{font-size:15px;color:#55607a}
+.eyebrow{font-size:12px}
+.navlabel{font-size:11px}
+.nav .MuiListItemButton-root{font-size:14.5px}
+.page h2{font-size:28px}
+.page h3,.card h3{font-size:16px}
+.search:before{z-index:1;pointer-events:none;top:50%;transform:translateY(-50%);line-height:1}
+.chatinput .MuiButton-root{white-space:nowrap;align-self:stretch;flex-shrink:0}
+.chatinput .MuiOutlinedInput-root{flex:1}
+.cardhead{margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.resultmeta{margin:8px 0 14px}
+.card:not([class*="Mui"]){padding:20px}
+.sourcebox,.notice{line-height:1.5}
+.MuiAlert-root{font-size:13.5px;line-height:1.5}
+.MuiTableCell-root{font-size:14px}
+.MuiFormLabel-root{font-size:13px}
+.MuiInputBase-input{font-size:15px}
+.navlabel{letter-spacing:1px;white-space:nowrap}
+/* Field rows nested in a card must never force a column wider than the card; tables wrap instead of clipping */
+.MuiCard-root .grid.layout2,.card .grid.layout2{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.MuiTable-root{min-width:0}
+.MuiTableCell-root{white-space:normal;vertical-align:top}
+.MuiTableCell-head{white-space:nowrap}
+.MuiChip-root{max-width:100%}

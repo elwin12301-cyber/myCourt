@@ -14,7 +14,7 @@ export function Section({ title, children, action }: { title: string; children: 
   return (
     <Card sx={{ mb: 2 }}>
       <CardContent>
-        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1, mb: 2, pb: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography variant="h3" component="h3">{title}</Typography>
           {action}
         </Stack>

@@ -20,6 +20,11 @@ export const theme = createTheme({
   shape: { borderRadius: 6 },
   typography: {
     fontFamily: 'inherit',
+    fontSize: 14.5,
+    htmlFontSize: 16,
+    body1: { fontSize: '0.95rem' },
+    body2: { fontSize: '0.875rem' },
+    caption: { fontSize: '0.8rem' },
     button: { textTransform: 'none', fontWeight: 600, letterSpacing: '.2px' },
     h2: { fontFamily: SERIF, fontSize: '1.25rem', fontWeight: 700 },
     h3: { fontFamily: SERIF, fontSize: '1.05rem', fontWeight: 700 },

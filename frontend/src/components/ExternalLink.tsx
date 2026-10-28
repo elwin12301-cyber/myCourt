@@ -16,7 +16,9 @@ export default function ExternalLink({ href, className = 'btn small', nav = fals
     <>
       {nav
         ? <ListItemButton className={className} onClick={() => setOpen(true)}>{label}</ListItemButton>
-        : <Btn kind={className.replace(/^btn\s*/, '')} onClick={() => setOpen(true)}>{label}</Btn>}
+        : /(^|\s)btn(\s|$)/.test(className)
+          ? <Btn kind={className.replace(/^btn\s*/, '')} onClick={() => setOpen(true)}>{label}</Btn>
+          : <button type="button" className={className} onClick={() => setOpen(true)}>{label}</button>}
       {open && (
         <Modal
           onClose={() => setOpen(false)} role="alertdialog" titleId="ext-title" describedBy="ext-desc" title={t('External site alert')}

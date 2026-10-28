@@ -35,7 +35,7 @@ export function PageHead({ title, sub, children }: { title: string; sub: string;
         <Typography variant="h4" component="h2" sx={{ fontSize: { xs: 22, sm: 27 }, fontWeight: 750, letterSpacing: '-.5px', mt: 0.5, mb: 0.75 }}>{t(title)}</Typography>
         <Typography className="sub" color="text.secondary">{t(sub)}</Typography>
       </Box>
-      <Stack direction="row" className="actions" useFlexGap sx={{ gap: 1.1, flexWrap: 'wrap' }}>{children}</Stack>
+      <Stack direction="row" className="actions" useFlexGap sx={{ gap: 1.1, flexWrap: 'wrap', ml: 'auto' }}>{children}</Stack>
     </Stack>
   )
 }
@@ -67,8 +67,8 @@ export function Card({ title, children, className = '' }: { title?: string; chil
   const t = useT()
   return (
     <MuiCard component="section" className={`card ${className}`.trim()} sx={{ minWidth: 0 }}>
-      <CardContent sx={{ '&:last-child': { pb: 2.5 } }}>
-        {title && <Typography variant="h3" component="h3" sx={{ mb: 1.5 }}>{t(title)}</Typography>}
+      <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
+        {title && <Typography variant="h3" component="h3" sx={{ mb: 2, pb: 1, borderBottom: '1px solid', borderColor: 'divider' }}>{t(title)}</Typography>}
         {children}
       </CardContent>
     </MuiCard>
