@@ -1,5 +1,5 @@
 import { useApp } from '../context'
-import { Btn, Card, Notice, Pill } from '../components/ui'
+import { Btn, Card, Notice, Pill, Table, TableBody, TableCell, TableHead, TableRow } from '../components/ui'
 import ExternalLink from '../components/ExternalLink'
 import { Shell } from './Portal'
 import type { PageId } from '../types'
@@ -17,15 +17,15 @@ function OfficialPage({ slug }: { slug: string }) {
 function DocTable({ caption, rows }: { caption: string; rows: { title: string; meta?: string; url: string }[] }) {
   return (
     <div className="tablewrap">
-      <table>
+      <Table size="small">
         <caption className="sr-only">{caption}</caption>
-        <thead><tr><th scope="col">Title</th><th scope="col">Details</th><th scope="col"><span className="sr-only">Action</span></th></tr></thead>
-        <tbody>
+        <TableHead><TableRow><TableCell scope="col">Title</TableCell><TableCell scope="col">Details</TableCell><TableCell scope="col"><span className="sr-only">Action</span></TableCell></TableRow></TableHead>
+        <TableBody>
           {rows.map((r) => (
-            <tr key={r.url}><td><strong>{r.title}</strong></td><td>{r.meta ?? 'PDF'}</td><td><ExternalLink href={r.url}>Open on official site ↗</ExternalLink></td></tr>
+            <TableRow key={r.url}><TableCell><strong>{r.title}</strong></TableCell><TableCell>{r.meta ?? 'PDF'}</TableCell><TableCell><ExternalLink href={r.url}>Open on official site ↗</ExternalLink></TableCell></TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   )
 }
@@ -134,15 +134,15 @@ export function PortalScreenReader() {
       <Card>
         <p>The official page says the portal can be used with screen readers by people with visual impairments, and names JAWS, NVDA, SAFA, Supernova and Window-Eyes as compatible. Its table lists five products:</p>
         <div className="tablewrap">
-          <table>
+          <Table size="small">
             <caption className="sr-only">Screen readers</caption>
-            <thead><tr><th scope="col">#</th><th scope="col">Screen reader</th><th scope="col">Vendor site</th><th scope="col">Usage</th></tr></thead>
-            <tbody>
+            <TableHead><TableRow><TableCell scope="col">#</TableCell><TableCell scope="col">Screen reader</TableCell><TableCell scope="col">Vendor site</TableCell><TableCell scope="col">Usage</TableCell></TableRow></TableHead>
+            <TableBody>
               {SCREEN_READERS.map((s, i) => (
-                <tr key={s.name}><td>{i + 1}</td><td><strong>{s.name}</strong></td><td>{s.site}</td><td><Pill kind={s.usage === 'Free' ? 'green' : ''}>{s.usage}</Pill></td></tr>
+                <TableRow key={s.name}><TableCell>{i + 1}</TableCell><TableCell><strong>{s.name}</strong></TableCell><TableCell>{s.site}</TableCell><TableCell><Pill kind={s.usage === 'Free' ? 'green' : ''}>{s.usage}</Pill></TableCell></TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
         <Notice>SAFA and Window-Eyes are named in the introduction but do not appear in the table. The page has no direct download links.</Notice>
         <OfficialPage slug="screen_recorder" />

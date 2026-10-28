@@ -15,7 +15,10 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="python -m app.cli")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("migrate", help="apply all database migrations")
-    sub.add_parser("seed-demo", help="load the labelled fictional workspace (prints a generated password once)")
+    sd = sub.add_parser("seed-demo", help="load the labelled fictional workspace (prints a generated password once)")
+    sd.add_argument("--matters", type=int, default=0, help="also add this many fictional matters for --owner")
+    sd.add_argument("--owner", default="", help="e-mail of an EXISTING account that will own the extra matters")
+    sd.add_argument("--services", type=int, default=0, help="top the eCourts-style demo data (cases, caveats, processes) up to this many each")
     sub.add_parser("remove-demo", help="remove the demonstration matters and accounts")
     ex = sub.add_parser("export", help="write a logical backup")
     ex.add_argument("file")
@@ -30,6 +33,23 @@ def main(argv: list[str] | None = None) -> int:
             seed(db)
         print("Migrations applied.")
     elif args.cmd == "seed-demo":
+        if args.services:
+            from .seed.services_bulk import seed_services_bulk
+            with SessionLocal() as db:
+                print("Added", seed_services_bulk(db, args.services))
+            if not args.matters:
+                return 0
+        if args.matters:
+            from sqlalchemy import select
+            from .models.accounts import Person
+            from .seed.workspace_demo import seed_bulk
+            with SessionLocal() as db:
+                owner = db.scalars(select(Person).where(Person.email == args.owner.strip().lower())).first()
+                if owner is None:
+                    print("Unknown --owner: that account must already exist.")
+                    return 1
+                print(seed_bulk(db, owner, args.matters))
+            return 0
         with SessionLocal() as db:
             out = seed_demo(db)
         print("Demonstration accounts:", ", ".join(out["emails"]))

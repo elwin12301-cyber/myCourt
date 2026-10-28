@@ -1,32 +1,34 @@
 import { useState, type ReactNode } from 'react'
+import Button from '@mui/material/Button'
+import ListItemButton from '@mui/material/ListItemButton'
 import { useT } from '../i18n/context'
+import { Btn, Modal } from './ui'
 
-/** Mirrors the portal's "External site alert": confirm before leaving the app. */
-export default function ExternalLink({ href, className = 'btn small', children }: { href: string; className?: string; children: ReactNode }) {
+/** Mirrors the portal's "External site alert": confirm before leaving the app. `nav` renders it as a sidebar item. */
+export default function ExternalLink({ href, className = 'btn small', nav = false, children }: { href: string; className?: string; nav?: boolean; children: ReactNode }) {
   const t = useT()
   const [open, setOpen] = useState(false)
   let host = href
   try { host = new URL(href).host } catch { /* keep raw */ }
+  const label = <>{children}<span className="sr-only">{` (${t('external site')})`}</span></>
 
   return (
     <>
-      <button type="button" className={className} onClick={() => setOpen(true)}>{children}<span className="sr-only">{` (${t('external site')})`}</span></button>
+      {nav
+        ? <ListItemButton className={className} onClick={() => setOpen(true)}>{label}</ListItemButton>
+        : <Btn kind={className.replace(/^btn\s*/, '')} onClick={() => setOpen(true)}>{label}</Btn>}
       {open && (
-        <div className="modalback show" onClick={() => setOpen(false)}>
-          <div
-            className="modal" role="alertdialog" aria-modal="true" aria-labelledby="ext-title" aria-describedby="ext-desc"
-            onClick={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false) }}
-          >
-            <div className="modalhead"><h3 id="ext-title">{t('External site alert')}</h3></div>
-            <p id="ext-desc">
-              {t('This link leads to an external website')} (<strong>{host}</strong>). {t("myCourt is not responsible for its content; direct any queries to that site's webmaster.")}
-            </p>
-            <div className="actions" style={{ justifyContent: 'flex-end', marginTop: 16 }}>
-              <button type="button" className="btn" autoFocus onClick={() => setOpen(false)}>{t('Cancel')}</button>
-              <a className="btn primary" href={href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>{t('Go')}</a>
-            </div>
-          </div>
-        </div>
+        <Modal
+          onClose={() => setOpen(false)} role="alertdialog" titleId="ext-title" describedBy="ext-desc" title={t('External site alert')}
+          actions={<>
+            <Button variant="outlined" autoFocus onClick={() => setOpen(false)}>{t('Cancel')}</Button>
+            <Button variant="contained" href={href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>{t('Go')}</Button>
+          </>}
+        >
+          <p id="ext-desc" style={{ margin: 0 }}>
+            {t('This link leads to an external website')} (<strong>{host}</strong>). {t("myCourt is not responsible for its content; direct any queries to that site's webmaster.")}
+          </p>
+        </Modal>
       )}
     </>
   )

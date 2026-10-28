@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useApp } from '../context'
-import { Btn, Card, Check, Field, Notice, PageHead, Pill } from '../components/ui'
+import { Btn, Card, Check, Field, Notice, PageHead, Pill, Select, Textarea } from '../components/ui'
 import { caseNoteModal } from './modals'
 
 export default function ResearchPage() {
@@ -15,7 +15,7 @@ export default function ResearchPage() {
       </PageHead>
       <div className="card" style={{ marginBottom: 18 }}>
         <Field label="Research question">
-          <textarea
+          <Textarea
             value={researchQuery}
             onChange={(e) => setResearchQuery(e.target.value)}
             placeholder="Ask a focused legal question. Example: Find authorities on admissibility and flag conflicting treatment."
@@ -23,13 +23,13 @@ export default function ResearchPage() {
         </Field>
         <div className="grid layout3">
           <Field label="Jurisdiction">
-            <select><option>All relevant courts</option><option>Supreme Court of India</option><option>Madras High Court</option><option>Sessions Court</option></select>
+            <Select><option>All relevant courts</option><option>Supreme Court of India</option><option>Madras High Court</option><option>Sessions Court</option></Select>
           </Field>
           <Field label="Source type">
-            <select><option>All authorised sources</option><option>Judgments</option><option>Statutes</option><option>Uploaded matter files</option><option>Advocate notes</option></select>
+            <Select><option>All authorised sources</option><option>Judgments</option><option>Statutes</option><option>Uploaded matter files</option><option>Advocate notes</option></Select>
           </Field>
           <Field label="Time filter">
-            <select><option>Current and historical, labelled</option><option>Current law only</option><option>Before 1 July 2024</option><option>Custom date range</option></select>
+            <Select><option>Current and historical, labelled</option><option>Current law only</option><option>Before 1 July 2024</option><option>Custom date range</option></Select>
           </Field>
         </div>
         <div className="actions">

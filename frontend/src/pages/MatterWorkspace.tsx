@@ -1,8 +1,29 @@
 import { useCallback, useEffect, useId, useState, type FormEvent, type ReactNode } from 'react'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Stack from '@mui/material/Stack'
+import Tab from '@mui/material/Tab'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Tabs from '@mui/material/Tabs'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import AddIcon from '@mui/icons-material/Add'
+import CheckIcon from '@mui/icons-material/Check'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 import { useAuth } from '../api/auth'
 import { messageOf } from '../api/client'
 import * as W from '../api/workspace'
-import { Card, Notice, PageHead, Pill } from '../components/ui'
+import { Message, Row, Section, SelectField, Status } from '../components/mui'
+import { PageHead } from '../components/ui'
 
 /** The matter workspace shown when the backend is in use: real records, saved on the server, private to the people assigned. */
 
@@ -20,9 +41,9 @@ function useLoad<T>(load: () => Promise<T>, deps: unknown[]) {
 }
 
 function State({ loading, error, onRetry, empty, children }: { loading: boolean; error: string; onRetry: () => void; empty?: string; children: ReactNode }) {
-  if (error) return <div role="alert" className="notice">{error} <button type="button" className="btn small" onClick={onRetry}>Retry</button></div>
-  if (loading) return <div role="status" className="muted">Loading…</div>
-  if (empty) return <div className="empty">{empty}</div>
+  if (error) return <Message severity="error" onRetry={onRetry}>{error}</Message>
+  if (loading) return <Typography role="status" color="text.secondary">Loading…</Typography>
+  if (empty) return <Typography color="text.secondary" sx={{ py: 1 }}>{empty}</Typography>
   return <>{children}</>
 }
 
@@ -33,30 +54,37 @@ function useAction() {
     setBusy(true); setError('')
     try { await fn(); after?.() } catch (e) { setError(messageOf(e)) } finally { setBusy(false) }
   }
-  return { error, busy, run, clear: () => setError('') }
+  return { error, busy, run }
 }
 
-const Err = ({ id, text }: { id: string; text: string }) => (text ? <div id={id} role="alert" className="notice">{text}</div> : null)
+const Err = ({ text }: { text: string }) => (text ? <Message severity="error">{text}</Message> : null)
 const day = (iso: string) => new Date(iso).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+const Form = ({ onSubmit, children }: { onSubmit: (e: FormEvent) => void; children: ReactNode }) => (
+  <Box component="form" onSubmit={onSubmit} sx={{ mt: 1.5 }}>{children}</Box>
+)
 
 // ---------- drafts (constitution II: always a draft until an advocate approves) ----------
 export function DraftCard({ draft, canApprove, onApprove, busy }: { draft: W.Draft; canApprove: boolean; onApprove: () => void; busy?: boolean }) {
   return (
-    <article className="card" aria-label={draft.title}>
-      <div className="cardhead">
-        <h4 style={{ margin: 0 }}>{draft.title}</h4>
-        <Pill kind={draft.status === 'approved' ? 'green' : 'amber'}>{draft.status === 'approved' ? 'Approved' : 'Draft'}</Pill>
-      </div>
-      <p className="tiny"><strong>{draft.status === 'draft' ? 'Draft: advocate verification required' : 'Approved by an advocate'}</strong>
-        {draft.isDemoContent ? ' · Demonstration content, not legal advice' : ''}</p>
-      <p style={{ whiteSpace: 'pre-wrap' }}>{draft.body}</p>
-      {draft.sources.length === 0
-        ? <p className="tiny muted">No sources listed.</p>
-        : <ul>{draft.sources.map((s) => <li key={s.label}>{s.label}{s.reference ? ` — ${s.reference}` : ''}</li>)}</ul>}
-      {draft.status === 'draft' && canApprove && (
-        <button type="button" className="btn small primary" disabled={busy} onClick={onApprove}>Approve this draft</button>
-      )}
-    </article>
+    <Card component="article" aria-label={draft.title} sx={{ mb: 2 }}>
+      <CardContent>
+        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+          <Typography variant="h3" component="h4">{draft.title}</Typography>
+          <Status kind={draft.status === 'approved' ? 'green' : 'amber'}>{draft.status === 'approved' ? 'Approved' : 'Draft'}</Status>
+        </Stack>
+        <Typography variant="caption" component="p" sx={{ my: 1 }}>
+          <strong>{draft.status === 'draft' ? 'Draft: advocate verification required' : 'Approved by an advocate'}</strong>
+          {draft.isDemoContent ? ' · Demonstration content, not legal advice' : ''}
+        </Typography>
+        <Typography sx={{ whiteSpace: 'pre-wrap' }}>{draft.body}</Typography>
+        {draft.sources.length === 0
+          ? <Typography variant="caption" color="text.secondary" component="p" sx={{ mt: 1 }}>No sources listed.</Typography>
+          : <ul>{draft.sources.map((s) => <li key={s.label}>{s.label}{s.reference ? ` — ${s.reference}` : ''}</li>)}</ul>}
+        {draft.status === 'draft' && canApprove && (
+          <Button size="small" variant="contained" startIcon={<CheckIcon />} disabled={busy} onClick={onApprove} sx={{ mt: 1.5 }}>Approve this draft</Button>
+        )}
+      </CardContent>
+    </Card>
   )
 }
 
@@ -70,27 +98,30 @@ function Overview({ m, reload, onDeleted }: { m: W.Matter; reload: () => void; o
   const edit = W.canEdit(m.myLevel)
   const id = useId()
   return (
-    <Card title="Matter overview">
-      <form onSubmit={(e: FormEvent) => { e.preventDefault(); run(() => W.matters.update(m, { title, clientRef: ref, status }), reload) }}>
-        <div className="field"><label htmlFor={`${id}t`}>Title</label><input id={`${id}t`} value={title} disabled={!edit} onChange={(e) => setTitle(e.target.value)} /></div>
-        <div className="field"><label htmlFor={`${id}r`}>Client reference</label><input id={`${id}r`} value={ref} disabled={!edit} onChange={(e) => setRef(e.target.value)} /></div>
-        <div className="field"><label htmlFor={`${id}s`}>Status</label>
-          <select id={`${id}s`} value={status} disabled={!edit} onChange={(e) => setStatus(e.target.value as W.Matter['status'])}>
-            <option value="open">Open</option><option value="on_hold">On hold</option><option value="closed">Closed</option>
-          </select></div>
-        <Err id="ov-err" text={error} />
-        {edit ? <button className="btn primary" type="submit" disabled={busy}>Save changes</button> : <p className="tiny muted">You have view-only access to this matter.</p>}
-      </form>
-      <p className="tiny muted">Your access: <strong>{m.myLevel}</strong>{m.isDemo ? ' · demonstration matter (fictional data)' : ''}</p>
+    <Section title="Matter overview">
+      <Box component="form" onSubmit={(e: FormEvent) => { e.preventDefault(); run(() => W.matters.update(m, { title, clientRef: ref, status }), reload) }}>
+        <TextField id={`${id}t`} label="Title" value={title} disabled={!edit} onChange={(e) => setTitle(e.target.value)} />
+        <TextField id={`${id}r`} label="Client reference" value={ref} disabled={!edit} onChange={(e) => setRef(e.target.value)} />
+        <SelectField id={`${id}s`} label="Status" value={status} disabled={!edit} onChange={(e) => setStatus(e.target.value as W.Matter['status'])}>
+          <option value="open">Open</option><option value="on_hold">On hold</option><option value="closed">Closed</option>
+        </SelectField>
+        <Err text={error} />
+        {edit
+          ? <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>Save changes</Button>
+          : <Typography variant="caption" color="text.secondary" component="p">You have view-only access to this matter.</Typography>}
+      </Box>
+      <Typography variant="caption" color="text.secondary" component="p" sx={{ mt: 1.5 }}>
+        Your access: <strong>{m.myLevel}</strong>{m.isDemo ? ' · demonstration matter (fictional data)' : ''}
+      </Typography>
       {m.myLevel === 'owner' && (
-        <details>
+        <details style={{ marginTop: 12 }}>
           <summary>Delete this matter</summary>
-          <p>This permanently deletes the matter and everything under it. The audit trail is kept. Type the matter title to confirm.</p>
-          <div className="field"><label htmlFor={`${id}d`}>Matter title</label><input id={`${id}d`} value={confirm} onChange={(e) => setConfirm(e.target.value)} /></div>
-          <button type="button" className="btn" disabled={busy || confirm !== m.title} onClick={() => run(() => W.matters.remove(m), onDeleted)}>Delete matter</button>
+          <Typography sx={{ my: 1 }}>This permanently deletes the matter and everything under it. The audit trail is kept. Type the matter title to confirm.</Typography>
+          <TextField id={`${id}d`} label="Matter title" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+          <Button color="error" variant="outlined" disabled={busy || confirm !== m.title} onClick={() => run(() => W.matters.remove(m), onDeleted)} sx={{ mt: 1 }}>Delete matter</Button>
         </details>
       )}
-    </Card>
+    </Section>
   )
 }
 
@@ -101,22 +132,25 @@ function TasksTab({ m }: { m: W.Matter }) {
   const [due, setDue] = useState('')
   const edit = W.canEdit(m.myLevel)
   return (
-    <Card title="Tasks">
+    <Section title="Tasks">
       <State loading={l.loading} error={l.error} onRetry={l.reload} empty={l.data && l.data.items.length === 0 ? 'No tasks yet.' : undefined}>
-        <ul className="list">{l.data?.items.map((t) => (
-          <li className="listrow" key={t.id}>
-            <label><input type="checkbox" checked={t.done} disabled={!edit || busy} onChange={() => run(() => W.tasks.update(m.id, t, { done: !t.done }), l.reload)} /> {t.title}{t.due ? ` · due ${t.due}` : ''}</label>
-          </li>))}</ul>
+        {l.data?.items.map((t) => (
+          <Row key={t.id}>
+            <FormControlLabel
+              control={<Checkbox checked={t.done} disabled={!edit || busy} onChange={() => run(() => W.tasks.update(m.id, t, { done: !t.done }), l.reload)} />}
+              label={`${t.title}${t.due ? ` · due ${t.due}` : ''}`} />
+          </Row>
+        ))}
       </State>
       {edit && (
-        <form onSubmit={(e) => { e.preventDefault(); run(() => W.tasks.create(m.id, { title, due: due || null }), () => { setTitle(''); setDue(''); l.reload() }) }}>
-          <div className="field"><label htmlFor="task-title">New task</label><input id="task-title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
-          <div className="field"><label htmlFor="task-due">Due date (optional)</label><input id="task-due" type="date" value={due} onChange={(e) => setDue(e.target.value)} /></div>
-          <Err id="task-err" text={error} />
-          <button className="btn" type="submit" disabled={busy}>Add task</button>
-        </form>
+        <Form onSubmit={(e) => { e.preventDefault(); run(() => W.tasks.create(m.id, { title, due: due || null }), () => { setTitle(''); setDue(''); l.reload() }) }}>
+          <TextField id="task-title" label="New task" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <TextField id="task-due" label="Due date (optional)" type="date" value={due} onChange={(e) => setDue(e.target.value)} slotProps={{ inputLabel: { shrink: true } }} />
+          <Err text={error} />
+          <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Add task</Button>
+        </Form>
       )}
-    </Card>
+    </Section>
   )
 }
 
@@ -128,29 +162,31 @@ function CalendarTab({ m }: { m: W.Matter }) {
   const [when, setWhen] = useState('')
   const edit = W.canEdit(m.myLevel)
   return (
-    <Card title="Hearings and deadlines">
-      <Notice>A deadline is a draft until an advocate approves it. Confirm limitation and procedural dates yourself.</Notice>
+    <Section title="Hearings and deadlines">
+      <Message severity="info">A deadline is a draft until an advocate approves it. Confirm limitation and procedural dates yourself.</Message>
       <State loading={l.loading} error={l.error} onRetry={l.reload} empty={l.data && l.data.items.length === 0 ? 'Nothing scheduled.' : undefined}>
-        <ul className="list">{l.data?.items.map((e) => (
-          <li className="listrow" key={e.id}>
-            <div><strong>{e.title}</strong><small>{e.kind} · {day(e.startsAt)}</small></div>
-            <div className="actions">
-              {e.kind === 'deadline' && (e.approvedAt ? <Pill kind="green">Approved</Pill> : <Pill kind="amber">Draft · not approved</Pill>)}
-              {e.kind === 'deadline' && !e.approvedAt && edit && <button type="button" className="btn small" disabled={busy} onClick={() => run(() => W.calendar.action(m.id, e, 'approve'), l.reload)}>Approve deadline</button>}
-            </div>
-          </li>))}</ul>
+        {l.data?.items.map((e) => (
+          <Row key={e.id}>
+            <div><strong>{e.title}</strong><Typography variant="caption" component="div" color="text.secondary">{e.kind} · {day(e.startsAt)}</Typography></div>
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              {e.kind === 'deadline' && (e.approvedAt ? <Status kind="green">Approved</Status> : <Status kind="amber">Draft · not approved</Status>)}
+              {e.kind === 'deadline' && !e.approvedAt && edit && <Button size="small" variant="outlined" disabled={busy} onClick={() => run(() => W.calendar.action(m.id, e, 'approve'), l.reload)}>Approve deadline</Button>}
+            </Stack>
+          </Row>
+        ))}
       </State>
       {edit && (
-        <form onSubmit={(e) => { e.preventDefault(); run(() => W.calendar.create(m.id, { kind, title, startsAt: new Date(when).toISOString() }), () => { setTitle(''); l.reload() }) }}>
-          <div className="field"><label htmlFor="cal-kind">Type</label>
-            <select id="cal-kind" value={kind} onChange={(e) => setKind(e.target.value as typeof kind)}><option value="hearing">Hearing</option><option value="deadline">Deadline</option><option value="meeting">Meeting</option></select></div>
-          <div className="field"><label htmlFor="cal-title">Title</label><input id="cal-title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
-          <div className="field"><label htmlFor="cal-when">Date and time</label><input id="cal-when" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} required /></div>
-          <Err id="cal-err" text={error} />
-          <button className="btn" type="submit" disabled={busy}>Add to calendar</button>
-        </form>
+        <Form onSubmit={(e) => { e.preventDefault(); run(() => W.calendar.create(m.id, { kind, title, startsAt: new Date(when).toISOString() }), () => { setTitle(''); l.reload() }) }}>
+          <SelectField id="cal-kind" label="Type" value={kind} onChange={(e) => setKind(e.target.value as typeof kind)}>
+            <option value="hearing">Hearing</option><option value="deadline">Deadline</option><option value="meeting">Meeting</option>
+          </SelectField>
+          <TextField id="cal-title" label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <TextField id="cal-when" label="Date and time" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} required slotProps={{ inputLabel: { shrink: true } }} />
+          <Err text={error} />
+          <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Add to calendar</Button>
+        </Form>
       )}
-    </Card>
+    </Section>
   )
 }
 
@@ -165,46 +201,51 @@ function DocumentsTab({ m }: { m: W.Matter }) {
   const edit = W.canEdit(m.myLevel)
   return (
     <>
-      <Card title="Documents">
+      <Section title="Documents">
         <State loading={docs.loading} error={docs.error} onRetry={docs.reload} empty={docs.data && docs.data.items.length === 0 ? 'No documents registered.' : undefined}>
-          <ul className="list">{docs.data?.items.map((d) => (
-            <li className="listrow" key={d.id}>
-              <div><strong>{d.name}</strong><small>{d.fileType}{d.extractionConfidence != null ? ` · extraction confidence ${Math.round(d.extractionConfidence * 100)}%` : ''}</small></div>
-              <div className="actions">
-                <Pill kind={d.reviewStatus === 'reviewed' ? 'green' : 'amber'}>{d.reviewStatus === 'reviewed' ? 'Reviewed' : 'Needs review'}</Pill>
-                {edit && d.reviewStatus !== 'reviewed' && <button type="button" className="btn small" disabled={busy} onClick={() => run(() => W.documents.action(m.id, d, 'review'), docs.reload)}>Mark reviewed</button>}
-              </div>
-            </li>))}</ul>
+          {docs.data?.items.map((d) => (
+            <Row key={d.id}>
+              <div><strong>{d.name}</strong><Typography variant="caption" component="div" color="text.secondary">{d.fileType}{d.extractionConfidence != null ? ` · extraction confidence ${Math.round(d.extractionConfidence * 100)}%` : ''}</Typography></div>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <Status kind={d.reviewStatus === 'reviewed' ? 'green' : 'amber'}>{d.reviewStatus === 'reviewed' ? 'Reviewed' : 'Needs review'}</Status>
+                {edit && d.reviewStatus !== 'reviewed' && <Button size="small" variant="outlined" disabled={busy} onClick={() => run(() => W.documents.action(m.id, d, 'review'), docs.reload)}>Mark reviewed</Button>}
+              </Stack>
+            </Row>
+          ))}
         </State>
         {edit && (
-          <form onSubmit={(e) => { e.preventDefault(); run(() => W.documents.create(m.id, { name, fileType: type, extractedText: text }), () => { setName(''); setText(''); docs.reload() }) }}>
-            <p className="tiny muted">Only the register entry and extracted text are stored; the file itself is not uploaded.</p>
-            <div className="field"><label htmlFor="doc-name">Document name</label><input id="doc-name" value={name} onChange={(e) => setName(e.target.value)} required /></div>
-            <div className="field"><label htmlFor="doc-type">File type</label>
-              <select id="doc-type" value={type} onChange={(e) => setType(e.target.value)}>{['pdf', 'docx', 'image', 'text', 'spreadsheet', 'other'].map((t) => <option key={t}>{t}</option>)}</select></div>
-            <div className="field"><label htmlFor="doc-text">Extracted text (optional)</label><textarea id="doc-text" rows={3} value={text} onChange={(e) => setText(e.target.value)} /></div>
-            <Err id="doc-err" text={error} />
-            <button className="btn" type="submit" disabled={busy}>Register document</button>
-          </form>
+          <Form onSubmit={(e) => { e.preventDefault(); run(() => W.documents.create(m.id, { name, fileType: type, extractedText: text }), () => { setName(''); setText(''); docs.reload() }) }}>
+            <Typography variant="caption" color="text.secondary" component="p">Only the register entry and extracted text are stored; the file itself is not uploaded.</Typography>
+            <TextField id="doc-name" label="Document name" value={name} onChange={(e) => setName(e.target.value)} required />
+            <SelectField id="doc-type" label="File type" value={type} onChange={(e) => setType(e.target.value)}>
+              {['pdf', 'docx', 'image', 'text', 'spreadsheet', 'other'].map((t) => <option key={t}>{t}</option>)}
+            </SelectField>
+            <TextField id="doc-text" label="Extracted text (optional)" multiline rows={3} value={text} onChange={(e) => setText(e.target.value)} />
+            <Err text={error} />
+            <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Register document</Button>
+          </Form>
         )}
-      </Card>
-      <Card title="Voice-note transcripts">
-        <p className="tiny muted">Dictation happens in your browser; only the transcript text is sent to the server.</p>
+      </Section>
+      <Section title="Voice-note transcripts">
+        <Typography variant="caption" color="text.secondary" component="p">Dictation happens in your browser; only the transcript text is sent to the server.</Typography>
         <State loading={notes.loading} error={notes.error} onRetry={notes.reload} empty={notes.data && notes.data.items.length === 0 ? 'No transcripts yet.' : undefined}>
-          <ul className="list">{notes.data?.items.map((n) => (
-            <li className="listrow" key={n.id}>
+          {notes.data?.items.map((n) => (
+            <Row key={n.id}>
               <div style={{ whiteSpace: 'pre-wrap' }}>{n.transcript}</div>
-              <div className="actions"><Pill kind={n.reviewStatus === 'reviewed' ? 'green' : 'amber'}>{n.reviewStatus === 'reviewed' ? 'Reviewed' : 'Needs review'}</Pill>
-                {edit && n.reviewStatus !== 'reviewed' && <button type="button" className="btn small" disabled={busy} onClick={() => run(() => W.voiceNotes.action(m.id, n, 'review'), notes.reload)}>Mark reviewed</button>}</div>
-            </li>))}</ul>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <Status kind={n.reviewStatus === 'reviewed' ? 'green' : 'amber'}>{n.reviewStatus === 'reviewed' ? 'Reviewed' : 'Needs review'}</Status>
+                {edit && n.reviewStatus !== 'reviewed' && <Button size="small" variant="outlined" disabled={busy} onClick={() => run(() => W.voiceNotes.action(m.id, n, 'review'), notes.reload)}>Mark reviewed</Button>}
+              </Stack>
+            </Row>
+          ))}
         </State>
         {edit && (
-          <form onSubmit={(e) => { e.preventDefault(); run(() => W.voiceNotes.create(m.id, { transcript }), () => { setTranscript(''); notes.reload() }) }}>
-            <div className="field"><label htmlFor="vn-text">Transcript</label><textarea id="vn-text" rows={3} value={transcript} onChange={(e) => setTranscript(e.target.value)} required /></div>
-            <button className="btn" type="submit" disabled={busy}>Save transcript</button>
-          </form>
+          <Form onSubmit={(e) => { e.preventDefault(); run(() => W.voiceNotes.create(m.id, { transcript }), () => { setTranscript(''); notes.reload() }) }}>
+            <TextField id="vn-text" label="Transcript" multiline rows={3} value={transcript} onChange={(e) => setTranscript(e.target.value)} required />
+            <Button type="submit" variant="outlined" disabled={busy} sx={{ mt: 1 }}>Save transcript</Button>
+          </Form>
         )}
-      </Card>
+      </Section>
     </>
   )
 }
@@ -218,27 +259,27 @@ function DraftsTab({ m }: { m: W.Matter }) {
   const edit = W.canEdit(m.myLevel)
   return (
     <>
-      <Notice>Everything here is a draft until an advocate approves it. This release uses demonstration content only: no matter text is sent to an AI service, and nothing here is legal advice.</Notice>
+      <Message severity="warning">Everything here is a draft until an advocate approves it. This release uses demonstration content only: no matter text is sent to an AI service, and nothing here is legal advice.</Message>
       {edit && (
-        <Card title="Research (demonstration)">
-          <form onSubmit={(e) => { e.preventDefault(); run(() => W.drafts.research(m.id, query), () => { setQuery(''); l.reload() }) }}>
-            <div className="field"><label htmlFor="rs-q">Search the demonstration sources</label><input id="rs-q" value={query} onChange={(e) => setQuery(e.target.value)} required /></div>
-            <Err id="rs-err" text={error} />
-            <button className="btn" type="submit" disabled={busy}>Search</button>
-          </form>
-        </Card>
+        <Section title="Research (demonstration)">
+          <Box component="form" onSubmit={(e: FormEvent) => { e.preventDefault(); run(() => W.drafts.research(m.id, query), () => { setQuery(''); l.reload() }) }}>
+            <TextField id="rs-q" label="Search the demonstration sources" value={query} onChange={(e) => setQuery(e.target.value)} required />
+            <Err text={error} />
+            <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>Search</Button>
+          </Box>
+        </Section>
       )}
       <State loading={l.loading} error={l.error} onRetry={l.reload} empty={l.data && l.data.items.length === 0 ? 'No drafts yet.' : undefined}>
         {l.data?.items.map((d) => <DraftCard key={d.id} draft={d} canApprove={edit} busy={busy} onApprove={() => run(() => W.drafts.approve(m.id, d), l.reload)} />)}
       </State>
       {edit && (
-        <Card title="Write a draft note">
-          <form onSubmit={(e) => { e.preventDefault(); run(() => W.drafts.create(m.id, { kind: 'summary', title, body, sources: [] }), () => { setTitle(''); setBody(''); l.reload() }) }}>
-            <div className="field"><label htmlFor="dr-title">Title</label><input id="dr-title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
-            <div className="field"><label htmlFor="dr-body">Text</label><textarea id="dr-body" rows={4} value={body} onChange={(e) => setBody(e.target.value)} required /></div>
-            <button className="btn" type="submit" disabled={busy}>Save draft</button>
-          </form>
-        </Card>
+        <Section title="Write a draft note">
+          <Box component="form" onSubmit={(e: FormEvent) => { e.preventDefault(); run(() => W.drafts.create(m.id, { kind: 'summary', title, body, sources: [] }), () => { setTitle(''); setBody(''); l.reload() }) }}>
+            <TextField id="dr-title" label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            <TextField id="dr-body" label="Text" multiline rows={4} value={body} onChange={(e) => setBody(e.target.value)} required />
+            <Button type="submit" variant="outlined" disabled={busy} sx={{ mt: 1 }}>Save draft</Button>
+          </Box>
+        </Section>
       )}
     </>
   )
@@ -257,43 +298,49 @@ function BillingTab({ m }: { m: W.Matter }) {
   const edit = W.canEdit(m.myLevel)
   return (
     <>
-      <Card title="Time entries">
+      <Section title="Time entries">
         <State loading={te.loading} error={te.error} onRetry={te.reload} empty={te.data && te.data.items.length === 0 ? 'No time recorded.' : undefined}>
-          <ul className="list">{te.data?.items.map((t) => (
-            <li className="listrow" key={t.id}>
-              <label>{edit && <input type="checkbox" checked={picked.includes(t.id)} onChange={(e) => setPicked(e.target.checked ? [...picked, t.id] : picked.filter((x) => x !== t.id))} />} {t.workedOn} · {t.minutes} min · {t.description || 'No description'}</label>
+          {te.data?.items.map((t) => (
+            <Row key={t.id}>
+              <FormControlLabel
+                control={edit ? <Checkbox checked={picked.includes(t.id)} onChange={(e) => setPicked(e.target.checked ? [...picked, t.id] : picked.filter((x) => x !== t.id))} /> : <span />}
+                label={`${t.workedOn} · ${t.minutes} min · ${t.description || 'No description'}`} />
               <strong>{W.rupees(Math.round((t.minutes * t.ratePaise) / 60))}</strong>
-            </li>))}</ul>
+            </Row>
+          ))}
         </State>
         {edit && (
-          <form onSubmit={(e) => { e.preventDefault(); run(() => W.timeEntries.create(m.id, { workedOn: day0, minutes: Number(minutes), ratePaise: Math.round(Number(rate) * 100), description: desc }), () => { setDesc(''); te.reload() }) }}>
-            <div className="field"><label htmlFor="te-day">Date worked</label><input id="te-day" type="date" value={day0} onChange={(e) => setDay0(e.target.value)} required /></div>
-            <div className="field"><label htmlFor="te-min">Minutes</label><input id="te-min" type="number" min={1} max={1440} value={minutes} onChange={(e) => setMinutes(e.target.value)} required /></div>
-            <div className="field"><label htmlFor="te-rate">Rate per hour (₹)</label><input id="te-rate" type="number" min={0} value={rate} onChange={(e) => setRate(e.target.value)} required /></div>
-            <div className="field"><label htmlFor="te-desc">Description</label><input id="te-desc" value={desc} onChange={(e) => setDesc(e.target.value)} /></div>
-            <Err id="te-err" text={error} />
-            <button className="btn" type="submit" disabled={busy}>Add time</button>
-          </form>
+          <Form onSubmit={(e) => { e.preventDefault(); run(() => W.timeEntries.create(m.id, { workedOn: day0, minutes: Number(minutes), ratePaise: Math.round(Number(rate) * 100), description: desc }), () => { setDesc(''); te.reload() }) }}>
+            <TextField id="te-day" label="Date worked" type="date" value={day0} onChange={(e) => setDay0(e.target.value)} required slotProps={{ inputLabel: { shrink: true } }} />
+            <TextField id="te-min" label="Minutes" type="number" value={minutes} onChange={(e) => setMinutes(e.target.value)} required slotProps={{ htmlInput: { min: 1, max: 1440 } }} />
+            <TextField id="te-rate" label="Rate per hour (₹)" type="number" value={rate} onChange={(e) => setRate(e.target.value)} required slotProps={{ htmlInput: { min: 0 } }} />
+            <TextField id="te-desc" label="Description" value={desc} onChange={(e) => setDesc(e.target.value)} />
+            <Err text={error} />
+            <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Add time</Button>
+          </Form>
         )}
-      </Card>
-      <Card title="Invoices">
-        <Notice>Totals are calculated by the server from the time entries. An invoice is a draft until approved; approving records the decision but does not send anything.</Notice>
+      </Section>
+      <Section title="Invoices">
+        <Message severity="info">Totals are calculated by the server from the time entries. An invoice is a draft until approved; approving records the decision but does not send anything.</Message>
         <State loading={inv.loading} error={inv.error} onRetry={inv.reload} empty={inv.data && inv.data.items.length === 0 ? 'No invoices yet.' : undefined}>
-          <ul className="list">{inv.data?.items.map((i) => (
-            <li className="listrow" key={i.id}>
-              <div><strong>{i.number}</strong><small>{i.lines.length} line(s) · {W.rupees(i.totalPaise)}</small></div>
-              <div className="actions"><Pill kind={i.status === 'approved' ? 'green' : 'amber'}>{i.status === 'approved' ? 'Approved' : 'Draft'}</Pill>
-                {edit && i.status === 'draft' && <button type="button" className="btn small" disabled={busy} onClick={() => run(() => W.invoices.approve(m.id, i), inv.reload)}>Approve invoice</button>}</div>
-            </li>))}</ul>
+          {inv.data?.items.map((i) => (
+            <Row key={i.id}>
+              <div><strong>{i.number}</strong><Typography variant="caption" component="div" color="text.secondary">{i.lines.length} line(s) · {W.rupees(i.totalPaise)}</Typography></div>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <Status kind={i.status === 'approved' ? 'green' : 'amber'}>{i.status === 'approved' ? 'Approved' : 'Draft'}</Status>
+                {edit && i.status === 'draft' && <Button size="small" variant="outlined" disabled={busy} onClick={() => run(() => W.invoices.approve(m.id, i), inv.reload)}>Approve invoice</Button>}
+              </Stack>
+            </Row>
+          ))}
         </State>
         {edit && (
-          <form onSubmit={(e) => { e.preventDefault(); run(() => W.invoices.create(m.id, { number, timeEntryIds: picked }), () => { setNumber(''); setPicked([]); inv.reload() }) }}>
-            <p className="tiny muted">Tick time entries above, then give the invoice a number.</p>
-            <div className="field"><label htmlFor="inv-no">Invoice number</label><input id="inv-no" value={number} onChange={(e) => setNumber(e.target.value)} required /></div>
-            <button className="btn" type="submit" disabled={busy || picked.length === 0}>Create invoice from {picked.length} entr{picked.length === 1 ? 'y' : 'ies'}</button>
-          </form>
+          <Form onSubmit={(e) => { e.preventDefault(); run(() => W.invoices.create(m.id, { number, timeEntryIds: picked }), () => { setNumber(''); setPicked([]); inv.reload() }) }}>
+            <Typography variant="caption" color="text.secondary" component="p">Tick time entries above, then give the invoice a number.</Typography>
+            <TextField id="inv-no" label="Invoice number" value={number} onChange={(e) => setNumber(e.target.value)} required />
+            <Button type="submit" variant="outlined" disabled={busy || picked.length === 0} sx={{ mt: 1 }}>Create invoice from {picked.length} entr{picked.length === 1 ? 'y' : 'ies'}</Button>
+          </Form>
         )}
-      </Card>
+      </Section>
     </>
   )
 }
@@ -305,32 +352,35 @@ function AccessTab({ m }: { m: W.Matter }) {
   const [level, setLevel] = useState<W.Level>('view')
   const owner = m.myLevel === 'owner'
   return (
-    <Card title="Who has access">
+    <Section title="Who has access">
       <State loading={l.loading} error={l.error} onRetry={l.reload}>
-        <ul className="list">{l.data?.map((a) => (
-          <li className="listrow" key={a.personId}>
-            <div><strong>{a.displayName}</strong><small>{a.level}</small></div>
+        {l.data?.map((a) => (
+          <Row key={a.personId}>
+            <div><strong>{a.displayName}</strong><Typography variant="caption" component="div" color="text.secondary">{a.level}</Typography></div>
             {owner && (
-              <div className="actions">
-                <label className="sr-only" htmlFor={`lv-${a.personId}`}>Access level for {a.displayName}</label>
-                <select id={`lv-${a.personId}`} value={a.level} disabled={busy} onChange={(e) => run(() => W.matters.share(m.id, a.personId, e.target.value as W.Level), l.reload)}>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <SelectField id={`lv-${a.personId}`} label={`Access level for ${a.displayName}`} value={a.level} disabled={busy} fullWidth={false} margin="none"
+                  onChange={(e) => run(() => W.matters.share(m.id, a.personId, e.target.value as W.Level), l.reload)}>
                   <option value="view">view</option><option value="edit">edit</option><option value="owner">owner</option>
-                </select>
-                <button type="button" className="btn small" disabled={busy} onClick={() => run(() => W.matters.unshare(m.id, a.personId), l.reload)}>Remove</button>
-              </div>)}
-          </li>))}</ul>
+                </SelectField>
+                <Button size="small" variant="outlined" disabled={busy} onClick={() => run(() => W.matters.unshare(m.id, a.personId), l.reload)}>Remove</Button>
+              </Stack>
+            )}
+          </Row>
+        ))}
       </State>
       {owner && (
-        <form onSubmit={(e) => { e.preventDefault(); run(async () => { const p = await W.matters.findPerson(email); await W.matters.share(m.id, p.id, level) }, () => { setEmail(''); l.reload() }) }}>
-          <div className="field"><label htmlFor="ac-email">Share with (their account e-mail)</label><input id="ac-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
-          <div className="field"><label htmlFor="ac-level">Access level</label>
-            <select id="ac-level" value={level} onChange={(e) => setLevel(e.target.value as W.Level)}><option value="view">view only</option><option value="edit">edit</option><option value="owner">owner</option></select></div>
-          <Err id="ac-err" text={error} />
-          <button className="btn" type="submit" disabled={busy}>Share</button>
-        </form>
+        <Form onSubmit={(e) => { e.preventDefault(); run(async () => { const p = await W.matters.findPerson(email); await W.matters.share(m.id, p.id, level) }, () => { setEmail(''); l.reload() }) }}>
+          <TextField id="ac-email" label="Share with (their account e-mail)" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <SelectField id="ac-level" label="Access level" value={level} onChange={(e) => setLevel(e.target.value as W.Level)}>
+            <option value="view">view only</option><option value="edit">edit</option><option value="owner">owner</option>
+          </SelectField>
+          <Err text={error} />
+          <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>Share</Button>
+        </Form>
       )}
-      {!owner && <p className="tiny muted">Only an owner can change who has access.</p>}
-    </Card>
+      {!owner && <Typography variant="caption" color="text.secondary" component="p">Only an owner can change who has access.</Typography>}
+    </Section>
   )
 }
 
@@ -339,19 +389,24 @@ export function AuditView({ matterId }: { matterId: string }) {
   const { error, busy, run } = useAction()
   const [verdict, setVerdict] = useState('')
   return (
-    <Card title="Audit trail">
-      <p className="tiny muted">Who viewed, created, changed, shared or approved something on this matter. Entries cannot be edited or removed.</p>
-      <button type="button" className="btn small" disabled={busy} onClick={() => run(async () => { const r = await W.matters.verifyAudit(matterId); setVerdict(r.ok ? 'The trail is intact.' : `The trail was altered at entry ${r.firstBadId}.`) })}>Verify the trail</button>
-      <div role="status">{verdict}</div>
-      <Err id="au-err" text={error} />
+    <Section title="Audit trail">
+      <Typography variant="caption" color="text.secondary" component="p" sx={{ mb: 1 }}>Who viewed, created, changed, shared or approved something on this matter. Entries cannot be edited or removed.</Typography>
+      <Button size="small" variant="outlined" startIcon={<VerifiedUserIcon />} disabled={busy}
+        onClick={() => run(async () => { const r = await W.matters.verifyAudit(matterId); setVerdict(r.ok ? 'The trail is intact.' : `The trail was altered at entry ${r.firstBadId}.`) })}>Verify the trail</Button>
+      <div role="status" style={{ minHeight: 24 }}>{verdict}</div>
+      <Err text={error} />
       <State loading={l.loading} error={l.error} onRetry={l.reload} empty={l.data && l.data.items.length === 0 ? 'No entries.' : undefined}>
-        <div className="tablewrap"><table>
-          <caption className="sr-only">Audit trail, newest first</caption>
-          <thead><tr><th scope="col">When</th><th scope="col">Action</th><th scope="col">Item</th><th scope="col">Detail</th></tr></thead>
-          <tbody>{l.data?.items.map((e) => <tr key={e.id}><td>{day(e.time)}</td><td>{e.action}</td><td>{e.targetType}</td><td>{e.detail}</td></tr>)}</tbody>
-        </table></div>
+        <TableContainer>
+          <Table size="small">
+            <caption style={{ position: 'absolute', left: -9999 }}>Audit trail, newest first</caption>
+            <TableHead><TableRow><TableCell>When</TableCell><TableCell>Action</TableCell><TableCell>Item</TableCell><TableCell>Detail</TableCell></TableRow></TableHead>
+            <TableBody>{l.data?.items.map((e) => (
+              <TableRow key={e.id}><TableCell>{day(e.time)}</TableCell><TableCell>{e.action}</TableCell><TableCell>{e.targetType}</TableCell><TableCell>{e.detail}</TableCell></TableRow>
+            ))}</TableBody>
+          </Table>
+        </TableContainer>
       </State>
-    </Card>
+    </Section>
   )
 }
 
@@ -366,17 +421,17 @@ export default function MatterWorkspace({ id }: { id: string }) {
   return (
     <>
       <PageHead title={matter?.title ?? 'Matter'} sub={matter ? `${matter.clientRef || 'No client reference'} · ${matter.status.replace('_', ' ')}` : 'Loading the matter…'}>
-        <a className="btn" href="#/cases">All matters</a>
+        <Button variant="outlined" href="#/cases">All matters</Button>
       </PageHead>
       <State loading={m.loading && !matter} error={m.error} onRetry={m.reload}>
         {matter && (
           <>
-            <div className="tabrow" role="tablist" aria-label="Matter sections">
-              {tabs.map((t) => (
-                <button key={t} role="tab" id={`mt-${t}`} aria-selected={tab === t} aria-controls="mt-panel" className={`tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>{t}</button>
-              ))}
-            </div>
-            <div id="mt-panel" role="tabpanel" aria-labelledby={`mt-${tab}`} style={{ marginTop: 16 }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs value={tab} onChange={(_, v) => setTab(v)} variant="scrollable" scrollButtons="auto" aria-label="Matter sections">
+                {tabs.map((t) => <Tab key={t} value={t} label={t} id={`mt-${t}`} aria-controls="mt-panel" />)}
+              </Tabs>
+            </Box>
+            <Box id="mt-panel" role="tabpanel" aria-labelledby={`mt-${tab}`} sx={{ mt: 2 }}>
               {tab === 'Overview' && <Overview m={matter} reload={m.reload} onDeleted={() => { window.location.hash = '#/cases' }} />}
               {tab === 'Tasks' && <TasksTab m={matter} />}
               {tab === 'Calendar' && <CalendarTab m={matter} />}
@@ -385,8 +440,8 @@ export default function MatterWorkspace({ id }: { id: string }) {
               {tab === 'Time & invoices' && <BillingTab m={matter} />}
               {tab === 'Access' && <AccessTab m={matter} />}
               {tab === 'Audit' && <AuditView matterId={matter.id} />}
-            </div>
-            <p className="tiny muted">Signed in as {person?.displayName}.</p>
+            </Box>
+            <Typography variant="caption" color="text.secondary" component="p" sx={{ mt: 1 }}>Signed in as {person?.displayName}.</Typography>
           </>
         )}
       </State>

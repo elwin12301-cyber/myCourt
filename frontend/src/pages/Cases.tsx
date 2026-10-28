@@ -3,6 +3,19 @@ import { apiEnabled, messageOf } from '../api/client'
 import * as W from '../api/workspace'
 import { matterIdFromHash } from '../router'
 import MatterWorkspace from './MatterWorkspace'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TablePagination from '@mui/material/TablePagination'
+import TableRow from '@mui/material/TableRow'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import AddIcon from '@mui/icons-material/Add'
+import { Message, Section, Status } from '../components/mui'
 import { useApp } from '../context'
 import { Btn, Card, Notice, PageHead, Pill, Quick, Stat } from '../components/ui'
 import { newMatterModal } from './modals'
@@ -21,41 +34,58 @@ function LiveMatters() {
   const [title, setTitle] = useState('')
   const [ref, setRef] = useState('')
   const [busy, setBusy] = useState(false)
+  const [filter, setFilter] = useState('')
+  const [page, setPage] = useState(0)
   const load = () => { setLoading(true); W.matters.list().then((p) => { setItems(p.items); setError('') }).catch((e) => setError(messageOf(e))).finally(() => setLoading(false)) }
   useEffect(load, [])
   const create = async (e: FormEvent) => {
     e.preventDefault(); setBusy(true)
     try { const m = await W.matters.create(title, ref); window.location.hash = `#/caseDetail/${m.id}` } catch (err) { setError(messageOf(err)) } finally { setBusy(false) }
   }
+  const shown = items.filter((m) => `${m.title} ${m.clientRef} ${m.status} ${m.myLevel}`.toLowerCase().includes(filter.toLowerCase()))
+  const PER = 10
+  const last = Math.max(0, Math.ceil(shown.length / PER) - 1)
+  const at = Math.min(page, last)
+  const rows = shown.slice(at * PER, at * PER + PER)
   return (
     <>
       <PageHead title="Cases & matters" sub="Your matters, saved on the server and private to the people you share them with." />
-      <Notice>Demonstration mode: matters hold fictional data only. Do not enter real client information.</Notice>
-      <Card title="Create a matter">
-        <form onSubmit={create}>
-          <div className="field"><label htmlFor="nm-title">Matter title</label><input id="nm-title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
-          <div className="field"><label htmlFor="nm-ref">Client reference (optional)</label><input id="nm-ref" value={ref} onChange={(e) => setRef(e.target.value)} /></div>
-          <button className="btn primary" type="submit" disabled={busy}>Create matter</button>
-        </form>
-      </Card>
-      <Card title="Matter register">
-        {error && <div role="alert" className="notice">{error} <button type="button" className="btn small" onClick={load}>Retry</button></div>}
-        {loading && <div role="status" className="muted">Loading…</div>}
-        {!loading && !error && items.length === 0 && <div className="empty">You have no matters yet. Create one above.</div>}
+      <Message severity="info">Demonstration mode: matters hold fictional data only. Do not enter real client information.</Message>
+      <Section title="Create a matter">
+        <Box component="form" onSubmit={create}>
+          <TextField id="nm-title" label="Matter title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <TextField id="nm-ref" label="Client reference (optional)" value={ref} onChange={(e) => setRef(e.target.value)} />
+          <Button type="submit" variant="contained" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Create matter</Button>
+        </Box>
+      </Section>
+      <Section title="Matter register">
+        {error && <Message severity="error" onRetry={load}>{error}</Message>}
+        {loading && <Typography role="status" color="text.secondary">Loading…</Typography>}
+        {!loading && !error && items.length === 0 && <Typography color="text.secondary">You have no matters yet. Create one above.</Typography>}
         {items.length > 0 && (
-          <div className="tablewrap"><table>
-            <caption className="sr-only">Your matters</caption>
-            <thead><tr><th scope="col">Matter</th><th scope="col">Status</th><th scope="col">Your access</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
-            <tbody>{items.map((m) => (
-              <tr key={m.id}>
-                <td><strong>{m.title}</strong><small>{m.clientRef || 'No client reference'}{m.isDemo ? ' · demonstration' : ''}</small></td>
-                <td><Pill kind={m.status === 'open' ? 'green' : m.status === 'on_hold' ? 'amber' : ''}>{m.status.replace('_', ' ')}</Pill></td>
-                <td>{m.myLevel}</td>
-                <td><a className="btn small" href={`#/caseDetail/${m.id}`}>Open matter<span className="sr-only">: {m.title}</span></a></td>
-              </tr>))}</tbody>
-          </table></div>
+          <>
+            <TextField id="nm-filter" label="Filter matters" value={filter} onChange={(e) => { setFilter(e.target.value); setPage(0) }} placeholder="Title, reference, status or access" />
+            <TableContainer>
+              <Table size="small">
+                <caption style={{ position: 'absolute', left: -9999 }}>Your matters</caption>
+                <TableHead><TableRow><TableCell>Matter</TableCell><TableCell>Status</TableCell><TableCell>Your access</TableCell><TableCell><span className="sr-only">Actions</span></TableCell></TableRow></TableHead>
+                <TableBody>
+                  {rows.map((m) => (
+                    <TableRow key={m.id} hover>
+                      <TableCell><strong>{m.title}</strong><Typography variant="caption" component="div" color="text.secondary">{m.clientRef || 'No client reference'}{m.isDemo ? ' · demonstration' : ''}</Typography></TableCell>
+                      <TableCell><Status kind={m.status === 'open' ? 'green' : m.status === 'on_hold' ? 'amber' : ''}>{m.status.replace('_', ' ')}</Status></TableCell>
+                      <TableCell>{m.myLevel}</TableCell>
+                      <TableCell align="right"><Button size="small" variant="outlined" href={`#/caseDetail/${m.id}`}>Open matter<span className="sr-only">: {m.title}</span></Button></TableCell>
+                    </TableRow>
+                  ))}
+                  {rows.length === 0 && <TableRow><TableCell colSpan={4}>No matters match the filter.</TableCell></TableRow>}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination component="div" count={shown.length} page={at} rowsPerPage={PER} rowsPerPageOptions={[PER]} onPageChange={(_, p) => setPage(p)} />
+          </>
         )}
-      </Card>
+      </Section>
     </>
   )
 }

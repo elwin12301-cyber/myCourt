@@ -72,7 +72,15 @@ npm run dev
 
 Use `localhost` (not `127.0.0.1`) for both the page and `VITE_API_URL`: the session cookie only travels between pages on the same site.
 
-With the API address set, the workspace asks you to **create an account or sign in**. Your matters, tasks, calendar entries, documents, drafts, time entries and invoices are then saved on the server and are visible only to the people you share each matter with (view, edit or owner). Every action is recorded in an append-only audit trail that owners can read and verify. The eCourts Services site, Case status, Cause list and Court orders stay open without signing in. To try it with ready-made fictional data: `python -m app.cli seed-demo` (prints a password once), then sign in as `demo.advocate.one@example.invalid`.
+With the API address set, the workspace asks you to **create an account or sign in**. Your matters, tasks, calendar entries, documents, drafts, time entries and invoices are then saved on the server and are visible only to the people you share each matter with (view, edit or owner). Every action is recorded in an append-only audit trail that owners can read and verify. The eCourts Services site, Case status, Cause list and Court orders stay open without signing in. To try it with ready-made fictional data (all of it is loaded into PostgreSQL and read back through the API):
+
+```bash
+python -m app.cli seed-demo                                   # two demo advocates and three matters (prints a password once)
+python -m app.cli seed-demo --matters 100 --owner <your account e-mail>   # 100 fictional matters with tasks, hearings, documents, drafts, time entries
+python -m app.cli seed-demo --services 100                    # tops cases, caveats and processes up to 100 each
+```
+
+Court rooms (8) and locations (14) are the demo court hierarchy itself and are not multiplied. Every generated name is obviously fictional ("Sample Party 042").
 
 On start the backend applies its database migrations and loads the fictional Services-site data (8 cases, 8 court rooms, 6 caveats, 3 processes, 14 locations). Without `VITE_API_URL` the frontend uses its mock data as before.
 
@@ -121,6 +129,10 @@ All endpoints are under `/api`; the interactive reference is at `/docs`, and the
 The server validates every request again (unknown fields are rejected), so the front end's checks are a convenience, not the control. Searching the CNR `ERROR00000000000` returns 503 to exercise the retry state.
 
 Operator commands (`python -m app.cli ...`: `migrate`, `seed-demo`, `remove-demo`, `export`, `import`, `check-real-data`) are described in [docs/backend-operations.md](docs/backend-operations.md).
+
+## User interface library
+
+The signed-in screens (sign-in, Cases, the Dashboard summary and the matter workspace) use **Material UI** (`@mui/material`, with Emotion and `@mui/icons-material`). Why a library: it gives these data-heavy screens accessible tabs, tables with pagination, form fields with labels and error text, alerts and status chips without hand-writing each one. The theme is in `frontend/src/theme.ts` (the myCourt colours, sentence-case buttons). `CssBaseline` is deliberately not used, so the older screens and the Services site keep their own styles. Cost: the production bundle grew from about 184 kB to about 294 kB gzipped; code-splitting the signed-in screens is a possible follow-up. The older screens have not been migrated.
 
 ## What's in the app
 

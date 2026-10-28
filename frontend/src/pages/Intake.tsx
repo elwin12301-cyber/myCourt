@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useApp } from '../context'
-import { Btn, Card, Field, Notice, PageHead, Pill, Row } from '../components/ui'
+import { Btn, Card, Field, Notice, PageHead, Pill, Row, Input, Select, Textarea } from '../components/ui'
 
 export default function IntakePage() {
   const { toast } = useApp()
@@ -21,29 +21,29 @@ export default function IntakePage() {
         <Card title="New client / matter intake">
           <form onSubmit={submit}>
             <div className="grid layout2">
-              <Field label="Client name"><input required placeholder="Full legal name" /></Field>
-              <Field label="Opposing party"><input required placeholder="Name / entity" /></Field>
+              <Field label="Client name"><Input required placeholder="Full legal name" /></Field>
+              <Field label="Opposing party"><Input required placeholder="Name / entity" /></Field>
             </div>
             <Field label="Potential conflict check">
-              <select required defaultValue="">
+              <Select required defaultValue="">
                 <option value="">Select status</option>
                 <option>Clear — checked by advocate</option>
                 <option>Potential conflict — needs review</option>
                 <option>Not yet checked</option>
-              </select>
+              </Select>
             </Field>
             <div className="grid layout2">
               <Field label="Practice area">
-                <select><option>Criminal</option><option>Civil</option><option>Writ</option><option>Family</option><option>Commercial</option></select>
+                <Select><option>Criminal</option><option>Civil</option><option>Writ</option><option>Family</option><option>Commercial</option></Select>
               </Field>
-              <Field label="Jurisdiction / court"><input placeholder="Court, state, jurisdiction" /></Field>
+              <Field label="Jurisdiction / court"><Input placeholder="Court, state, jurisdiction" /></Field>
             </div>
-            <Field label="Key facts and important dates"><textarea placeholder="Chronology, dates, notices, orders, known deadlines…" /></Field>
-            <Field label="Documents received"><textarea placeholder="List documents supplied and missing documents" /></Field>
+            <Field label="Key facts and important dates"><Textarea placeholder="Chronology, dates, notices, orders, known deadlines…" /></Field>
+            <Field label="Documents received"><Textarea placeholder="List documents supplied and missing documents" /></Field>
             <Field label="Engagement / fee terms status">
-              <select><option>Needs discussion</option><option>Drafted for review</option><option>Agreed and documented</option></select>
+              <Select><option>Needs discussion</option><option>Drafted for review</option><option>Agreed and documented</option></Select>
             </Field>
-            <button className="btn primary" type="submit">Save intake draft</button>
+            <Btn kind="primary" type="submit">Save intake draft</Btn>
           </form>
           {saved && <div className="successnote">Intake draft saved in this prototype session. Conflict check and urgency review still require completion.</div>}
         </Card>

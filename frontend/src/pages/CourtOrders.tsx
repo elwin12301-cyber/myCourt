@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from 'react'
-import { Btn, Card, Notice, PageHead } from '../components/ui'
+import { Btn, Card, Notice, PageHead, Input, Select } from '../components/ui'
 import ExternalLink from '../components/ExternalLink'
 import { useApp } from '../context'
 import { useT } from '../i18n/context'
@@ -133,7 +133,7 @@ export default function CourtOrdersPage({ initialMode = 'party', initial, hideOt
           {mode === 'party' && (
             <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
               <Field id="name" label="Petitioner/Respondent" required error={errors.name} hint="At least 3 characters.">
-                <input id="name" value={v.name} aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-err' : undefined} onChange={(e) => patch({ name: e.target.value })} />
+                <Input id="name" value={v.name} aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-err' : undefined} onChange={(e) => patch({ name: e.target.value })} />
               </Field>
               <YearField v={v} set={patch} errors={errors} label="Year" required />
             </div>
@@ -142,7 +142,7 @@ export default function CourtOrdersPage({ initialMode = 'party', initial, hideOt
             <div className="grid layout3" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
               <CaseTypeField v={v} set={patch} errors={errors} />
               <Field id="number" label="Case Number" required error={errors.number}>
-                <input id="number" inputMode="numeric" value={v.number} aria-invalid={!!errors.number} aria-describedby={errors.number ? 'number-err' : undefined} onChange={(e) => patch({ number: e.target.value })} />
+                <Input id="number" inputMode="numeric" value={v.number} aria-invalid={!!errors.number} aria-describedby={errors.number ? 'number-err' : undefined} onChange={(e) => patch({ number: e.target.value })} />
               </Field>
               <YearField v={v} set={patch} errors={errors} label="Year" required />
             </div>
@@ -150,19 +150,19 @@ export default function CourtOrdersPage({ initialMode = 'party', initial, hideOt
 
           {mode === 'courtNumber' && (
             <Field id="roomId" label="Court Number" required error={errors.roomId} hint="Court number, judge name, designation and judge period.">
-              <select id="roomId" value={roomSel} disabled={!rooms.length} aria-invalid={!!errors.roomId} aria-describedby={errors.roomId ? 'roomId-err' : undefined} onChange={(e) => setRoomSel(e.target.value)}>
+              <Select id="roomId" value={roomSel} disabled={!rooms.length} aria-invalid={!!errors.roomId} aria-describedby={errors.roomId ? 'roomId-err' : undefined} onChange={(e) => setRoomSel(e.target.value)}>
                 <option value="">{t('Select court number')}</option>
                 {rooms.map((r) => <option key={roomId(r)} value={roomId(r)}>{courtNumberLabel(r, t)}</option>)}
-              </select>
+              </Select>
             </Field>
           )}
           {mode === 'orderDate' && (
             <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
               <Field id="from" label="From Date" required error={errors.from}>
-                <input id="from" type="date" value={from} aria-invalid={!!errors.from} aria-describedby={errors.from ? 'from-err' : undefined} onChange={(e) => setFrom(e.target.value)} />
+                <Input id="from" type="date" value={from} aria-invalid={!!errors.from} aria-describedby={errors.from ? 'from-err' : undefined} onChange={(e) => setFrom(e.target.value)} />
               </Field>
               <Field id="to" label="To Date" required error={errors.to} hint="Both dates are included.">
-                <input id="to" type="date" value={to} aria-invalid={!!errors.to} aria-describedby={errors.to ? 'to-err' : undefined} onChange={(e) => setTo(e.target.value)} />
+                <Input id="to" type="date" value={to} aria-invalid={!!errors.to} aria-describedby={errors.to ? 'to-err' : undefined} onChange={(e) => setTo(e.target.value)} />
               </Field>
             </div>
           )}
@@ -171,7 +171,7 @@ export default function CourtOrdersPage({ initialMode = 'party', initial, hideOt
           <CaptchaField code={captcha} value={captchaInput} onChange={setCaptchaInput} onRefresh={refreshCaptcha} error={errors.captcha} />
 
           <div className="actions">
-            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t('Go')}</button>
+            <Btn kind="primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t('Go')}</Btn>
             <Btn onClick={reset}>Reset</Btn>
           </div>
         </form>

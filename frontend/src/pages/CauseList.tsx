@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from 'react'
-import { Btn, Card, Notice, PageHead, Pill } from '../components/ui'
+import { Btn, Card, Notice, PageHead, Pill, Input, Select, Table, TableBody, TableCell, TableHead, TableRow } from '../components/ui'
 import { useLang, useT } from '../i18n/context'
 import { generateCaptcha, verifyCaptcha } from '../features/caseStatus/captcha'
 import type { CaseRecord } from '../features/caseStatus/types'
@@ -89,21 +89,21 @@ export default function CauseListPage() {
 
           <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))' }}>
             <Field id="roomId" label="Court Name" required error={errors.roomId} hint="Court number, judge name and designation.">
-              <select id="roomId" value={roomSel} disabled={!rooms.length} aria-invalid={!!errors.roomId} aria-describedby={errors.roomId ? 'roomId-err' : undefined} onChange={(e) => setRoomSel(e.target.value)}>
+              <Select id="roomId" value={roomSel} disabled={!rooms.length} aria-invalid={!!errors.roomId} aria-describedby={errors.roomId ? 'roomId-err' : undefined} onChange={(e) => setRoomSel(e.target.value)}>
                 <option value="">{t('Select court')}</option>
                 {rooms.map((r) => <option key={roomId(r)} value={roomId(r)}>{roomLabel(r, t)}</option>)}
-              </select>
+              </Select>
             </Field>
             <Field id="date" label="Cause List Date" required error={errors.date}>
-              <input id="date" type="date" value={date} aria-invalid={!!errors.date} aria-describedby={errors.date ? 'date-err' : undefined} onChange={(e) => setDate(e.target.value)} />
+              <Input id="date" type="date" value={date} aria-invalid={!!errors.date} aria-describedby={errors.date ? 'date-err' : undefined} onChange={(e) => setDate(e.target.value)} />
             </Field>
           </div>
 
           <CaptchaField code={captcha} value={captchaInput} onChange={setCaptchaInput} onRefresh={refreshCaptcha} error={errors.captcha} />
 
           <div className="actions">
-            <button type="button" className="btn primary" disabled={phase === 'loading'} onClick={() => run('Civil')}>{t('Civil')}</button>
-            <button type="button" className="btn primary" disabled={phase === 'loading'} onClick={() => run('Criminal')}>{t('Criminal')}</button>
+            <Btn type="button" kind="primary" disabled={phase === 'loading'} onClick={() => run('Civil')}>{t('Civil')}</Btn>
+            <Btn type="button" kind="primary" disabled={phase === 'loading'} onClick={() => run('Criminal')}>{t('Criminal')}</Btn>
             <Btn onClick={reset}>Reset</Btn>
           </div>
         </form>
@@ -128,22 +128,22 @@ export default function CauseListPage() {
                   <Btn className="small" onClick={() => window.print()}>Print</Btn>
                 </div>
                 <div className="tablewrap">
-                  <table>
+                  <Table size="small">
                     <caption className="sr-only">{t('Cause list (demonstration data)')}</caption>
-                    <thead><tr><th scope="col">{t('Sr No')}</th><th scope="col">{t('Case Type/Case Number/Case Year')}</th><th scope="col">{t('Petitioner versus Respondent')}</th><th scope="col">{t('Advocates')}</th><th scope="col">{t('Purpose')}</th><th scope="col">{t('View')}</th></tr></thead>
-                    <tbody>
+                    <TableHead><TableRow><TableCell scope="col">{t('Sr No')}</TableCell><TableCell scope="col">{t('Case Type/Case Number/Case Year')}</TableCell><TableCell scope="col">{t('Petitioner versus Respondent')}</TableCell><TableCell scope="col">{t('Advocates')}</TableCell><TableCell scope="col">{t('Purpose')}</TableCell><TableCell scope="col">{t('View')}</TableCell></TableRow></TableHead>
+                    <TableBody>
                       {result.entries.map(({ serial, record: c }) => (
-                        <tr key={c.cnr}>
-                          <td>{serial}</td>
-                          <td><strong>{`${t(c.caseType)}/${c.caseNumber}/${c.year}`}</strong><small>{c.cnr}</small></td>
-                          <td>{`${c.petitioner} ${t('versus')} ${c.respondent}`}</td>
-                          <td>{c.petitionerAdvocate.name}<small>{c.respondentAdvocate.name}</small></td>
-                          <td>{t(c.stage)}</td>
-                          <td><Btn className="small" onClick={() => setSelected(c)}>{t('View')}<span className="sr-only">{` ${t('case')} ${c.caseNumber}/${c.year}`}</span></Btn></td>
-                        </tr>
+                        <TableRow key={c.cnr}>
+                          <TableCell>{serial}</TableCell>
+                          <TableCell><strong>{`${t(c.caseType)}/${c.caseNumber}/${c.year}`}</strong><small>{c.cnr}</small></TableCell>
+                          <TableCell>{`${c.petitioner} ${t('versus')} ${c.respondent}`}</TableCell>
+                          <TableCell>{c.petitionerAdvocate.name}<small>{c.respondentAdvocate.name}</small></TableCell>
+                          <TableCell>{t(c.stage)}</TableCell>
+                          <TableCell><Btn className="small" onClick={() => setSelected(c)}>{t('View')}<span className="sr-only">{` ${t('case')} ${c.caseNumber}/${c.year}`}</span></Btn></TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               </>
             )}

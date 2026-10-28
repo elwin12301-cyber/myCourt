@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useApp } from '../context'
-import { Btn, Card, Field, Notice, PageHead, Pill } from '../components/ui'
+import { Btn, Card, Field, Notice, PageHead, Pill, Input, Textarea } from '../components/ui'
 
 const CHECKS: [string, string][] = [
   ['Review latest order', 'Document review'],
@@ -31,9 +31,9 @@ export default function HearingPage() {
     title: 'Record hearing outcome',
     body: (
       <>
-        <Field label="Outcome / order summary"><textarea name="outcome" placeholder="Enter verified order outcome…" /></Field>
-        <Field label="Next date (if ordered)"><input name="nextDate" type="date" /></Field>
-        <Field label="Follow-up task"><input name="task" placeholder="Task to create" /></Field>
+        <Field label="Outcome / order summary"><Textarea name="outcome" placeholder="Enter verified order outcome…" /></Field>
+        <Field label="Next date (if ordered)"><Input name="nextDate" type="date" /></Field>
+        <Field label="Follow-up task"><Input name="task" placeholder="Task to create" /></Field>
       </>
     ),
     onSave: (fd) => {
@@ -69,9 +69,9 @@ export default function HearingPage() {
           <div className="tiny muted">{count} of {CHECKS.length} complete</div>
         </Card>
         <Card title="Draft hearing brief">
-          <Field label="Issues for determination"><textarea value={issues} onChange={(e) => setIssues(e.target.value)} /></Field>
-          <Field label="Evidence gaps"><textarea value={gaps} onChange={(e) => setGaps(e.target.value)} /></Field>
-          <Field label="Authorities (verify before use)"><textarea value={authorities} onChange={(e) => setAuthorities(e.target.value)} /></Field>
+          <Field label="Issues for determination"><Textarea value={issues} onChange={(e) => setIssues(e.target.value)} /></Field>
+          <Field label="Evidence gaps"><Textarea value={gaps} onChange={(e) => setGaps(e.target.value)} /></Field>
+          <Field label="Authorities (verify before use)"><Textarea value={authorities} onChange={(e) => setAuthorities(e.target.value)} /></Field>
           <Notice>Do not use placeholder issues or authorities in court. Replace with matter-specific, verified material.</Notice>
           <div className="actions">
             <Btn to="research">Open RAG research</Btn>

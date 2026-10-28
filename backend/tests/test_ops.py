@@ -245,3 +245,57 @@ def test_the_api_matches_the_contract():
     documented = {(m, p) for m, p in documented_routes() if p not in services}
     assert implemented - documented == set(), "implemented but not in contracts/api.md"
     assert documented - implemented == set(), "in contracts/api.md but not implemented"
+
+
+# ---------- bulk demonstration data ----------
+def test_bulk_seed_adds_labelled_matters_for_the_owner_and_is_repeatable(sm, alice, client):
+    from app.seed.workspace_demo import seed_bulk
+    with sm() as db:
+        seed_demo(db)
+        owner = db.get(Person, alice.person_id)
+        assert seed_bulk(db, owner, 100)["created"] == 100
+        assert seed_bulk(db, owner, 100)["created"] == 0  # repeat run adds nothing
+        mine = db.scalars(select(Matter).where(Matter.created_by == owner.id)).all()
+        assert len(mine) == 100 and all(m.is_demo and "(demo)" in m.title for m in mine)
+    page = alice.get("/matters?limit=200").json()
+    assert len(page["items"]) == 100 and all(m["myLevel"] == "owner" for m in page["items"])
+    assert alice.get("/dashboard").json()["matters"] == 100
+
+
+# ---------- bulk eCourts-style demonstration data ----------
+def test_services_bulk_tops_up_to_100_each_and_stays_in_the_demo_courts(sm, client):
+    from app.models.services import CaseRow, CaveatRow, CourtRoomRow, ProcessRow
+    from app.seed.services_bulk import seed_services_bulk
+    with sm() as db:
+        first = seed_services_bulk(db, 100)
+        assert first["cases"] > 80 and first["caveats"] > 80 and first["processes"] > 80
+        assert seed_services_bulk(db, 100) == {"cases": 0, "caveats": 0, "processes": 0}  # repeat adds nothing
+        for model in (CaseRow, CaveatRow, ProcessRow):
+            assert db.scalar(select(func.count()).select_from(model)) == 100
+        rooms = {(r.body["state"], r.body["district"], r.body["complex"], r.body["establishment"]) for r in db.scalars(select(CourtRoomRow))}
+        for row in db.scalars(select(CaseRow)):
+            c = row.body["court"]
+            assert (c["state"], c["district"], c["complex"], c["establishment"]) in rooms
+            assert re.fullmatch(r"[A-Z0-9]{16}", row.cnr)
+            assert "(demo)" in row.body["petitioner"] or row.body["petitioner"].startswith("State")
+
+
+def test_the_new_records_can_be_found_through_the_api(sm, client):
+    from app.seed.services_bulk import seed_services_bulk
+    with sm() as db:
+        seed_services_bulk(db, 100)
+        from app.models.services import CaseRow
+        sample = next(r.body for r in db.scalars(select(CaseRow)) if r.body["petitioner"] == "Sample Party 010 (demo)")
+    q = {"mode": "party", "court": sample["court"], "name": "Sample Party 010", "year": sample["year"], "status": "Both"}
+    found = client.post("/api/cases/search", json={"query": q}).json()
+    assert [c["cnr"] for c in found] == [sample["cnr"]]
+    assert client.post("/api/cases/search", json={"query": {"mode": "cnr", "cnr": sample["cnr"]}}).json()[0]["cnr"] == sample["cnr"]
+    # a cause list for a hearing date now holds several matters
+    room = next(r for r in client.get("/api/court-rooms").json() if r["establishment"] == sample["court"]["establishment"] and r["district"] == sample["court"]["district"])
+    rid = "|".join([room["state"], room["district"], room["complex"], room["establishment"], room["number"]])
+    kind = "Criminal" if sample["caseType"].startswith("Criminal") else "Civil"
+    entries = [e for d in ("2026-10-28", "2026-10-30", "2026-11-05", "2026-11-12", "2026-11-19")
+               for e in client.post("/api/cause-lists", json={"roomId": rid, "date": d, "kind": kind}).json()["entries"]]
+    assert len(entries) >= 3
+    proc = client.post("/api/processes/lookup", json={"processId": "PRC-DEMO-0050", "email": "demo.process.0050@example.invalid"}).json()
+    assert proc["process"]["processId"] == "PRC-DEMO-0050" and "email" not in proc["process"]

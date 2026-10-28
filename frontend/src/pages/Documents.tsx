@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useApp } from '../context'
-import { Btn, Card, Field, Notice, PageHead, Pill, Stat } from '../components/ui'
+import { Btn, Card, Field, Notice, PageHead, Pill, Stat, Input, Select, Textarea } from '../components/ui'
 
 export default function DocumentsPage() {
   const { docs, setDocs, openModal, toast } = useApp()
@@ -13,7 +13,7 @@ export default function DocumentsPage() {
       <>
         <Field label="Choose a file"><input name="file" type="file" accept=".pdf,.doc,.docx,.txt,.png,.jpg" /></Field>
         <Field label="Link to matter">
-          <select><option>CR/2025/0412 · State v. R. Kumar</option><option>CS/2024/118 · Mehta v. Rao</option></select>
+          <Select><option>CR/2025/0412 · State v. R. Kumar</option><option>CS/2024/118 · Mehta v. Rao</option></Select>
         </Field>
         <Notice>Prototype only: file is not uploaded to a server and OCR is not run.</Notice>
       </>
@@ -42,7 +42,7 @@ export default function DocumentsPage() {
       </div>
       <div className="grid layout2">
         <Card title="Document library">
-          <div className="field"><input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Search file name or type…" /></div>
+          <div className="field"><Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Search file name or type…" /></div>
           {visible.map((d) => (
             <div className="listrow" key={d.name}>
               <div className="docrow">
@@ -68,7 +68,7 @@ export default function DocumentsPage() {
           </div>
           <div style={{ marginTop: 14 }}>
             <Field label="Corrected text (confirm against original)">
-              <textarea value={correction} onChange={(e) => setCorrection(e.target.value)} />
+              <Textarea value={correction} onChange={(e) => setCorrection(e.target.value)} />
             </Field>
           </div>
           <div className="actions">

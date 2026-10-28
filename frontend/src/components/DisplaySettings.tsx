@@ -1,4 +1,9 @@
 import { useEffect, useState } from 'react'
+import Button from '@mui/material/Button'
+import ButtonGroup from '@mui/material/ButtonGroup'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Paper from '@mui/material/Paper'
 import { useT } from '../i18n/context'
 
 type Flag = 'contrast' | 'invert' | 'gray' | 'sat' | 'links' | 'spacing' | 'lines' | 'noimg' | 'cursor'
@@ -43,19 +48,19 @@ export default function DisplaySettings({ label }: { label?: string } = {}) {
 
   return (
     <div className="dispwrap">
-      <button className="iconbtn" aria-expanded={open} aria-controls="dispmenu" onClick={() => setOpen((o) => !o)}>Aa<span className="sr-only"> {shown}</span></button>
+      <Button variant="outlined" size="small" aria-expanded={open} aria-controls="dispmenu" onClick={() => setOpen((o) => !o)}>Aa<span className="sr-only"> {shown}</span></Button>
       {open && (
-        <div className="dispmenu" id="dispmenu" role="group" aria-label={shown} onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false) }}>
-          <div className="actions">
-            <button className="btn small" onClick={() => size(-1)} aria-label={t('Decrease text size')}>A−</button>
-            <button className="btn small" onClick={() => setP((s) => ({ ...s, size: 0 }))}>A</button>
-            <button className="btn small" onClick={() => size(1)} aria-label={t('Increase text size')}>A+</button>
-          </div>
+        <Paper className="dispmenu" id="dispmenu" role="group" aria-label={shown} elevation={4} onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false) }}>
+          <ButtonGroup size="small" aria-label={shown} sx={{ mb: 1 }}>
+            <Button onClick={() => size(-1)} aria-label={t('Decrease text size')}>A−</Button>
+            <Button onClick={() => setP((s) => ({ ...s, size: 0 }))}>A</Button>
+            <Button onClick={() => size(1)} aria-label={t('Increase text size')}>A+</Button>
+          </ButtonGroup>
           {FLAGS.map((f) => (
-            <label className="checkrow" key={f.id}><input type="checkbox" checked={p.flags.includes(f.id)} onChange={() => toggle(f.id)} /><div><strong>{t(f.label)}</strong></div></label>
+            <FormControlLabel key={f.id} sx={{ display: 'flex', m: 0 }} control={<Checkbox size="small" checked={p.flags.includes(f.id)} onChange={() => toggle(f.id)} />} label={<strong>{t(f.label)}</strong>} />
           ))}
-          <button className="btn small" onClick={() => setP(DEFAULTS)}>{t('Reset all')}</button>
-        </div>
+          <Button size="small" variant="outlined" sx={{ mt: 1 }} onClick={() => setP(DEFAULTS)}>{t('Reset all')}</Button>
+        </Paper>
       )}
     </div>
   )

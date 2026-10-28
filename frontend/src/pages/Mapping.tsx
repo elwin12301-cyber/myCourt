@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Banner, Btn, Card, Check, Field, Notice, PageHead } from '../components/ui'
+import { Banner, Btn, Card, Check, Field, Notice, PageHead, Input, Select, Textarea } from '../components/ui'
 
 export default function MappingPage() {
   const [oldLaw, setOldLaw] = useState('IPC — Indian Penal Code, 1860')
@@ -20,24 +20,24 @@ export default function MappingPage() {
       <div className="card">
         <div className="grid layout2">
           <Field label="Old Act / section">
-            <select value={oldLaw} onChange={(e) => setOldLaw(e.target.value)}>
+            <Select value={oldLaw} onChange={(e) => setOldLaw(e.target.value)}>
               <option>IPC — Indian Penal Code, 1860</option>
               <option>CrPC — Code of Criminal Procedure, 1973</option>
               <option>Indian Evidence Act, 1872</option>
-            </select>
-            <input value={oldSection} onChange={(e) => setOldSection(e.target.value)} placeholder="Enter section / reference" />
+            </Select>
+            <Input value={oldSection} onChange={(e) => setOldSection(e.target.value)} placeholder="Enter section / reference" />
           </Field>
           <Field label="New Act / section candidate">
-            <select value={newLaw} onChange={(e) => setNewLaw(e.target.value)}>
+            <Select value={newLaw} onChange={(e) => setNewLaw(e.target.value)}>
               <option>BNS — Bharatiya Nyaya Sanhita, 2023</option>
               <option>BNSS — Bharatiya Nagarik Suraksha Sanhita, 2023</option>
               <option>BSA — Bharatiya Sakshya Adhiniyam, 2023</option>
-            </select>
-            <input value={newSection} onChange={(e) => setNewSection(e.target.value)} placeholder="Candidate reference" />
+            </Select>
+            <Input value={newSection} onChange={(e) => setNewSection(e.target.value)} placeholder="Candidate reference" />
           </Field>
         </div>
         <Field label="Relevant facts / date / procedural context">
-          <textarea value={facts} onChange={(e) => setFacts(e.target.value)} placeholder="Describe alleged conduct date, case stage, relevant procedural facts and jurisdiction." />
+          <Textarea value={facts} onChange={(e) => setFacts(e.target.value)} placeholder="Describe alleged conduct date, case stage, relevant procedural facts and jurisdiction." />
         </Field>
         <div className="actions">
           <Btn kind="primary" onClick={() => setCompared({ oldLaw, oldSection, newLaw, newSection })}>Compare and flag issues</Btn>

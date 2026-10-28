@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useApp } from '../context'
-import { Btn, Card, Field, PageHead, Pill, Stat } from '../components/ui'
+import { Btn, Card, Field, PageHead, Pill, Stat, Input, Select, Table, TableBody, TableCell, TableHead, TableRow } from '../components/ui'
 
 const inr = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })
 
@@ -24,24 +24,24 @@ export default function BillingPage() {
       <div className="grid layout2">
         <Card title="Time entries">
           <div className="tablewrap">
-            <table>
-              <thead><tr><th>Date</th><th>Matter / activity</th><th>Time</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td>23 Oct</td><td><strong>CR/2025/0412</strong><small>Research and case review</small></td><td>1.4 h</td><td><Pill kind="amber">Unbilled</Pill></td></tr>
-                <tr><td>22 Oct</td><td><strong>CS/2024/118</strong><small>Draft written submissions</small></td><td>2.0 h</td><td><Pill kind="amber">Unbilled</Pill></td></tr>
-                <tr><td>21 Oct</td><td><strong>WP/2026/077</strong><small>Client conference</small></td><td>0.8 h</td><td><Pill kind="green">Invoiced</Pill></td></tr>
-              </tbody>
-            </table>
+            <Table size="small">
+              <TableHead><TableRow><TableCell>Date</TableCell><TableCell>Matter / activity</TableCell><TableCell>Time</TableCell><TableCell>Status</TableCell></TableRow></TableHead>
+              <TableBody>
+                <TableRow><TableCell>23 Oct</TableCell><TableCell><strong>CR/2025/0412</strong><small>Research and case review</small></TableCell><TableCell>1.4 h</TableCell><TableCell><Pill kind="amber">Unbilled</Pill></TableCell></TableRow>
+                <TableRow><TableCell>22 Oct</TableCell><TableCell><strong>CS/2024/118</strong><small>Draft written submissions</small></TableCell><TableCell>2.0 h</TableCell><TableCell><Pill kind="amber">Unbilled</Pill></TableCell></TableRow>
+                <TableRow><TableCell>21 Oct</TableCell><TableCell><strong>WP/2026/077</strong><small>Client conference</small></TableCell><TableCell>0.8 h</TableCell><TableCell><Pill kind="green">Invoiced</Pill></TableCell></TableRow>
+              </TableBody>
+            </Table>
           </div>
         </Card>
         <Card title="New time entry">
           <Field label="Matter">
-            <select><option>CR/2025/0412 · State v. R. Kumar</option><option>CS/2024/118 · Mehta v. Rao</option></select>
+            <Select><option>CR/2025/0412 · State v. R. Kumar</option><option>CS/2024/118 · Mehta v. Rao</option></Select>
           </Field>
-          <Field label="Activity"><input ref={activityRef} placeholder="e.g. review order, legal research" /></Field>
+          <Field label="Activity"><Input ref={activityRef} placeholder="e.g. review order, legal research" /></Field>
           <div className="grid layout2">
-            <Field label="Hours"><input type="number" min="0.1" step="0.1" value={hours} onChange={(e) => setHours(+e.target.value)} /></Field>
-            <Field label="Rate (₹)"><input type="number" min="0" value={rate} onChange={(e) => setRate(+e.target.value)} /></Field>
+            <Field label="Hours"><Input type="number" min="0.1" step="0.1" value={hours} onChange={(e) => setHours(+e.target.value)} /></Field>
+            <Field label="Rate (₹)"><Input type="number" min="0" value={rate} onChange={(e) => setRate(+e.target.value)} /></Field>
           </div>
           <div className="sourcebox" style={{ marginBottom: 14 }}>
             <strong>Estimate: {inr.format(hours * rate)}</strong>

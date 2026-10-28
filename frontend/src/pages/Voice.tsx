@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useApp } from '../context'
-import { Btn, Card, Field, Notice, PageHead, Pill } from '../components/ui'
+import { Btn, Card, Field, Notice, PageHead, Pill, Select, Textarea } from '../components/ui'
 
 type RecState = 'ready' | 'recording' | 'paused' | 'stopped'
 
@@ -36,23 +36,23 @@ export default function VoicePage() {
               </div>
             </div>
             <Field label="Dictation language">
-              <select>
+              <Select>
                 <option>English (India)</option>
                 <option>Hindi — if supported by connected transcription service</option>
                 <option>Tamil — if supported by connected transcription service</option>
                 <option>Other supported language</option>
-              </select>
+              </Select>
             </Field>
             <Notice>This prototype simulates recording states; it does not access a microphone or run a speech-recognition service.</Notice>
           </Card>
           <Card title="Turn into useful work">
             <Field label="Output type">
-              <select value={output} onChange={(e) => setOutput(e.target.value)}>
+              <Select value={output} onChange={(e) => setOutput(e.target.value)}>
                 <option>Case note</option><option>Chronology</option><option>Client update draft</option><option>Tasks and dates</option><option>First draft for review</option>
-              </select>
+              </Select>
             </Field>
             <Field label="Link to matter">
-              <select><option>CR/2025/0412 · State v. R. Kumar</option><option>CS/2024/118 · Mehta v. Rao</option></select>
+              <Select><option>CR/2025/0412 · State v. R. Kumar</option><option>CS/2024/118 · Mehta v. Rao</option></Select>
             </Field>
             <div className="actions">
               <Btn kind="primary" onClick={() => setResult({ type: output, text: transcript })}>Structure transcript</Btn>
@@ -70,7 +70,7 @@ export default function VoicePage() {
           <Card title="Editable transcript">
             <div className="resultmeta"><Pill kind="green">Editable</Pill><Pill kind="amber">Verify names / dates</Pill></div>
             <Field label="Transcript (original wording)">
-              <textarea style={{ minHeight: 235 }} value={transcript} onChange={(e) => setTranscript(e.target.value)} />
+              <Textarea style={{ minHeight: 235 }} value={transcript} onChange={(e) => setTranscript(e.target.value)} />
             </Field>
             <div className="sourcebox">
               <h4>Review checklist</h4>

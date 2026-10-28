@@ -1,6 +1,15 @@
 import { useState, type FormEvent } from 'react'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Link from '@mui/material/Link'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import { useAuth } from '../api/auth'
 import { ApiError, messageOf } from '../api/client'
+import { Message } from '../components/mui'
 
 /** Shown instead of the workspace when the backend is in use and nobody is signed in. */
 export default function SignIn() {
@@ -29,43 +38,39 @@ export default function SignIn() {
     <>
       <a className="skip" href="#signin-main">Skip to main content</a>
       <div className="protobar" role="note">Prototype · demonstration data only · do not enter real client information</div>
-      <main id="signin-main" tabIndex={-1} style={{ maxWidth: 440, margin: '40px auto', padding: '0 16px' }}>
-        <div className="brand" style={{ marginBottom: 16 }}>
-          <div className="brandmark">M</div>
-          <div><h1>myCourt</h1><small>LEGAL WORKSPACE</small></div>
-        </div>
-        <section className="card">
-          <div className="cardhead"><h2 style={{ fontSize: 18, margin: 0 }}>{mode === 'in' ? 'Sign in' : 'Create an account'}</h2></div>
-          <form onSubmit={submit} noValidate aria-describedby={error ? 'signin-error' : undefined}>
-            {mode === 'new' && (
-              <div className="field">
-                <label htmlFor="su-name">Your name</label>
-                <input id="su-name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} aria-invalid={!!fields.displayName} aria-describedby={fields.displayName ? 'su-name-err' : undefined} />
-                {fields.displayName && <span id="su-name-err" role="alert" className="fielderr">{fields.displayName}</span>}
-              </div>
-            )}
-            <div className="field">
-              <label htmlFor="su-email">E-mail address</label>
-              <input id="su-email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} aria-invalid={!!fields.email} aria-describedby={fields.email ? 'su-email-err' : undefined} />
-              {fields.email && <span id="su-email-err" role="alert" className="fielderr">{fields.email}</span>}
-            </div>
-            <div className="field">
-              <label htmlFor="su-password">Password</label>
-              <input id="su-password" type="password" autoComplete={mode === 'in' ? 'current-password' : 'new-password'} value={password} onChange={(e) => setPassword(e.target.value)} aria-invalid={!!fields.password} aria-describedby={fields.password ? 'su-password-err' : 'su-password-hint'} />
-              {mode === 'new' && <span id="su-password-hint" className="tiny muted">At least 12 characters.</span>}
-              {fields.password && <span id="su-password-err" role="alert" className="fielderr">{fields.password}</span>}
-            </div>
-            {error && <div id="signin-error" role="alert" className="notice">{error}</div>}
-            <div className="actions">
-              <button className="btn primary" type="submit" disabled={busy}>{busy ? 'Please wait…' : mode === 'in' ? 'Sign in' : 'Create account'}</button>
-              <button className="btn" type="button" onClick={() => { setMode(mode === 'in' ? 'new' : 'in'); setError(''); setFields({}) }}>
-                {mode === 'in' ? 'I need an account' : 'I already have an account'}
-              </button>
-            </div>
-          </form>
-          <p className="tiny muted">The eCourts Services-site demo does not need an account: <a href="#/services">open it</a>.</p>
-        </section>
-      </main>
+      <Box component="main" id="signin-main" tabIndex={-1} sx={{ maxWidth: 440, mx: 'auto', my: 5, px: 2 }}>
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 2 }}>
+          <div className="brandmark" aria-hidden="true">M</div>
+          <div><Typography variant="h2" component="h1">myCourt</Typography><Typography variant="caption" color="text.secondary">LEGAL WORKSPACE</Typography></div>
+        </Stack>
+        <Card>
+          <CardContent>
+            <Typography variant="h2" component="h2" sx={{ mb: 1 }}>{mode === 'in' ? 'Sign in' : 'Create an account'}</Typography>
+            <form onSubmit={submit} noValidate>
+              {mode === 'new' && (
+                <TextField id="su-name" label="Your name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)}
+                  error={!!fields.displayName} helperText={fields.displayName} slotProps={{ formHelperText: { role: 'alert' } }} />
+              )}
+              <TextField id="su-email" label="E-mail address" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)}
+                error={!!fields.email} helperText={fields.email} slotProps={{ formHelperText: { role: 'alert' } }} />
+              <TextField id="su-password" label="Password" type="password" autoComplete={mode === 'in' ? 'current-password' : 'new-password'}
+                value={password} onChange={(e) => setPassword(e.target.value)} error={!!fields.password}
+                helperText={fields.password || (mode === 'new' ? 'At least 12 characters.' : undefined)}
+                slotProps={{ formHelperText: { role: fields.password ? 'alert' : undefined } }} />
+              {error && <Message severity="warning">{error}</Message>}
+              <Stack direction="row" spacing={1} useFlexGap sx={{ mt: 2, flexWrap: 'wrap' }}>
+                <Button type="submit" variant="contained" disabled={busy}>{busy ? 'Please wait…' : mode === 'in' ? 'Sign in' : 'Create account'}</Button>
+                <Button type="button" variant="outlined" onClick={() => { setMode(mode === 'in' ? 'new' : 'in'); setError(''); setFields({}) }}>
+                  {mode === 'in' ? 'I need an account' : 'I already have an account'}
+                </Button>
+              </Stack>
+            </form>
+            <Typography variant="caption" color="text.secondary" component="p" sx={{ mt: 2 }}>
+              The eCourts Services-site demo does not need an account: <Link href="#/services">open it</Link>.
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
     </>
   )
 }

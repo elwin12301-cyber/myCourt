@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useApp } from '../context'
-import { Btn, Card, Check, Field, Notice, PageHead } from '../components/ui'
+import { Btn, Card, Check, Field, Notice, PageHead, Input, Select } from '../components/ui'
 import { caseNoteModal } from './modals'
 
 function answerFor(q: string): string {
@@ -65,7 +65,7 @@ export default function AssistantPage() {
               <div ref={endRef} />
             </div>
             <div className="chatinput">
-              <input
+              <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') send() }}
@@ -82,11 +82,11 @@ export default function AssistantPage() {
         </Card>
         <Card title="Matter context & controls">
           <Field label="Selected matter">
-            <select>
+            <Select>
               <option>CR/2025/0412 · State v. R. Kumar</option>
               <option>CS/2024/118 · Mehta v. Rao</option>
               <option>WP/2026/077 · Aruna Foundation v. State</option>
-            </select>
+            </Select>
           </Field>
           <Check defaultChecked title="Uploaded matter documents" sub="12 files · OCR and page references" />
           <Check defaultChecked title="Saved legal authorities" sub="4 authorities · treatment needs verification" />

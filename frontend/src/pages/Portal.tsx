@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { useApp } from '../context'
-import { Btn, Card, Notice, PageHead, Pill } from '../components/ui'
+import { Btn, Card, Notice, PageHead, Pill, Input, Select, Table, TableBody, TableCell, TableHead, TableRow } from '../components/ui'
 import ExternalLink from '../components/ExternalLink'
 import type { PageId } from '../types'
 import {
@@ -28,14 +28,14 @@ export function Shell({ title, sub, children, back }: { page?: PageId; title: st
         </div>
         <form className="portalsearch" role="search" onSubmit={(e) => { e.preventDefault(); setPortalQuery(draft); go('portalSearch') }}>
           <label className="sr-only" htmlFor="portal-top-search">Search this site</label>
-          <input id="portal-top-search" type="search" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Search this site" />
-          <button className="btn small" type="submit">Search</button>
+          <Input id="portal-top-search" type="search" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Search this site" />
+          <Btn kind="small" type="submit">Search</Btn>
         </form>
         <label className="langsel tiny">
           <span className="sr-only">Language</span>
-          <select aria-label="Language" defaultValue="English" onChange={(e) => { e.target.value = 'English' }}>
+          <Select aria-label="Language" defaultValue="English" onChange={(e) => { e.target.value = 'English' }}>
             {LANGUAGES.map((l) => <option key={l} disabled={l !== 'English'} title={l !== 'English' ? 'Translations are not available in this prototype' : undefined}>{l}</option>)}
-          </select>
+          </Select>
         </label>
       </div>
       {back && <div style={{ marginBottom: 10 }}><Btn className="small" onClick={() => go('portalHelp')}>← Useful links</Btn></div>}
@@ -63,7 +63,7 @@ function Filter({ value, onChange, label, count }: { value: string; onChange: (v
   return (
     <div className="field">
       <label htmlFor="portal-filter">{label}</label>
-      <input id="portal-filter" type="search" value={value} onChange={(e) => onChange(e.target.value)} />
+      <Input id="portal-filter" type="search" value={value} onChange={(e) => onChange(e.target.value)} />
       <span className="tiny muted" aria-live="polite">{count} shown</span>
     </div>
   )
@@ -89,9 +89,9 @@ function Carousel() {
         <p>{s.text}</p>
       </div>
       <div className="carctl">
-        <button className="btn small" aria-label="Previous slide" onClick={() => setI((n) => (n + SLIDES.length - 1) % SLIDES.length)}>‹</button>
-        <button className="btn small" aria-label={playing ? 'Pause slideshow' : 'Play slideshow'} onClick={() => setPlaying((p) => !p)}>{playing ? 'Ⅱ' : '▶'}</button>
-        <button className="btn small" aria-label="Next slide" onClick={() => setI((n) => (n + 1) % SLIDES.length)}>›</button>
+        <Btn kind="small" aria-label="Previous slide" onClick={() => setI((n) => (n + SLIDES.length - 1) % SLIDES.length)}>‹</Btn>
+        <Btn kind="small" aria-label={playing ? 'Pause slideshow' : 'Play slideshow'} onClick={() => setPlaying((p) => !p)}>{playing ? 'Ⅱ' : '▶'}</Btn>
+        <Btn kind="small" aria-label="Next slide" onClick={() => setI((n) => (n + 1) % SLIDES.length)}>›</Btn>
       </div>
     </section>
   )
@@ -209,11 +209,11 @@ export function PortalHighCourts() {
       <Card>
         <Filter value={q} onChange={setQ} label="Filter by High Court or state" count={rows.length} />
         <div className="tablewrap">
-          <table>
+          <Table size="small">
             <caption className="sr-only">High Courts</caption>
-            <thead><tr><th scope="col">High Court</th><th scope="col">Jurisdiction</th></tr></thead>
-            <tbody>{rows.map((h) => <tr key={h.name}><td><strong>{h.name}</strong></td><td>{h.jurisdiction}</td></tr>)}</tbody>
-          </table>
+            <TableHead><TableRow><TableCell scope="col">High Court</TableCell><TableCell scope="col">Jurisdiction</TableCell></TableRow></TableHead>
+            <TableBody>{rows.map((h) => <TableRow key={h.name}><TableCell><strong>{h.name}</strong></TableCell><TableCell>{h.jurisdiction}</TableCell></TableRow>)}</TableBody>
+          </Table>
           {rows.length === 0 && <div className="empty">No High Court matches “{q}”.</div>}
         </div>
         <p className="tiny muted">The portal page lists court names only; individual court websites were not visible when reviewed.</p>
@@ -256,16 +256,16 @@ export function PortalForms() {
       <Card>
         <Filter value={q} onChange={setQ} label="Filter forms" count={rows.length} />
         <div className="tablewrap">
-          <table>
+          <Table size="small">
             <caption className="sr-only">Forms for advocates</caption>
-            <thead><tr><th scope="col">Form</th><th scope="col">Format</th><th scope="col">Size</th><th scope="col"><span className="sr-only">Action</span></th></tr></thead>
-            <tbody>
+            <TableHead><TableRow><TableCell scope="col">Form</TableCell><TableCell scope="col">Format</TableCell><TableCell scope="col">Size</TableCell><TableCell scope="col"><span className="sr-only">Action</span></TableCell></TableRow></TableHead>
+            <TableBody>
               {rows.map((f) => (
-                <tr key={f.file}><td><strong>{f.title}</strong></td><td>PDF</td><td>{f.size}</td>
-                  <td><ExternalLink href={formLink(f.file)}>Open on official site ↗</ExternalLink></td></tr>
+                <TableRow key={f.file}><TableCell><strong>{f.title}</strong></TableCell><TableCell>PDF</TableCell><TableCell>{f.size}</TableCell>
+                  <TableCell><ExternalLink href={formLink(f.file)}>Open on official site ↗</ExternalLink></TableCell></TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
           {rows.length === 0 && <div className="empty">No form matches “{q}”.</div>}
         </div>
         <Notice>File addresses were derived from the relative links on the forms page and not individually tested. If a file does not open, use the forms page on the official portal.</Notice>
@@ -289,11 +289,11 @@ export function PortalContact() {
         <Card title="Contacts by High Court">
           <Filter value={q} onChange={setQ} label="Filter by High Court or state" count={rows.length} />
           <div className="tablewrap">
-            <table>
+            <Table size="small">
               <caption className="sr-only">High Court CPC contacts</caption>
-              <thead><tr><th scope="col">High Court</th><th scope="col">Jurisdiction</th><th scope="col">CPC e-mail</th></tr></thead>
-              <tbody>{rows.map((h) => <tr key={h.name}><td><strong>{h.name}</strong></td><td>{h.jurisdiction}</td><td className="nowrap">{h.cpcEmail}</td></tr>)}</tbody>
-            </table>
+              <TableHead><TableRow><TableCell scope="col">High Court</TableCell><TableCell scope="col">Jurisdiction</TableCell><TableCell scope="col">CPC e-mail</TableCell></TableRow></TableHead>
+              <TableBody>{rows.map((h) => <TableRow key={h.name}><TableCell><strong>{h.name}</strong></TableCell><TableCell>{h.jurisdiction}</TableCell><TableCell className="nowrap">{h.cpcEmail}</TableCell></TableRow>)}</TableBody>
+            </Table>
             {rows.length === 0 && <div className="empty">No High Court matches “{q}”.</div>}
           </div>
         </Card>
@@ -344,9 +344,9 @@ export function PortalSearch() {
         <form role="search" onSubmit={(e) => { e.preventDefault(); setSubmitted(q) }}>
           <div className="field">
             <label htmlFor="psq">Search the portal</label>
-            <input id="psq" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="e.g. vakalatnama, Madras, ePay" />
+            <Input id="psq" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="e.g. vakalatnama, Madras, ePay" />
           </div>
-          <button className="btn primary" type="submit">Search</button>
+          <Btn kind="primary" type="submit">Search</Btn>
         </form>
         <div style={{ marginTop: 16 }} aria-live="polite">
           {submitted && hits.length === 0 && <div className="empty">No results for “{submitted}”.</div>}

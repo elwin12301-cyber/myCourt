@@ -1,6 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { caveatAdapter } from '../../api/adapters'
-import { Btn, Card, Notice, PageHead, Pill } from '../../components/ui'
+import { Btn, Card, Notice, PageHead, Pill, Input, Select, Table, TableBody, TableCell, TableHead, TableRow } from '../../components/ui'
 import { useLang, useT } from '../../i18n/context'
 import { generateCaptcha, verifyCaptcha } from '../../features/caseStatus/captcha'
 import type { FieldErrors } from '../../features/caseStatus/validation'
@@ -75,10 +75,10 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
 
   const subordinate = (
     <Field id="sub" label="Subordinate Court">
-      <select id="sub" value={sub} onChange={(e) => setSub(e.target.value)}>
+      <Select id="sub" value={sub} onChange={(e) => setSub(e.target.value)}>
         <option value="">{t('Select subordinate court')}</option>
         {SUBORDINATE_COURTS.map((c) => <option key={c} value={c}>{t(c)}</option>)}
-      </select>
+      </Select>
     </Field>
   )
   const grid = { alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' } as const
@@ -115,7 +115,7 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
               <Radios legend="Name matching" name="match" value={match} options={['anywhere', 'startingWith']} labels={{ anywhere: 'Anywhere', startingWith: 'Starting with' }} onChange={setMatch} />
               <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
                 <Field id="name" label="Caveator/Caveatee Name" required error={errors.name} hint="At least 3 characters.">
-                  <input id="name" value={v.name} aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-err' : undefined} onChange={(e) => patch({ name: e.target.value })} />
+                  <Input id="name" value={v.name} aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-err' : undefined} onChange={(e) => patch({ name: e.target.value })} />
                 </Field>
                 <Radios legend="Search in" name="role" value={role} options={['caveator', 'caveatee']} labels={{ caveator: 'Caveator', caveatee: 'Caveatee' }} onChange={setRole} />
               </div>
@@ -126,12 +126,12 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
               {subordinate}
               <CaseTypeField v={v} set={patch} errors={errors} />
               <Field id="number" label={mode === 'filingNumber' ? 'Filing Number' : 'Case Number'} required error={errors.number}>
-                <input id="number" inputMode="numeric" value={v.number} aria-invalid={!!errors.number} aria-describedby={errors.number ? 'number-err' : undefined} onChange={(e) => patch({ number: e.target.value })} />
+                <Input id="number" inputMode="numeric" value={v.number} aria-invalid={!!errors.number} aria-describedby={errors.number ? 'number-err' : undefined} onChange={(e) => patch({ number: e.target.value })} />
               </Field>
               <YearField v={v} set={patch} errors={errors} label="Year" required />
               {mode === 'caseNumber' && (
                 <Field id="decision" label="Date of Decision" error={errors.decisionDate} hint="Optional.">
-                  <input id="decision" type="date" value={decision} aria-invalid={!!errors.decisionDate} aria-describedby={errors.decisionDate ? 'decision-err' : undefined} onChange={(e) => setDecision(e.target.value)} />
+                  <Input id="decision" type="date" value={decision} aria-invalid={!!errors.decisionDate} aria-describedby={errors.decisionDate ? 'decision-err' : undefined} onChange={(e) => setDecision(e.target.value)} />
                 </Field>
               )}
             </div>
@@ -139,7 +139,7 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
           {mode === 'caveatNumber' && (
             <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
               <Field id="caveatNo" label="Caveat Number" required error={errors.caveatNumber} hint="A part of the number is enough.">
-                <input id="caveatNo" inputMode="numeric" value={caveatNo} aria-invalid={!!errors.caveatNumber} aria-describedby={errors.caveatNumber ? 'caveatNo-err' : undefined} onChange={(e) => setCaveatNo(e.target.value)} />
+                <Input id="caveatNo" inputMode="numeric" value={caveatNo} aria-invalid={!!errors.caveatNumber} aria-describedby={errors.caveatNumber ? 'caveatNo-err' : undefined} onChange={(e) => setCaveatNo(e.target.value)} />
               </Field>
               <YearField v={v} set={patch} errors={errors} label="Year" required />
             </div>
@@ -147,7 +147,7 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
 
           <CaptchaField code={captcha} value={captchaInput} onChange={setCaptchaInput} onRefresh={refreshCaptcha} error={errors.captcha} />
           <div className="actions">
-            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t('Go')}</button>
+            <Btn kind="primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t('Go')}</Btn>
             <Btn onClick={reset}>Reset</Btn>
             {onBack && <Btn onClick={onBack}>Back</Btn>}
           </div>
@@ -162,23 +162,23 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
         {phase === 'done' && results.length > 0 && (
           <Card title={t('Active caveats · {n}', { n: results.length })}>
             <div className="tablewrap">
-              <table>
+              <Table size="small">
                 <caption className="sr-only">{t('Caveats (demonstration data)')}</caption>
-                <thead><tr>{['Sr No', 'Caveat Number/Year', 'Caveator versus Caveatee', 'Court', 'Subordinate case', 'Date of decision', 'Status'].map((h) => <th key={h} scope="col">{t(h)}</th>)}</tr></thead>
-                <tbody>
+                <TableHead><TableRow>{['Sr No', 'Caveat Number/Year', 'Caveator versus Caveatee', 'Court', 'Subordinate case', 'Date of decision', 'Status'].map((h) => <TableCell key={h} scope="col">{t(h)}</TableCell>)}</TableRow></TableHead>
+                <TableBody>
                   {results.map((c, i) => (
-                    <tr key={`${c.caveatNumber}-${c.year}`}>
-                      <td>{i + 1}</td>
-                      <td><strong>{c.caveatNumber}/{c.year}</strong></td>
-                      <td>{`${c.caveator} ${t('versus')} ${c.caveatee}`}</td>
-                      <td>{t(c.court.establishment)}<small>{`${t(c.court.complex)}, ${t(c.court.district)}`}</small></td>
-                      <td>{`${t(c.caseType)}/${c.caseNumber}/${c.caseYear}`}<small>{t('{court} · filing {number}', { court: t(c.subordinateCourt), number: `${c.filingNumber}/${c.filingYear}` })}</small></td>
-                      <td>{fmt(c.decisionDate, lang)}</td>
-                      <td><Pill kind="green">{t(c.status)}</Pill></td>
-                    </tr>
+                    <TableRow key={`${c.caveatNumber}-${c.year}`}>
+                      <TableCell>{i + 1}</TableCell>
+                      <TableCell><strong>{c.caveatNumber}/{c.year}</strong></TableCell>
+                      <TableCell>{`${c.caveator} ${t('versus')} ${c.caveatee}`}</TableCell>
+                      <TableCell>{t(c.court.establishment)}<small>{`${t(c.court.complex)}, ${t(c.court.district)}`}</small></TableCell>
+                      <TableCell>{`${t(c.caseType)}/${c.caseNumber}/${c.caseYear}`}<small>{t('{court} · filing {number}', { court: t(c.subordinateCourt), number: `${c.filingNumber}/${c.filingYear}` })}</small></TableCell>
+                      <TableCell>{fmt(c.decisionDate, lang)}</TableCell>
+                      <TableCell><Pill kind="green">{t(c.status)}</Pill></TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
             <p className="tiny muted">{t("Column layout is this prototype's design; the official results were not observed.")}</p>
           </Card>

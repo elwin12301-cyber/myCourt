@@ -118,7 +118,7 @@ export default function CaseStatusPage({
           <CaptchaField code={captcha} value={captchaInput} onChange={setCaptchaInput} onRefresh={refreshCaptcha} error={errors.captcha} />
 
           <div className="actions">
-            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t(submitLabel)}</button>
+            <Btn kind="primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t(submitLabel)}</Btn>
             <Btn onClick={reset}>Reset</Btn>
             {onBack && <Btn onClick={onBack}>Back</Btn>}
           </div>

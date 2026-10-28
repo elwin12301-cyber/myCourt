@@ -1,6 +1,6 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import ExternalLink from '../../components/ExternalLink'
-import { Btn, Card, PageHead, Pill } from '../../components/ui'
+import { Btn, Card, PageHead, Pill, Input } from '../../components/ui'
 import { useT } from '../../i18n/context'
 import { buildSiteIndex, searchSite } from '../../features/services/search'
 import type { SvcSlug } from '../../features/services/data'
@@ -20,9 +20,9 @@ export default function SiteSearch({ query, navigate }: { query: string; navigat
         <form role="search" onSubmit={submit}>
           <div className="field">
             <label htmlFor="site-search-page">{t('Search this site')}</label>
-            <input id="site-search-page" type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('e.g. caveat, Madras, vakalatnama')} />
+            <Input id="site-search-page" type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('e.g. caveat, Madras, vakalatnama')} />
           </div>
-          <button className="btn primary" type="submit">{t('Search')}</button>
+          <Btn kind="primary" type="submit">{t('Search')}</Btn>
         </form>
         <div style={{ marginTop: 16 }} aria-live="polite">
           {submitted && hits.length === 0 && (

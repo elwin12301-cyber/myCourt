@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card } from '../../components/ui'
+import { Card, Btn, Select } from '../../components/ui'
 import { useApp } from '../../context'
 import { CASE_STATES, LOCATIONS } from '../../features/caseStatus/referenceData'
 import { CNR_NOTE } from '../../features/services/data'
@@ -21,18 +21,18 @@ export default function CnrHome({ onHelp, onBack }: { onHelp: () => void; onBack
         <form onSubmit={(e) => { e.preventDefault(); toast(state ? `${t('Location noted (demo):')} ${t(state)}${district ? ` / ${t(district)}` : ''}` : t('Select a state first')) }}>
           <div className="grid layout3" style={{ alignItems: 'end', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
             <Field id="home-state" label="Select State">
-              <select id="home-state" value={state} onChange={(e) => { setState(e.target.value); setDistrict('') }}>
+              <Select id="home-state" value={state} onChange={(e) => { setState(e.target.value); setDistrict('') }}>
                 <option value="">{t('Select State')}</option>
                 {CASE_STATES.map((s) => <option key={s} value={s}>{t(s)}</option>)}
-              </select>
+              </Select>
             </Field>
             <Field id="home-district" label="Select District">
-              <select id="home-district" value={district} disabled={!districts.length} onChange={(e) => setDistrict(e.target.value)}>
+              <Select id="home-district" value={district} disabled={!districts.length} onChange={(e) => setDistrict(e.target.value)}>
                 <option value="">{t('Select District')}</option>
                 {districts.map((d) => <option key={d} value={d}>{t(d)}</option>)}
-              </select>
+              </Select>
             </Field>
-            <div className="field"><button className="btn" type="submit">{t('Go')}</button></div>
+            <div className="field"><Btn type="submit">{t('Go')}</Btn></div>
           </div>
           <p className="tiny muted">{t('The official Home page shows this row but does not say what it does; here it only notes your choice (unverified purpose).')}</p>
         </form>

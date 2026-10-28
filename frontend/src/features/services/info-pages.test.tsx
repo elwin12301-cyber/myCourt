@@ -31,7 +31,7 @@ describe('Contact Us page', () => {
   it('shows the e-mail, the coordinator note and 24 table rows', () => {
     expect(html).toContain('ecommittee[at]aij[dot]gov[dot]in')
     expect(html).toContain('Central Project Coordinator')
-    expect((html.match(/<tr>/g) ?? []).length).toBe(CONTACT_ROWS.length + 1)
+    expect((html.match(/<tr[ >]/g) ?? []).length).toBe(CONTACT_ROWS.length + 1)
   })
   it('explains the 24 versus 25 difference and keeps addresses anti-spam', () => {
     expect(html).toContain('lists 24 High Courts')

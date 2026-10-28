@@ -1,4 +1,4 @@
-import { Btn, Card, Notice, Pill } from '../../components/ui'
+import { Btn, Card, Notice, Pill, Table, TableBody, TableCell, TableHead, TableRow } from '../../components/ui'
 import type { CaseRecord } from '../../features/caseStatus/types'
 import { useLang, useT } from '../../i18n/context'
 import { fmt } from './Results'
@@ -50,11 +50,11 @@ export default function CaseDetail({ c, onBack }: { c: CaseRecord; onBack: () =>
 
       <h4>{t('Acts')}</h4>
       <div className="tablewrap" style={{ marginBottom: 16 }}>
-        <table>
+        <Table size="small">
           <caption className="sr-only">{t('Acts')}</caption>
-          <thead><tr><th scope="col">{t('Under Act(s)')}</th><th scope="col">{t('Under Section(s)')}</th></tr></thead>
-          <tbody>{c.acts.map((a) => <tr key={a.act}><td>{t(a.act)}</td><td>{a.sections}</td></tr>)}</tbody>
-        </table>
+          <TableHead><TableRow><TableCell scope="col">{t('Under Act(s)')}</TableCell><TableCell scope="col">{t('Under Section(s)')}</TableCell></TableRow></TableHead>
+          <TableBody>{c.acts.map((a) => <TableRow key={a.act}><TableCell>{t(a.act)}</TableCell><TableCell>{a.sections}</TableCell></TableRow>)}</TableBody>
+        </Table>
       </div>
 
       {c.firNumber && (
@@ -70,21 +70,21 @@ export default function CaseDetail({ c, onBack }: { c: CaseRecord; onBack: () =>
 
       <h4>{t('History')}</h4>
       <div className="tablewrap" style={{ marginBottom: 16 }}>
-        <table>
+        <Table size="small">
           <caption className="sr-only">{t('Case history')}</caption>
-          <thead><tr><th scope="col">{t('Judge')}</th><th scope="col">{t('Business on date')}</th><th scope="col">{t('Hearing date')}</th><th scope="col">{t('Purpose of hearing')}</th></tr></thead>
-          <tbody>{c.history.map((h, i) => <tr key={i}><td>{h.judge}</td><td>{d(h.businessOn)}</td><td>{d(h.date)}</td><td>{t(h.purpose)}</td></tr>)}</tbody>
-        </table>
+          <TableHead><TableRow><TableCell scope="col">{t('Judge')}</TableCell><TableCell scope="col">{t('Business on date')}</TableCell><TableCell scope="col">{t('Hearing date')}</TableCell><TableCell scope="col">{t('Purpose of hearing')}</TableCell></TableRow></TableHead>
+          <TableBody>{c.history.map((h, i) => <TableRow key={i}><TableCell>{h.judge}</TableCell><TableCell>{d(h.businessOn)}</TableCell><TableCell>{d(h.date)}</TableCell><TableCell>{t(h.purpose)}</TableCell></TableRow>)}</TableBody>
+        </Table>
       </div>
 
       <h4>{t('IA business')}</h4>
       {c.iaBusiness.length === 0 ? <p className="muted" style={{ marginBottom: 16 }}>{t('No interlocutory applications in the demonstration data.')}</p> : (
         <div className="tablewrap" style={{ marginBottom: 16 }}>
-          <table>
+          <Table size="small">
             <caption className="sr-only">{t('IA business')}</caption>
-            <thead><tr><th scope="col">{t('IA number')}</th><th scope="col">{t('Party')}</th><th scope="col">{t('Date of filing')}</th><th scope="col">{t('Status')}</th></tr></thead>
-            <tbody>{c.iaBusiness.map((x) => <tr key={x.ia}><td>{x.ia}</td><td>{t(x.party)}</td><td>{d(x.date)}</td><td>{t(x.status)}</td></tr>)}</tbody>
-          </table>
+            <TableHead><TableRow><TableCell scope="col">{t('IA number')}</TableCell><TableCell scope="col">{t('Party')}</TableCell><TableCell scope="col">{t('Date of filing')}</TableCell><TableCell scope="col">{t('Status')}</TableCell></TableRow></TableHead>
+            <TableBody>{c.iaBusiness.map((x) => <TableRow key={x.ia}><TableCell>{x.ia}</TableCell><TableCell>{t(x.party)}</TableCell><TableCell>{d(x.date)}</TableCell><TableCell>{t(x.status)}</TableCell></TableRow>)}</TableBody>
+          </Table>
         </div>
       )}
 
@@ -95,8 +95,8 @@ export default function CaseDetail({ c, onBack }: { c: CaseRecord; onBack: () =>
             <div className="listrow" key={i}>
               <div><strong>{`${t('Order')} ${o.number}: ${t(o.title)}`}</strong><small>{`${t(`${o.kind} order`)} · ${d(o.date)}`}</small></div>
               {o.hasDocument
-                ? <button className="btn small">{t('View PDF')}</button>
-                : <button className="btn small" disabled title={t('No document exists in demonstration data')}>{t('View PDF unavailable')}</button>}
+                ? <Btn kind="small">{t('View PDF')}</Btn>
+                : <Btn kind="small" disabled title={t('No document exists in demonstration data')}>{t('View PDF unavailable')}</Btn>}
             </div>
           ))}
         </div>

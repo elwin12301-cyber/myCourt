@@ -1,6 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { processAdapter } from '../../api/adapters'
-import { Btn, Card, Notice, PageHead, Pill } from '../../components/ui'
+import { Btn, Card, Notice, PageHead, Pill, Input } from '../../components/ui'
 import { useLang, useT } from '../../i18n/context'
 import { generateCaptcha, verifyCaptcha } from '../../features/caseStatus/captcha'
 import type { FieldErrors } from '../../features/caseStatus/validation'
@@ -69,15 +69,15 @@ export default function ProcessDetails({ onBack }: { onBack?: () => void } = {})
           <h4 style={{ margin: '0 0 8px' }}>{t('Search By Process ID')}</h4>
           <div className="grid layout2" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))' }}>
             <Field id="processId" label="Process ID" required error={errors.processId}>
-              <input id="processId" autoComplete="off" value={processId} aria-invalid={!!errors.processId} aria-describedby={errors.processId ? 'processId-err' : undefined} onChange={(e) => setProcessId(e.target.value)} />
+              <Input id="processId" autoComplete="off" value={processId} aria-invalid={!!errors.processId} aria-describedby={errors.processId ? 'processId-err' : undefined} onChange={(e) => setProcessId(e.target.value)} />
             </Field>
             <Field id="email" label="Email Id" required error={errors.email} hint={REGISTERED_EMAIL_NOTE}>
-              <input id="email" type="email" autoComplete="off" value={email} aria-invalid={!!errors.email} aria-describedby={errors.email ? 'email-err' : undefined} onChange={(e) => setEmail(e.target.value)} />
+              <Input id="email" type="email" autoComplete="off" value={email} aria-invalid={!!errors.email} aria-describedby={errors.email ? 'email-err' : undefined} onChange={(e) => setEmail(e.target.value)} />
             </Field>
           </div>
           <CaptchaField code={captcha} value={captchaInput} onChange={setCaptchaInput} onRefresh={refreshCaptcha} error={errors.captcha} />
           <div className="actions">
-            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t('Search')}</button>
+            <Btn kind="primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t('Search')}</Btn>
             <Btn onClick={reset}>Reset</Btn>
             {onBack && <Btn onClick={onBack}>Back</Btn>}
           </div>

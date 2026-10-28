@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { AppContext } from './context'
 import type { ChatMessage, DocItem, ModalConfig, PageId, Task } from './types'
-import { Pill, Row } from './components/ui'
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import ListItemButton from '@mui/material/ListItemButton'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import Snackbar from '@mui/material/Snackbar'
+import { Modal, Pill, Row } from './components/ui'
 import DisplaySettings from './components/DisplaySettings'
 import { hashForPage, pageFromHash } from './router'
 import { gateState, useAuth } from './api/auth'
@@ -212,7 +218,7 @@ export default function App() {
     return (
       <AppContext.Provider value={ctx}>
         <ServicesApp />
-        <div className={`toast ${toastShow ? 'show' : ''}`}>{toastMsg}</div>
+        <Snackbar open={toastShow} message={toastMsg} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} />
       </AppContext.Provider>
     )
   }
@@ -230,9 +236,9 @@ export default function App() {
           <div className="navlabel">WORKSPACE</div>
           <nav className="nav">
             {NAV.map((n) => (
-              <button key={n.id} aria-current={activeNav === n.id ? 'page' : undefined} className={activeNav === n.id ? 'active' : ''} onClick={() => go(n.id)}>
+              <ListItemButton key={n.id} selected={activeNav === n.id} aria-current={activeNav === n.id ? 'page' : undefined} className={activeNav === n.id ? 'active' : ''} onClick={() => go(n.id)}>
                 <span className="ico">{n.ico}</span>{n.label}
-              </button>
+              </ListItemButton>
             ))}
           </nav>
           <div className="navlabel">ECOURTS PORTAL (REFERENCE)</div>
@@ -240,54 +246,45 @@ export default function App() {
             {PORTAL_NAV.map((n) => {
               const active = n.id === page || (n.id === 'portalHelp' && (USEFUL_LINKS.some((l) => l.page === page) || POLICY_PAGES.includes(page)))
               return n.url ? (
-                <ExternalLink key={n.label} className="" href={n.url}><span className="ico">{n.ico}</span>{n.label}</ExternalLink>
+                <ExternalLink key={n.label} nav className="" href={n.url}><span className="ico">{n.ico}</span>{n.label}</ExternalLink>
               ) : (
-                <button key={n.label} aria-current={active ? 'page' : undefined} className={active ? 'active' : ''} onClick={() => go(n.id!)}>
+                <ListItemButton key={n.label} selected={active} aria-current={active ? 'page' : undefined} className={active ? 'active' : ''} onClick={() => go(n.id!)}>
                   <span className="ico">{n.ico}</span>{n.label}
-                </button>
+                </ListItemButton>
               )
             })}
           </nav>
           <div className="sidebottom">
-            <div className="avatar">{auth.person ? auth.person.displayName.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase() : 'AK'}</div>
+            <Avatar sx={{ bgcolor: '#dbe6ff', color: '#2947a2', fontWeight: 700 }}>{auth.person ? auth.person.displayName.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase() : 'AK'}</Avatar>
             <div><strong>{auth.person ? auth.person.displayName : 'Adv. A. Kumar'}</strong><small>Advocate workspace</small></div>
           </div>
         </aside>
         <main className="main" id="main-content" tabIndex={-1}>
           <header className="topbar">
-            <button className="iconbtn mobilemenu" onClick={() => setMenuOpen((o) => !o)}>☰</button>
+            <IconButton className="mobilemenu" aria-label="Menu" aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)}>☰</IconButton>
             <div className="search">
-              <input aria-label="Search" placeholder="Search matters, documents, authorities…" onKeyDown={onSearch} />
+              <OutlinedInput fullWidth size="small" placeholder="Search matters, documents, authorities…" inputProps={{ 'aria-label': 'Search' }} onKeyDown={onSearch as never} />
             </div>
             <div className="topactions">
-              <button className="iconbtn hide-sm" onClick={() => go('calendar')}>◷ Upcoming: 3</button>
+              <Button variant="outlined" size="small" className="hide-sm" onClick={() => go('calendar')}>◷ Upcoming: 3</Button>
               <DisplaySettings />
-              <button className="iconbtn" title="Notifications" aria-label="Notifications" onClick={showNotifications}>♧</button>
-              <div className="avatar" title={auth.person?.displayName}>{(auth.person?.displayName ?? 'AK').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</div>
-              {auth.required && auth.status === 'in' && <button className="btn small" onClick={() => void auth.signOut()}>Sign out</button>}
+              <IconButton title="Notifications" aria-label="Notifications" onClick={showNotifications}>♧</IconButton>
+              <Avatar title={auth.person?.displayName} sx={{ bgcolor: '#dbe6ff', color: '#2947a2', fontWeight: 700, width: 36, height: 36 }}>{(auth.person?.displayName ?? 'AK').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</Avatar>
+              {auth.required && auth.status === 'in' && <Button size="small" variant="outlined" onClick={() => void auth.signOut()}>Sign out</Button>}
             </div>
           </header>
           <div className="page"><Page /></div>
         </main>
       </div>
 
-      <div className={`toast ${toastShow ? 'show' : ''}`}>{toastMsg}</div>
+      <Snackbar open={toastShow} message={toastMsg} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} />
 
-      <div className={`modalback ${modal ? 'show' : ''}`}>
-        {modal && (
-          <form className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" onSubmit={submitModal} onKeyDown={(e) => { if (e.key === 'Escape') setModal(null) }}>
-            <div className="modalhead">
-              <h3 id="modal-title">{modal.title}</h3>
-              <button type="button" className="iconbtn" aria-label="Close dialog" autoFocus onClick={() => setModal(null)}>✕</button>
-            </div>
-            <div>{modal.body}</div>
-            <div className="actions" style={{ justifyContent: 'flex-end', marginTop: 16 }}>
-              <button type="button" className="btn" onClick={() => setModal(null)}>Cancel</button>
-              <button type="submit" className="btn primary">Save</button>
-            </div>
-          </form>
-        )}
-      </div>
+      <Modal
+        open={!!modal} onClose={() => setModal(null)} titleId="modal-title" title={modal?.title} closeLabel="Close dialog" onSubmit={submitModal}
+        actions={<><Button variant="outlined" onClick={() => setModal(null)}>Cancel</Button><Button type="submit" variant="contained">Save</Button></>}
+      >
+        {modal?.body}
+      </Modal>
     </AppContext.Provider>
   )
 }

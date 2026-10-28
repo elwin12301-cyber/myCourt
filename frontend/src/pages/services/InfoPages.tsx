@@ -1,5 +1,5 @@
 import ExternalLink from '../../components/ExternalLink'
-import { Btn, Card, Notice, PageHead, Pill } from '../../components/ui'
+import { Btn, Card, Notice, PageHead, Pill, Table, TableBody, TableCell, TableHead, TableRow } from '../../components/ui'
 import { FORMS, NEWSLETTERS, SCREEN_READERS, WEB_INFO, formLink, POLICIES } from '../../features/portal/data'
 import {
   ABOUT, CONTACT_DISCREPANCY, CONTACT_EMAIL, CONTACT_NOTE, CONTACT_ROWS, HC_SITES, HELP_VIDEOS, SITE_MAP_GROUPS, SLUG_TITLES, type SvcSlug,
@@ -48,15 +48,15 @@ export function ContactPage() {
       </div>
       <Card title="Contact Information">
         <div className="tablewrap">
-          <table>
+          <Table size="small">
             <caption className="sr-only">{t('High Court coordinator contacts')}</caption>
-            <thead><tr>{['Sr. No.', 'High Court', 'Jurisdiction (State/UTs)', 'Contact'].map((h) => <th key={h} scope="col">{t(h)}</th>)}</tr></thead>
-            <tbody>
+            <TableHead><TableRow>{['Sr. No.', 'High Court', 'Jurisdiction (State/UTs)', 'Contact'].map((h) => <TableCell key={h} scope="col">{t(h)}</TableCell>)}</TableRow></TableHead>
+            <TableBody>
               {CONTACT_ROWS.map((c, i) => (
-                <tr key={c.name}><td>{i + 1}</td><td><strong>{t(c.name)}</strong></td><td>{c.jurisdiction.split(', ').map((x) => t(x)).join(', ')}</td><td className="nowrap">{c.cpcEmail}</td></tr>
+                <TableRow key={c.name}><TableCell>{i + 1}</TableCell><TableCell><strong>{t(c.name)}</strong></TableCell><TableCell>{c.jurisdiction.split(', ').map((x) => t(x)).join(', ')}</TableCell><TableCell className="nowrap">{c.cpcEmail}</TableCell></TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
         <Notice>{t(CONTACT_DISCREPANCY)}</Notice>
       </Card>
@@ -116,15 +116,15 @@ export function FormsPage() {
       <PageHead title="Forms for Advocates" sub={`${FORMS.length} PDF forms. Files are hosted by the official site.`} />
       <Card>
         <div className="tablewrap">
-          <table>
+          <Table size="small">
             <caption className="sr-only">{t('Forms for advocates')}</caption>
-            <thead><tr><th scope="col">{t('Form')}</th><th scope="col">{t('Format')}</th><th scope="col">{t('Size')}</th><th scope="col"><span className="sr-only">{t('Action')}</span></th></tr></thead>
-            <tbody>
+            <TableHead><TableRow><TableCell scope="col">{t('Form')}</TableCell><TableCell scope="col">{t('Format')}</TableCell><TableCell scope="col">{t('Size')}</TableCell><TableCell scope="col"><span className="sr-only">{t('Action')}</span></TableCell></TableRow></TableHead>
+            <TableBody>
               {FORMS.map((f) => (
-                <tr key={f.file}><td><strong>{t(f.title)}</strong></td><td>PDF</td><td>{f.size}</td><td><ExternalLink href={formLink(f.file)}>{t('Open on official site ↗')}</ExternalLink></td></tr>
+                <TableRow key={f.file}><TableCell><strong>{t(f.title)}</strong></TableCell><TableCell>PDF</TableCell><TableCell>{f.size}</TableCell><TableCell><ExternalLink href={formLink(f.file)}>{t('Open on official site ↗')}</ExternalLink></TableCell></TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
         <FromPortal />
         <p className="tiny muted">{t('File addresses were derived from the relative links on the forms page and not individually tested.')}</p>
@@ -187,15 +187,15 @@ export function ScreenReaderPage() {
       <PageHead title="Screen Reader Access" sub="Assistive technologies the official portal lists as compatible." />
       <Card>
         <div className="tablewrap">
-          <table>
+          <Table size="small">
             <caption className="sr-only">{t('Screen readers')}</caption>
-            <thead><tr><th scope="col">#</th><th scope="col">{t('Screen reader')}</th><th scope="col">{t('Vendor site')}</th><th scope="col">{t('Usage')}</th></tr></thead>
-            <tbody>
+            <TableHead><TableRow><TableCell scope="col">#</TableCell><TableCell scope="col">{t('Screen reader')}</TableCell><TableCell scope="col">{t('Vendor site')}</TableCell><TableCell scope="col">{t('Usage')}</TableCell></TableRow></TableHead>
+            <TableBody>
               {SCREEN_READERS.map((s, i) => (
-                <tr key={s.name}><td>{i + 1}</td><td><strong>{t(s.name)}</strong></td><td>{s.site}</td><td><Pill kind={s.usage === 'Free' ? 'green' : ''}>{t(s.usage)}</Pill></td></tr>
+                <TableRow key={s.name}><TableCell>{i + 1}</TableCell><TableCell><strong>{t(s.name)}</strong></TableCell><TableCell>{s.site}</TableCell><TableCell><Pill kind={s.usage === 'Free' ? 'green' : ''}>{t(s.usage)}</Pill></TableCell></TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
         <FromPortal />
       </Card>

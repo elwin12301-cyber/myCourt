@@ -1,7 +1,12 @@
 import { useApp } from '../context'
 import { Banner, Btn, Card, PageHead, Pill, Quick, Row, Stat } from '../components/ui'
 import { useEffect, useState } from 'react'
+import Box from '@mui/material/Box'
+import MuiCard from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
 import { apiEnabled } from '../api/client'
+import { Message, Section } from '../components/mui'
 import * as W from '../api/workspace'
 import { newMatterModal } from './modals'
 
@@ -9,18 +14,29 @@ function LiveSummary() {
   const [d, setD] = useState<W.DashboardData | null>(null)
   const [failed, setFailed] = useState(false)
   useEffect(() => { W.dashboard().then(setD).catch(() => setFailed(true)) }, [])
-  if (failed) return <div role="alert" className="notice">Your workspace summary could not be loaded.</div>
-  if (!d) return <div role="status" className="muted">Loading your workspace…</div>
+  if (failed) return <Message severity="error">Your workspace summary could not be loaded.</Message>
+  if (!d) return <Typography role="status" color="text.secondary">Loading your workspace…</Typography>
+  const tiles: [string, number, string][] = [
+    ['Matters', d.matters, 'You can open'], ['Open tasks', d.openTasks, 'Across your matters'],
+    ['Drafts to approve', d.draftsAwaitingApproval, 'Advocate review needed'], ['Unapproved deadlines', d.unapprovedDeadlines, 'Confirm each date'],
+  ]
   return (
-    <Card title="Your workspace (saved on the server)">
-      <div className="grid stats">
-        <Stat label="Matters" num={String(d.matters)} desc="You can open" ico="▣" />
-        <Stat label="Open tasks" num={String(d.openTasks)} desc="Across your matters" ico="✓" />
-        <Stat label="Drafts to approve" num={String(d.draftsAwaitingApproval)} desc="Advocate review needed" ico="!" />
-        <Stat label="Unapproved deadlines" num={String(d.unapprovedDeadlines)} desc="Confirm each date" ico="◷" />
-      </div>
-      {d.nextDates.length > 0 && <ul className="list">{d.nextDates.map((e) => <li className="listrow" key={e.id}><div><strong>{e.title}</strong><small>{e.kind} · {new Date(e.startsAt).toLocaleString('en-IN')}</small></div></li>)}</ul>}
-    </Card>
+    <Section title="Your workspace (saved on the server)">
+      <Box sx={{ display: 'grid', gap: 1.5, gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
+        {tiles.map(([label, n, hint]) => (
+          <MuiCard key={label}><CardContent>
+            <Typography variant="caption" color="text.secondary">{label}</Typography>
+            <Typography variant="h4" component="p" sx={{ fontWeight: 700 }}>{n}</Typography>
+            <Typography variant="caption" color="text.secondary">{hint}</Typography>
+          </CardContent></MuiCard>
+        ))}
+      </Box>
+      {d.nextDates.length > 0 && (
+        <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0, mt: 1.5 }}>
+          {d.nextDates.map((e) => <li key={e.id}><strong>{e.title}</strong> <Typography variant="caption" color="text.secondary">{e.kind} · {new Date(e.startsAt).toLocaleString('en-IN')}</Typography></li>)}
+        </Box>
+      )}
+    </Section>
   )
 }
 

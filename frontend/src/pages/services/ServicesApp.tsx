@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type Dispatch, type FormEvent, type ReactNode, type SetStateAction } from 'react'
 import DisplaySettings from '../../components/DisplaySettings'
 import ExternalLink from '../../components/ExternalLink'
-import { Card } from '../../components/ui'
+import { Card, Btn, Input, Select } from '../../components/ui'
 import { EyebrowContext } from '../../components/chrome'
 import { AppContext, useApp } from '../../context'
 import { PARTNERS } from '../../features/portal/data'
@@ -61,8 +61,8 @@ function ThemePanel({ prefs, set, onClose }: { prefs: SitePrefs; set: (p: SitePr
         ))}
       </fieldset>
       <div className="actions">
-        <button type="button" className="btn small" onClick={() => set({ ...prefs, topbar: DEFAULT_PREFS.topbar, theme: DEFAULT_PREFS.theme })}>{t('Reset theme')}</button>
-        <button type="button" className="btn small" onClick={onClose}>{t('Close')}</button>
+        <Btn type="button" kind="small" onClick={() => set({ ...prefs, topbar: DEFAULT_PREFS.topbar, theme: DEFAULT_PREFS.theme })}>{t('Reset theme')}</Btn>
+        <Btn type="button" kind="small" onClick={onClose}>{t('Close')}</Btn>
       </div>
     </div>
   )
@@ -151,9 +151,9 @@ function Shell({ initialSlug, prefs, setPrefs, lang }: ShellProps) {
         <div className="svc-tools">
           <label>
             <span className="sr-only">{t('Select language')}</span>
-            <select value={prefs.language} onChange={(e) => setPrefs({ ...prefs, language: e.target.value })}>
+            <Select value={prefs.language} onChange={(e) => setPrefs({ ...prefs, language: e.target.value })}>
               {SVC_LANGUAGES.map((l) => <option key={l}>{l}</option>)}
-            </select>
+            </Select>
           </label>
           <DisplaySettings label={t('Accessibility options')} />
           <div className="svc-theme">
@@ -162,8 +162,8 @@ function Shell({ initialSlug, prefs, setPrefs, lang }: ShellProps) {
           </div>
           <form className="svc-search" role="search" onSubmit={submitSearch}>
             <label className="sr-only" htmlFor="svc-q">{t('Search this site')}</label>
-            <input id="svc-q" type="search" placeholder={t('Search this site')} value={query} onChange={(e) => setQuery(e.target.value)} />
-            <button type="submit" className="btn small">{t('Search')}</button>
+            <Input id="svc-q" type="search" placeholder={t('Search this site')} value={query} onChange={(e) => setQuery(e.target.value)} />
+            <Btn type="submit" kind="small">{t('Search')}</Btn>
           </form>
         </div>
       </div>
@@ -186,7 +186,7 @@ function Shell({ initialSlug, prefs, setPrefs, lang }: ShellProps) {
       {!prefs.noticeDismissed && (
         <div className="svc-notice" role="status">
           <span>{t(NOTICE_TEXT)}</span>
-          <button type="button" className="btn small" onClick={() => setPrefs({ ...prefs, noticeDismissed: true })}>{t('Dismiss')}</button>
+          <Btn type="button" kind="small" onClick={() => setPrefs({ ...prefs, noticeDismissed: true })}>{t('Dismiss')}</Btn>
         </div>
       )}
       {lang !== 'en' && (
