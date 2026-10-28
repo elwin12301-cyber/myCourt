@@ -1,10 +1,12 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import ExternalLink from '../../components/ExternalLink'
 import { Btn, Card, PageHead, Pill } from '../../components/ui'
+import { useT } from '../../i18n/context'
 import { buildSiteIndex, searchSite } from '../../features/services/search'
 import type { SvcSlug } from '../../features/services/data'
 
 export default function SiteSearch({ query, navigate }: { query: string; navigate: (s: SvcSlug) => void }) {
+  const t = useT()
   const [text, setText] = useState(query)
   const [submitted, setSubmitted] = useState(query)
   const index = useMemo(buildSiteIndex, [])
@@ -17,24 +19,24 @@ export default function SiteSearch({ query, navigate }: { query: string; navigat
       <Card>
         <form role="search" onSubmit={submit}>
           <div className="field">
-            <label htmlFor="site-search-page">Search this site</label>
-            <input id="site-search-page" type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder="e.g. caveat, Madras, vakalatnama" />
+            <label htmlFor="site-search-page">{t('Search this site')}</label>
+            <input id="site-search-page" type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('e.g. caveat, Madras, vakalatnama')} />
           </div>
-          <button className="btn primary" type="submit">Search</button>
+          <button className="btn primary" type="submit">{t('Search')}</button>
         </form>
         <div style={{ marginTop: 16 }} aria-live="polite">
           {submitted && hits.length === 0 && (
-            <div className="empty">No results for “{submitted}”. Try the <button type="button" className="svc-link" onClick={() => navigate('site-map')}>site map</button>.</div>
+            <div className="empty">{t('No results for “{q}”.', { q: submitted })} <button type="button" className="svc-link" onClick={() => navigate('site-map')}>{t('Open the site map')}</button></div>
           )}
-          {hits.length > 0 && <p className="tiny muted">{hits.length} result{hits.length === 1 ? '' : 's'}</p>}
+          {hits.length > 0 && <p className="tiny muted">{t(hits.length === 1 ? '{n} result' : '{n} results', { n: hits.length })}</p>}
           <div className="list">
             {hits.slice(0, 50).map((h) => (
               <div className="listrow" key={h.id}>
-                <div><strong>{h.title}</strong><small>{h.description}</small></div>
+                <div><strong>{t(h.title)}</strong><small>{h.kind === 'Contact' ? h.description.split(', ').map((x) => t(x)).join(', ') : h.kind === 'Form' ? t('PDF · {size}', { size: h.description.replace('PDF · ', '') }) : t(h.description)}</small></div>
                 <div className="actions">
                   <Pill>{h.kind}</Pill>
                   {h.slug && <Btn className="small" onClick={() => navigate(h.slug!)}>Open</Btn>}
-                  {h.url && <ExternalLink href={h.url}>Open site ↗</ExternalLink>}
+                  {h.url && <ExternalLink href={h.url}>{t('Open site ↗')}</ExternalLink>}
                 </div>
               </div>
             ))}

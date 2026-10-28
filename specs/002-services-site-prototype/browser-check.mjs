@@ -215,9 +215,9 @@ try {
   await ev(`[...document.querySelectorAll('.dispmenu button')].find((b) => b.textContent.includes('Reset all')).click()`); await step(200)
   // language
   await ev(`__t.set('.svc-top select', 'हिन्दी')`); await step(300)
-  log('J6 choosing Hindi says translation is unavailable and keeps English', (await T()).includes('Translation into हिन्दी is not available'))
+  log('J6 choosing Hindi translates the page and shows the machine-translation notice', (await T()).includes('Machine translation: not reviewed') && (await ev(`document.documentElement.lang`)) === 'hi')
   await reload()
-  log('J7 the language choice persists', (await T()).includes('Translation into हिन्दी is not available'))
+  log('J7 the language choice persists', (await ev(`document.documentElement.lang`)) === 'hi' && (await ev(`document.querySelector('.svc-top select').value`)) === 'हिन्दी')
   await ev(`__t.set('.svc-top select', 'English')`); await step(200)
   // notice
   await ev(`__t.click('Dismiss')`); await step(200)
@@ -253,6 +253,36 @@ try {
   log('L2 every keyboard-focused control shows a focus indicator', noRing.length === 0, noRing.length ? noRing.join(', ') : `${seen.length} stops checked`)
   const unlabeled = await ev(`[...document.querySelectorAll('#svc-main input:not([type=radio]), #svc-main select')].filter((e) => !e.labels || e.labels.length === 0).map((e) => e.id)`)
   log('L3 form controls have labels', unlabeled.length === 0, unlabeled.join(', '))
+
+  // ---------- N. site translation (spec 003) ----------
+  const LANG_SET = [['hi', 'हिन्दी'], ['mr', 'मराठी'], ['gu', 'ગુજરાતી'], ['kn', 'ಕನ್ನಡ'], ['ta', 'தமிழ்']]
+  const NAMES = { hi: 'मामले की स्थिति', mr: 'प्रकरणाची स्थिती', gu: 'કેસની સ્થિતિ', kn: 'ಪ್ರಕರಣದ ಸ್ಥಿತಿ', ta: 'வழக்கு நிலை' }
+  const allPages = ['cnr', 'case-status', 'court-orders', 'cause-list', 'caveat', 'process', 'location', 'high-courts', 'contact', 'about', 'newsletter', 'forms', 'help-videos', 'site-map', 'web-info', 'copyright', 'hyperlinking', 'accessibility', 'screen-reader', 'disclaimer', 'search']
+  const latinInContent = `(() => { const t = document.querySelector('#svc-main').innerText; return (t.match(/[A-Za-z]{4,}/g) || []).length })()`
+  for (const [code, label] of LANG_SET) {
+    await load('#/services/case-status', 360, 800)
+    await ev(`__t.set('.svc-top select', ${JSON.stringify(label)})`); await step(350)
+    const lang = await ev('document.documentElement.lang')
+    const notice = await ev(`document.body.innerText.includes('Machine translation: not reviewed')`)
+    const heading = await ev('__t.h2()')
+    log(`N1 ${code}: lang attribute, notice and translated heading`, lang === code && notice && heading.length > 0 && !/[A-Za-z]{4,}/.test(heading), `${lang} | ${heading}`)
+    // 360 px overflow on every page, in this language
+    bad = []
+    for (const p of allPages) {
+      await ev(`location.hash = '#/services/${p}'`); await step(250)
+      const o = await ev('__t.overflow()')
+      if (o > 0) bad.push(`${p}:+${o}px`)
+    }
+    log(`N2 ${code}: no horizontal scroll at 360 px on all ${allPages.length} pages`, bad.length === 0, bad.join(', '))
+    // searches stay English: a CNR search in this language still finds the demo record
+    await ev(`location.hash = '#/services/cnr'`); await step(300)
+    await ev(`__t.set('#cnr', 'TNCH019999992025')`); await step(); await solve()
+    await ev(`document.querySelector('#svc-main form button.primary, #svc-main form button[type=submit]').click()`); await sleep(1300)
+    const found = await ev(`document.querySelector('#svc-main').innerText.includes('TNCH019999992025')`)
+    log(`N3 ${code}: searching by CNR still finds the record (stored values stay English)`, found)
+  }
+  await ev(`__t.set('.svc-top select', 'English')`); await step(300)
+  log('N4 switching back to English removes the notice and restores lang', !(await T()).includes('Machine translation: not reviewed') && (await ev('document.documentElement.lang')) === 'en')
 
   // ---------- M. phone width ----------
   const phonePages = ['cnr', 'case-status', 'caveat', 'process', 'location', 'high-courts', 'contact', 'about', 'forms', 'site-map']

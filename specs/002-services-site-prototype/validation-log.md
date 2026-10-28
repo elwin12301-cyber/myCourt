@@ -43,7 +43,7 @@ Screenshots were reviewed at desktop and 360 px, in the Default and Dark themes.
 - No human tester, real screen reader, real touch device or browser other than Chrome.
 - Contrast ratios were not measured (including in the Eco and Dark themes).
 - Visual design (colours, fonts, spacing) is this prototype's own; the official look was not observed.
-- Translations, real data and official results layouts are out of scope (see the gap analysis).
+- Real data and official results layouts are out of scope (see the gap analysis). Translations were added later by `specs/003-site-translation`, which replaced the "not available" notice.
 
 ## Constitution re-check
 | Principle | Evidence |

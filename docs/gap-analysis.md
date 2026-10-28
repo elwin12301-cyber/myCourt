@@ -40,7 +40,7 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-020 | Site search | **Implemented** over this demo's own index (services, courts, forms, pages); does not search case records |
 | GAP-021 | Accessibility toolbar (contrast, invert, saturation, text size/spacing/line height, hide images, big cursor, reset) | **Implemented** (`Aa` menu) |
 | GAP-022 | External site alert (Go/Cancel) | **Implemented** (`ExternalLink`) |
-| GAP-023 | Multi-language selector | **Partly**: selector shown, only English enabled; translations not built |
+| GAP-023 | Multi-language selector | **Implemented on the services site** (spec 003): all five other languages translate the whole site, with a machine-translation notice; the workspace outside it stays English |
 | GAP-024 | Knowledge Management, site map, help videos, manuals, brochures, policies, newsletter | **Not built**: contents could not be verified; listed by name on the Help page |
 | GAP-025 | Live services (case status, cause list, ePay, eFiling, Virtual Court, NJDG, Justice Clock) | **Not replicated**: linked out. Case status has a separate demo |
 | GAP-026 | Mobile app | **Not built**; only referenced |
@@ -96,11 +96,11 @@ Priorities: P0 critical security/data/breakage · P1 high-impact · P2 important
 | GAP-053 | No Process Details | **Fixed** — Process ID and registered e-mail; wrong e-mail and unknown ID give the same message; e-mail never stored, logged, put in the address or repeated in the result |
 | GAP-054 | No Location | **Fixed** — court selector and an accessible pop-up (Escape closes, focus returns) with a fictional address and a map placeholder |
 | GAP-055 | No theme customizer | **Fixed** — Topbar Light/Dark and Theme Default/Dark/Eco/Light, remembered after reload; accessibility options take precedence |
-| GAP-056 | Language selector | **Partly**: six languages listed; choosing one shows a notice and the page stays English |
+| GAP-056 | Language selector | **Implemented**: six languages; choosing one translates every page of the services site and shows a machine-translation notice (unreviewed by a native speaker) |
 | GAP-057 | No site search | **Fixed** — searches pages, services, 25 High Courts, contact rows, forms, help videos and newsletters |
 | GAP-058 | High Courts, Contact Us, About Us, 12 footer pages | **Fixed**. Contact shows the 24 rows the services page lists with a note about the 25th (Telangana); footer pages other than About and Contact reuse main-portal content and say so |
 | GAP-059 | Hidden screen-reader text widened pages sideways (found by measuring without phone emulation) | **Fixed** app-wide in `src/styles.css`; it affected wide tables, for example Forms (+156 px at 360 px) |
 | GAP-060 | Search Menu strip widened the whole site by about 600 px at 360 px | **Fixed** (grid children may shrink) |
 | GAP-061 | Dark theme form labels too dim | **Fixed** |
 | GAP-062 | Earlier 360 px checks used phone emulation, which zooms the page out and can hide overflow | **Corrected**: both browser-check scripts now measure without it; both re-run and pass |
-| GAP-063 | Translations for the five other languages; real data; official colours and layout; help-video and store links; official results layouts | **Not built / Unverified** |
+| GAP-063 | Real data; official colours and layout; help-video and store links; official results layouts | **Not built / Unverified**. Translations were built in spec 003 but have had no native-speaker review |

@@ -60,5 +60,5 @@ Sidebar -> **eCourts Services site** (address `#/services`). It replaces the wor
 - **Caveat Search:** Tamil Nadu > Chennai > Principal Sessions Court Complex, name "kumar", Anywhere (2 results) or Starting with (1). Caveat number `1`, year `2025` lists three.
 - **Process Details:** `PRC-DEMO-0001` with `advocate.one@example.invalid`. A wrong e-mail and an unknown ID show the same message.
 - **Location:** choose a court, then View location (pop-up; Escape closes).
-- **Tools:** gear icon (theme), Aa (accessibility), language selector, notice Dismiss, Search this site. Choices are remembered.
+- **Tools:** gear icon (theme), Aa (accessibility), language selector (translates the whole site; a notice says the translation is unreviewed), notice Dismiss, Search this site. Choices are remembered.
 - Code: `src/features/services/`, `src/pages/services/`. Check it with `node specs/002-services-site-prototype/browser-check.mjs <output-folder>` while `npm run dev` is running (needs Google Chrome).

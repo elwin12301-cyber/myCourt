@@ -161,7 +161,7 @@ The High Courts page lists the 25 High Courts with their external websites. Cont
 - Not observed and therefore designed independently: the layout and grouping of the Caveat Search fields (grouped here into four searches), what the Process Details page shows after a search, what the Location pop-up contains, the results columns of every service, and the purpose of the Select State, District and Go row on the CNR page.
 - The Process Details address returned the home page content in the review, so its page layout is Unverified.
 - Footer pages other than About and Contact were not read on the services site; their content reuses the main-portal versions already in the project and is labelled as such.
-- Translation of the six languages is out of scope; selecting a language other than English only shows a notice.
+- Translation of the six languages was out of scope here; it was built afterwards in `specs/003-site-translation`.
 - The official site's warning "Do not use browser toolbar reload or back button" is shown for fidelity, with a note that this prototype supports reload and Back.
 - Store badges for the mobile app are plain labels because the official ones are placeholder links.
 - Existing features (Case Status forms, Cause List, Court Orders, portal data, display settings, captcha, court selector) are reused, not duplicated.

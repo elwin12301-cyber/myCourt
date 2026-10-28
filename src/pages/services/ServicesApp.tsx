@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type Dispatch, type FormEvent, type ReactNode, type SetStateAction } from 'react'
 import DisplaySettings from '../../components/DisplaySettings'
 import ExternalLink from '../../components/ExternalLink'
 import { Card } from '../../components/ui'
@@ -10,6 +10,8 @@ import {
   SVC_MAIN_MENU, SVC_SLUGS, THEME_OPTIONS, TOP_LINKS, TOPBAR_OPTIONS, USAGE_WARNING, USAGE_WARNING_NOTE, type SvcMenuItem, type SvcSlug,
 } from '../../features/services/data'
 import { DEFAULT_PREFS, loadPrefs, savePrefs, themeClasses, type SitePrefs, type ThemeColor, type Topbar } from '../../features/services/prefs'
+import { formatDateLong, I18nProvider, useT } from '../../i18n/context'
+import { langFromLabel, type LangCode } from '../../i18n/core'
 import { servicesHash, servicesSlugFromHash } from '../../router'
 import type { PageId } from '../../types'
 import CauseListPage from '../CauseList'
@@ -31,40 +33,47 @@ const ALL_BUT_CNR = ['party', 'caseNumber', 'filingNumber', 'advocate', 'fir', '
 /** Workspace pages that live inside the site; links from reused pages are redirected to the site's own addresses. */
 const SLUG_FOR_PAGE: Partial<Record<PageId, SvcSlug>> = { caseStatus: 'case-status', causeList: 'cause-list', courtOrders: 'court-orders' }
 
+const MT_NOTICE = 'This text is machine-translated and has not been reviewed by a native speaker. The English text is authoritative; do not rely on the translation for legal matters.'
+const MT_NOTICE_EN = 'Machine translation: not reviewed by a native speaker. The English text is authoritative; do not rely on the translation for legal matters.'
+
 const readSlug = (): SvcSlug =>
   (typeof window === 'undefined' ? DEFAULT_SLUG : servicesSlugFromHash(window.location.hash, SVC_SLUGS, DEFAULT_SLUG)) as SvcSlug
 
 function Pending({ slug, note }: { slug: SvcSlug; note?: string }) {
-  return <Card title={SLUG_TITLES[slug]}><p className="muted">This page is not available.{note ? ` ${note}` : ''}</p></Card>
+  const t = useT()
+  return <Card title={t(SLUG_TITLES[slug])}><p className="muted">{t('This page is not available.')}{note ? ` ${note}` : ''}</p></Card>
 }
 
 function ThemePanel({ prefs, set, onClose }: { prefs: SitePrefs; set: (p: SitePrefs) => void; onClose: () => void }) {
+  const t = useT()
   return (
-    <div className="svc-themepanel" role="dialog" aria-label="Theme Customizer" onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}>
+    <div className="svc-themepanel" role="dialog" aria-label={t('Theme Customizer')} onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}>
       <fieldset>
-        <legend>Topbar Color</legend>
+        <legend>{t('Topbar Color')}</legend>
         {TOPBAR_OPTIONS.map((o) => (
-          <label key={o}><input type="radio" name="topbar" checked={prefs.topbar === o} onChange={() => set({ ...prefs, topbar: o as Topbar })} /> {o}</label>
+          <label key={o}><input type="radio" name="topbar" checked={prefs.topbar === o} onChange={() => set({ ...prefs, topbar: o as Topbar })} /> {t(o)}</label>
         ))}
       </fieldset>
       <fieldset>
-        <legend>Theme Color</legend>
+        <legend>{t('Theme Color')}</legend>
         {THEME_OPTIONS.map((o) => (
-          <label key={o}><input type="radio" name="themecolor" checked={prefs.theme === o} onChange={() => set({ ...prefs, theme: o as ThemeColor })} /> {o}</label>
+          <label key={o}><input type="radio" name="themecolor" checked={prefs.theme === o} onChange={() => set({ ...prefs, theme: o as ThemeColor })} /> {t(o)}</label>
         ))}
       </fieldset>
       <div className="actions">
-        <button type="button" className="btn small" onClick={() => set({ ...prefs, topbar: DEFAULT_PREFS.topbar, theme: DEFAULT_PREFS.theme })}>Reset theme</button>
-        <button type="button" className="btn small" onClick={onClose}>Close</button>
+        <button type="button" className="btn small" onClick={() => set({ ...prefs, topbar: DEFAULT_PREFS.topbar, theme: DEFAULT_PREFS.theme })}>{t('Reset theme')}</button>
+        <button type="button" className="btn small" onClick={onClose}>{t('Close')}</button>
       </div>
     </div>
   )
 }
 
-export default function ServicesApp({ initialSlug }: { initialSlug?: SvcSlug } = {}) {
+interface ShellProps { initialSlug?: SvcSlug; prefs: SitePrefs; setPrefs: Dispatch<SetStateAction<SitePrefs>>; lang: LangCode }
+
+function Shell({ initialSlug, prefs, setPrefs, lang }: ShellProps) {
   const app = useApp()
+  const t = useT()
   const [slug, setSlug] = useState<SvcSlug>(() => initialSlug ?? readSlug())
-  const [prefs, setPrefs] = useState<SitePrefs>(() => loadPrefs())
   const [themeOpen, setThemeOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [siteQuery, setSiteQuery] = useState('')
@@ -86,12 +95,11 @@ export default function ServicesApp({ initialSlug }: { initialSlug?: SvcSlug } =
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
-  useEffect(() => { savePrefs(prefs) }, [prefs])
   useEffect(() => {
     const before = document.title
-    document.title = `${SLUG_TITLES[slug]} - eCourts Services (demonstration)`
+    document.title = `${t(SLUG_TITLES[slug])} - ${t('eCourts Services (demonstration)')}`
     return () => { document.title = before }
-  }, [slug])
+  }, [slug, t])
 
   const mapped = useMemo(() => ({
     ...app,
@@ -101,8 +109,8 @@ export default function ServicesApp({ initialSlug }: { initialSlug?: SvcSlug } =
   const submitSearch = (e: FormEvent) => { e.preventDefault(); setSiteQuery(query); navigate('search') }
 
   const menuItem = (m: SvcMenuItem) => m.url
-    ? <ExternalLink key={m.label} href={m.url} className="svc-link">{m.label}</ExternalLink>
-    : <button key={m.label} type="button" aria-current={slug === m.slug ? 'page' : undefined} onClick={() => navigate(m.slug!)}>{m.label}</button>
+    ? <ExternalLink key={m.label} href={m.url} className="svc-link">{t(m.label)}</ExternalLink>
+    : <button key={m.label} type="button" aria-current={slug === m.slug ? 'page' : undefined} onClick={() => navigate(m.slug!)}>{t(m.label)}</button>
 
   const renderPage = (): ReactNode => {
     switch (slug) {
@@ -131,31 +139,31 @@ export default function ServicesApp({ initialSlug }: { initialSlug?: SvcSlug } =
   const isService = SEARCH_MENU.some((m) => m.slug === slug)
 
   return (
-    <div className={`svc ${themeClasses(prefs)}`}>
-      <a className="skip" href="#svc-main">Skip to main content</a>
-      <div className="protobar" role="note">Independent demonstration of the eCourts services site structure · fictional data · not affiliated with the judiciary</div>
+    <div className={`svc ${themeClasses(prefs)}`} lang={lang}>
+      <a className="skip" href="#svc-main">{t('Skip to main content')}</a>
+      <div className="protobar" role="note">{t('Independent demonstration of the eCourts services site structure · fictional data · not affiliated with the judiciary')}</div>
 
       <div className="svc-top">
         <div className="svc-tools">
-          {TOP_LINKS.map((l) => <ExternalLink key={l.label} href={l.url!} className="svc-link">{l.label}</ExternalLink>)}
-          <button type="button" className="iconbtn" onClick={() => app.go('dashboard')}>← Back to myCourt workspace</button>
+          {TOP_LINKS.map((l) => <ExternalLink key={l.label} href={l.url!} className="svc-link">{t(l.label)}</ExternalLink>)}
+          <button type="button" className="iconbtn" onClick={() => app.go('dashboard')}>{t('← Back to myCourt workspace')}</button>
         </div>
         <div className="svc-tools">
           <label>
-            <span className="sr-only">Select language</span>
+            <span className="sr-only">{t('Select language')}</span>
             <select value={prefs.language} onChange={(e) => setPrefs({ ...prefs, language: e.target.value })}>
               {SVC_LANGUAGES.map((l) => <option key={l}>{l}</option>)}
             </select>
           </label>
-          <DisplaySettings label="Accessibility options" />
+          <DisplaySettings label={t('Accessibility options')} />
           <div className="svc-theme">
-            <button type="button" className="iconbtn" aria-expanded={themeOpen} onClick={() => setThemeOpen((o) => !o)}>⚙<span className="sr-only"> Theme Customizer</span></button>
+            <button type="button" className="iconbtn" aria-expanded={themeOpen} onClick={() => setThemeOpen((o) => !o)}>⚙<span className="sr-only"> {t('Theme Customizer')}</span></button>
             {themeOpen && <ThemePanel prefs={prefs} set={setPrefs} onClose={() => setThemeOpen(false)} />}
           </div>
           <form className="svc-search" role="search" onSubmit={submitSearch}>
-            <label className="sr-only" htmlFor="svc-q">Search this site</label>
-            <input id="svc-q" type="search" placeholder="Search this site" value={query} onChange={(e) => setQuery(e.target.value)} />
-            <button type="submit" className="btn small">Search</button>
+            <label className="sr-only" htmlFor="svc-q">{t('Search this site')}</label>
+            <input id="svc-q" type="search" placeholder={t('Search this site')} value={query} onChange={(e) => setQuery(e.target.value)} />
+            <button type="submit" className="btn small">{t('Search')}</button>
           </form>
         </div>
       </div>
@@ -164,64 +172,87 @@ export default function ServicesApp({ initialSlug }: { initialSlug?: SvcSlug } =
         <div className="svc-brand">
           <div className="brandmark">eC</div>
           <div>
-            <h1>eCourts Services</h1>
-            <p>District and Taluka Courts of India</p>
-            <small>Demonstration prototype</small>
+            <h1>{t('eCourts Services')}</h1>
+            <p>{t('District and Taluka Courts of India')}</p>
+            <small>{t('Demonstration prototype')}</small>
           </div>
         </div>
         <div className="svc-app">
-          <span>{APP_LINE}</span>
+          <span>{t(APP_LINE)}</span>
           {APP_BADGES.map((b) => <span key={b} className="pill">{b}</span>)}
         </div>
       </header>
 
       {!prefs.noticeDismissed && (
         <div className="svc-notice" role="status">
-          <span>{NOTICE_TEXT}</span>
-          <button type="button" className="btn small" onClick={() => setPrefs({ ...prefs, noticeDismissed: true })}>Dismiss</button>
+          <span>{t(NOTICE_TEXT)}</span>
+          <button type="button" className="btn small" onClick={() => setPrefs({ ...prefs, noticeDismissed: true })}>{t('Dismiss')}</button>
         </div>
       )}
-      {prefs.language !== 'English' && (
-        <div className="svc-notice" role="status">Translation into {prefs.language} is not available in this prototype; the pages stay in English.</div>
+      {lang !== 'en' && (
+        <div className="svc-notice" role="status">
+          <span>{t(MT_NOTICE)}<br /><span lang="en">{MT_NOTICE_EN}</span></span>
+        </div>
       )}
 
-      <nav className="svc-menu" aria-label="Main menu">{SVC_MAIN_MENU.map(menuItem)}</nav>
+      <nav className="svc-menu" id="svc-mainmenu" aria-label={t('Main menu')}>{SVC_MAIN_MENU.map(menuItem)}</nav>
 
       <div className="svc-body">
-        <aside className="svc-side" aria-label="Search Menu">
-          <h2>Search Menu</h2>
+        <aside className="svc-side" id="svc-sidebar" aria-label={t('Search Menu')}>
+          <h2>{t('Search Menu')}</h2>
           <nav>
             {SEARCH_MENU.map((m) => (
-              <button key={m.label} type="button" data-ico={ICONS[m.slug!]} aria-current={slug === m.slug ? 'page' : undefined} onClick={() => navigate(m.slug!)}>{m.label}</button>
+              <button key={m.label} type="button" data-ico={ICONS[m.slug!]} aria-current={slug === m.slug ? 'page' : undefined} onClick={() => navigate(m.slug!)}>{t(m.label)}</button>
             ))}
           </nav>
         </aside>
 
         <main id="svc-main" tabIndex={-1}>
           {slug !== 'cnr' && (
-            <nav className="svc-crumbs" aria-label="Breadcrumb">
+            <nav className="svc-crumbs" aria-label={t('Breadcrumb')}>
               <ol>
-                <li><button type="button" onClick={() => navigate('cnr')}>Home</button></li>
-                <li aria-current="page">{SLUG_TITLES[slug]}</li>
+                <li><button type="button" onClick={() => navigate('cnr')}>{t('Home')}</button></li>
+                <li aria-current="page">{t(SLUG_TITLES[slug])}</li>
               </ol>
             </nav>
           )}
-          {slug === 'cnr' && <p className="svc-usage">{USAGE_WARNING}. <em>{USAGE_WARNING_NOTE}</em></p>}
-          <EyebrowContext.Provider value="eCourts Services">
+          {slug === 'cnr' && <p className="svc-usage">{t(USAGE_WARNING)}. <em>{t(USAGE_WARNING_NOTE)}</em></p>}
+          <EyebrowContext.Provider value={t('eCourts Services')}>
             <AppContext.Provider value={mapped}>{renderPage()}</AppContext.Provider>
           </EyebrowContext.Provider>
-          {isService && <p className="tiny muted" style={{ marginTop: 14 }}>{KEYBOARD_TIP}</p>}
+          {isService && <p className="tiny muted" style={{ marginTop: 14 }}>{t(KEYBOARD_TIP)}</p>}
         </main>
       </div>
 
       <footer className="svc-foot">
-        <h2>Useful Links</h2>
-        <ul>{FOOTER_LINKS.map((l) => <li key={l.label}><button type="button" className="svc-link" onClick={() => navigate(l.slug!)}>{l.label}</button></li>)}</ul>
-        <p>As stated on the official site: {SITE_FACTS.owner} {SITE_FACTS.host}</p>
-        <p>Official site last updated: {SITE_FACTS.lastUpdated} · Version: {SITE_FACTS.version}</p>
-        <p>Follow Us <ExternalLink href={SITE_FACTS.youtube} className="svc-link">YouTube</ExternalLink></p>
-        <p>{PARTNERS.map((p) => <span key={p.name}><ExternalLink href={p.url} className="svc-link">{p.name}</ExternalLink>{' '}</span>)}</p>
+        <h2>{t('Useful Links')}</h2>
+        <ul>{FOOTER_LINKS.map((l) => <li key={l.label}><button type="button" className="svc-link" onClick={() => navigate(l.slug!)}>{t(l.label)}</button></li>)}</ul>
+        <p>{t('As stated on the official site:')} {t(SITE_FACTS.owner)} {t(SITE_FACTS.host)}</p>
+        <p>{t('Official site last updated: {date} · Version: {version}', { date: formatDateLong('2026-01-02', lang), version: SITE_FACTS.version })}</p>
+        <p>{t('Follow Us')} <ExternalLink href={SITE_FACTS.youtube} className="svc-link">YouTube</ExternalLink></p>
+        <p>{PARTNERS.map((p) => <span key={p.name}><ExternalLink href={p.url} className="svc-link">{t(p.name)}</ExternalLink>{' '}</span>)}</p>
       </footer>
     </div>
+  )
+}
+
+/** Holds the site preferences (including the language) and provides the language to every component below. */
+export default function ServicesApp({ initialSlug, initialLanguage }: { initialSlug?: SvcSlug; initialLanguage?: string } = {}) {
+  const [prefs, setPrefs] = useState<SitePrefs>(() => {
+    const p = loadPrefs()
+    return initialLanguage ? { ...p, language: initialLanguage } : p
+  })
+  useEffect(() => { savePrefs(prefs) }, [prefs])
+  const lang = langFromLabel(prefs.language)
+  useEffect(() => {
+    const before = document.documentElement.lang
+    document.documentElement.lang = lang
+    return () => { document.documentElement.lang = before }
+  }, [lang])
+
+  return (
+    <I18nProvider lang={lang}>
+      <Shell initialSlug={initialSlug} prefs={prefs} setPrefs={setPrefs} lang={lang} />
+    </I18nProvider>
   )
 }

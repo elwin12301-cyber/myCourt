@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { Btn, Card, Notice, PageHead } from '../components/ui'
 import { useApp } from '../context'
+import { useT } from '../i18n/context'
 import ExternalLink from '../components/ExternalLink'
 import { generateCaptcha, verifyCaptcha } from '../features/caseStatus/captcha'
 import { createMockAdapter } from '../features/caseStatus/mockAdapter'
@@ -35,6 +36,7 @@ export default function CaseStatusPage({
   submitLabel = 'Go', onBack, hideOtherServices = false, footerNote,
 }: CaseStatusOptions = {}) {
   const { go } = useApp()
+  const t = useT()
   const visibleModes = modes?.length ? MODES.filter((m) => modes.includes(m.id)) : MODES
   const [mode, setMode] = useState<SearchMode>(initialMode ?? visibleModes[0].id)
   const [v, setV] = useState<FormValues>(EMPTY)
@@ -81,7 +83,7 @@ export default function CaseStatusPage({
     setMode(m); setErrors({}); setPhase('idle'); setResults([]); setSelected(null); refreshCaptcha()
   }
 
-  const resultTitle = mode === 'advocate' && v.by === 'caseListDate' ? `Cause list for ${v.date}` : 'Search results'
+  const resultTitle = mode === 'advocate' && v.by === 'caseListDate' ? t('Cause list for {date}', { date: v.date }) : t('Search results')
 
   return (
     <>
@@ -90,33 +92,33 @@ export default function CaseStatusPage({
       </PageHead>
 
       <div className="demobanner" role="note">
-        <strong>Demonstration data.</strong> The form mirrors the structure of the official District Court Case Status service, but results come from a local mock adapter with fictional records. This prototype is not connected to eCourts, is not affiliated with the judiciary, and must not be used to check a real case.
+        <strong>{t('Demonstration data.')}</strong> {t('The form mirrors the structure of the official District Court Case Status service, but results come from a local mock adapter with fictional records. This prototype is not connected to eCourts, is not affiliated with the judiciary, and must not be used to check a real case.')}
       </div>
 
       <Card>
         {visibleModes.length > 1 && (
-          <div className="tabrow" role="tablist" aria-label="Search by">
+          <div className="tabrow" role="tablist" aria-label={t('Search by')}>
             {visibleModes.map((m) => (
               <button key={m.id} role="tab" id={`tab-${m.id}`} aria-selected={mode === m.id} aria-controls="searchpanel"
-                className={`tab ${mode === m.id ? 'active' : ''}`} onClick={() => switchMode(m.id)}>{m.label}</button>
+                className={`tab ${mode === m.id ? 'active' : ''}`} onClick={() => switchMode(m.id)}>{t(m.label)}</button>
             ))}
           </div>
         )}
 
-        <form id="searchpanel" role={visibleModes.length > 1 ? 'tabpanel' : undefined} aria-labelledby={visibleModes.length > 1 ? `tab-${mode}` : undefined} aria-label={visibleModes.length > 1 ? undefined : info.heading} onSubmit={run} noValidate>
-          <h4 style={{ margin: '0 0 6px' }}>{info.heading}</h4>
+        <form id="searchpanel" role={visibleModes.length > 1 ? 'tabpanel' : undefined} aria-labelledby={visibleModes.length > 1 ? `tab-${mode}` : undefined} aria-label={visibleModes.length > 1 ? undefined : t(info.heading)} onSubmit={run} noValidate>
+          <h4 style={{ margin: '0 0 6px' }}>{t(info.heading)}</h4>
           <details className="howto">
-            <summary>How to search</summary>
-            <p>{info.help}</p>
-            <p className="tiny muted">Fields marked with * are required.</p>
-            {info.videoKey && <ExternalLink href={helpVideoUrl(info.videoKey)}>Click here to view help video ↗</ExternalLink>}
+            <summary>{t('How to search')}</summary>
+            <p>{t(info.help)}</p>
+            <p className="tiny muted">{t('Fields marked with * are required.')}</p>
+            {info.videoKey && <ExternalLink href={helpVideoUrl(info.videoKey)}>{t('Click here to view help video')} ↗</ExternalLink>}
           </details>
 
           <ModeFields mode={mode} v={v} set={patch} errors={errors} />
           <CaptchaField code={captcha} value={captchaInput} onChange={setCaptchaInput} onRefresh={refreshCaptcha} error={errors.captcha} />
 
           <div className="actions">
-            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? 'Searching…' : submitLabel}</button>
+            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t(submitLabel)}</button>
             <Btn onClick={reset}>Reset</Btn>
             {onBack && <Btn onClick={onBack}>Back</Btn>}
           </div>
@@ -125,15 +127,15 @@ export default function CaseStatusPage({
       </Card>
 
       <div style={{ marginTop: 18 }} aria-live="polite">
-        {phase === 'idle' && <div className="empty">Choose a search type, fill in the details and select {submitLabel}.</div>}
+        {phase === 'idle' && <div className="empty">{t('Choose a search type, fill in the details and select {action}.', { action: t(submitLabel) })}</div>}
         {phase === 'loading' && (
-          <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span className="sr-only">Loading results</span></Card>
+          <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span className="sr-only">{t('Loading results')}</span></Card>
         )}
         {phase === 'error' && (
-          <Notice>The demonstration service is unavailable. <Btn className="small" onClick={() => run()}>Retry</Btn></Notice>
+          <Notice>{t('The demonstration service is unavailable.')} <Btn className="small" onClick={() => run()}>Retry</Btn></Notice>
         )}
         {phase === 'done' && results.length === 0 && (
-          <div className="empty">No matching record in the demonstration data. This does not mean a real case does not exist.</div>
+          <div className="empty">{t('No matching record in the demonstration data. This does not mean a real case does not exist.')}</div>
         )}
         {phase === 'done' && results.length > 0 && !selected && <Results results={results} title={resultTitle} onView={setSelected} />}
         {selected && <CaseDetail c={selected} onBack={() => setSelected(null)} />}
@@ -141,11 +143,11 @@ export default function CaseStatusPage({
 
       {!hideOtherServices && (
         <Card title="Other search services on the official site">
-          <p className="tiny muted">The official Search menu also lists these services. Cause List and Court Orders have demos here; the others are not rebuilt and open the official site.</p>
+          <p className="tiny muted">{t('The official Search menu also lists these services. Cause List and Court Orders have demos here; the others are not rebuilt and open the official site.')}</p>
           <div className="actions">
             {SEARCH_MENU_LINKS.map((l) => (l.page
-              ? <Btn key={l.label} className="small" onClick={() => go(l.page!)}>{l.label} (demo)</Btn>
-              : <ExternalLink key={l.label} href={l.url}>{l.label} ↗</ExternalLink>))}
+              ? <Btn key={l.label} className="small" onClick={() => go(l.page!)}>{`${t(l.label)} (${t('demo')})`}</Btn>
+              : <ExternalLink key={l.label} href={l.url}>{t(l.label)} ↗</ExternalLink>))}
           </div>
         </Card>
       )}

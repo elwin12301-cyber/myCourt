@@ -22,9 +22,10 @@ export const COURT_ROOMS: CourtRoom[] = [
 ]
 
 export const roomId = (r: CourtRoom) => `${r.state}|${r.district}|${r.complex}|${r.establishment}|${r.number}`
-export const roomLabel = (r: CourtRoom) => `${r.number} - ${r.judge} - ${r.designation}`
+/** `tr` translates the designation and period (judge names are data and stay as they are). */
+export const roomLabel = (r: CourtRoom, tr: (s: string) => string = (s) => s) => `${r.number} - ${r.judge} - ${tr(r.designation)}`
 /** Court Orders court-number list: also shows the judge period. */
-export const courtNumberLabel = (r: CourtRoom) => `${r.number} - ${r.judge} - ${r.designation} (${r.period})`
+export const courtNumberLabel = (r: CourtRoom, tr: (s: string) => string = (s) => s) => `${r.number} - ${r.judge} - ${tr(r.designation)} (${tr(r.period)})`
 /** Matches the `courtNumberAndJudge` field on demo case records. */
 export const roomKey = (r: CourtRoom) => `${r.number} - ${r.judge}`
 

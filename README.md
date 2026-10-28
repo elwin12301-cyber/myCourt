@@ -87,4 +87,4 @@ There is no backend. Case Status reads from a mock adapter behind the `CaseSearc
 
 ## Known limitations
 
-No login, storage or backend; data resets on refresh. Portal counters are a snapshot and may be out of date. Only English is available in the language selector. No linter is configured yet.
+No login, storage or backend; data resets on refresh. Portal counters are a snapshot and may be out of date. The services site (`#/services`) is available in English, हिन्दी, मराठी, ગુજરાતી, ಕನ್ನಡ and தமிழ்; the non-English text is machine-assisted and has not been reviewed by a native speaker. The workspace outside it is English only. No linter is configured yet.

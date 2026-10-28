@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useT } from '../i18n/context'
 
 type Flag = 'contrast' | 'invert' | 'gray' | 'sat' | 'links' | 'spacing' | 'lines' | 'noimg' | 'cursor'
 interface Prefs { size: number; flags: Flag[] }
@@ -24,7 +25,9 @@ function load(): Prefs {
   } catch { return DEFAULTS }
 }
 
-export default function DisplaySettings({ label = 'Display settings' }: { label?: string } = {}) {
+export default function DisplaySettings({ label }: { label?: string } = {}) {
+  const t = useT()
+  const shown = label ?? t('Display settings')
   const [open, setOpen] = useState(false)
   const [p, setP] = useState<Prefs>(load)
 
@@ -40,18 +43,18 @@ export default function DisplaySettings({ label = 'Display settings' }: { label?
 
   return (
     <div className="dispwrap">
-      <button className="iconbtn" aria-expanded={open} aria-controls="dispmenu" onClick={() => setOpen((o) => !o)}>Aa<span className="sr-only"> {label}</span></button>
+      <button className="iconbtn" aria-expanded={open} aria-controls="dispmenu" onClick={() => setOpen((o) => !o)}>Aa<span className="sr-only"> {shown}</span></button>
       {open && (
-        <div className="dispmenu" id="dispmenu" role="group" aria-label={label} onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false) }}>
+        <div className="dispmenu" id="dispmenu" role="group" aria-label={shown} onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false) }}>
           <div className="actions">
-            <button className="btn small" onClick={() => size(-1)} aria-label="Decrease text size">A−</button>
+            <button className="btn small" onClick={() => size(-1)} aria-label={t('Decrease text size')}>A−</button>
             <button className="btn small" onClick={() => setP((s) => ({ ...s, size: 0 }))}>A</button>
-            <button className="btn small" onClick={() => size(1)} aria-label="Increase text size">A+</button>
+            <button className="btn small" onClick={() => size(1)} aria-label={t('Increase text size')}>A+</button>
           </div>
           {FLAGS.map((f) => (
-            <label className="checkrow" key={f.id}><input type="checkbox" checked={p.flags.includes(f.id)} onChange={() => toggle(f.id)} /><div><strong>{f.label}</strong></div></label>
+            <label className="checkrow" key={f.id}><input type="checkbox" checked={p.flags.includes(f.id)} onChange={() => toggle(f.id)} /><div><strong>{t(f.label)}</strong></div></label>
           ))}
-          <button className="btn small" onClick={() => setP(DEFAULTS)}>Reset all</button>
+          <button className="btn small" onClick={() => setP(DEFAULTS)}>{t('Reset all')}</button>
         </div>
       )}
     </div>

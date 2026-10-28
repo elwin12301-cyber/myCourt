@@ -117,3 +117,7 @@ html.hc .svc.svc .card{background:#fff;color:#000;border-color:#000}
 /* Hidden screen-reader text is absolutely positioned; anchor it so it can never extend the page sideways (it used to sit at the far right of wide tables). */
 .sr-only{left:0;top:0}
 .tablewrap{position:relative}
+
+/* Long translated text must wrap instead of widening the page (spec 003). */
+.listrow{flex-wrap:wrap}
+.listrow>*{min-width:0;overflow-wrap:anywhere}

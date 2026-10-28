@@ -2,6 +2,7 @@ import { useRef, useState, type FormEvent } from 'react'
 import { Btn, Card, Notice, PageHead } from '../components/ui'
 import ExternalLink from '../components/ExternalLink'
 import { useApp } from '../context'
+import { useT } from '../i18n/context'
 import { SEARCH_MENU_LINKS } from '../features/caseStatus/referenceData'
 import { generateCaptcha, verifyCaptcha } from '../features/caseStatus/captcha'
 import type { CaseRecord } from '../features/caseStatus/types'
@@ -41,6 +42,7 @@ export default function CourtOrdersPage({ initialMode = 'party', initial, hideOt
   hideOtherServices?: boolean
 } = {}) {
   const { go } = useApp()
+  const t = useT()
   const [mode, setMode] = useState<OrderMode>(initialMode)
   const [v, setV] = useState<FormValues>(EMPTY)
   const [orderFilter, setOrderFilter] = useState<OrderFilter>(DEFAULT_FILTER)
@@ -107,23 +109,23 @@ export default function CourtOrdersPage({ initialMode = 'party', initial, hideOt
       </PageHead>
 
       <div className="demobanner" role="note">
-        <strong>Demonstration data.</strong> The form mirrors the structure of the official District Court Orders service, but orders come from a local mock adapter with fictional cases. This prototype is not connected to eCourts, is not affiliated with the judiciary, and must not be used to look up a real order.
+        <strong>{t('Demonstration data.')}</strong> {t('The form mirrors the structure of the official District Court Orders service, but orders come from a local mock adapter with fictional cases. This prototype is not connected to eCourts, is not affiliated with the judiciary, and must not be used to look up a real order.')}
       </div>
 
       <Card>
-        <div className="tabrow" role="tablist" aria-label="Search by">
+        <div className="tabrow" role="tablist" aria-label={t('Search by')}>
           {ORDER_MODES.map((m) => (
             <button key={m.id} role="tab" id={`otab-${m.id}`} aria-selected={mode === m.id} aria-controls="orderpanel"
-              className={`tab ${mode === m.id ? 'active' : ''}`} onClick={() => switchMode(m.id)}>{m.label}</button>
+              className={`tab ${mode === m.id ? 'active' : ''}`} onClick={() => switchMode(m.id)}>{t(m.label)}</button>
           ))}
         </div>
 
         <form id="orderpanel" role="tabpanel" aria-labelledby={`otab-${mode}`} onSubmit={run} noValidate>
-          <h4 style={{ margin: '0 0 6px' }}>{info.heading}</h4>
+          <h4 style={{ margin: '0 0 6px' }}>{t(info.heading)}</h4>
           <details className="howto">
-            <summary>How to search</summary>
-            <p>{info.help}</p>
-            <p className="tiny muted">Fields marked with * are required.</p>
+            <summary>{t('How to search')}</summary>
+            <p>{t(info.help)}</p>
+            <p className="tiny muted">{t('Fields marked with * are required.')}</p>
           </details>
 
           <CourtPicker v={v} set={patch} errors={errors} />
@@ -149,8 +151,8 @@ export default function CourtOrdersPage({ initialMode = 'party', initial, hideOt
           {mode === 'courtNumber' && (
             <Field id="roomId" label="Court Number" required error={errors.roomId} hint="Court number, judge name, designation and judge period.">
               <select id="roomId" value={roomSel} disabled={!rooms.length} aria-invalid={!!errors.roomId} aria-describedby={errors.roomId ? 'roomId-err' : undefined} onChange={(e) => setRoomSel(e.target.value)}>
-                <option value="">Select court number</option>
-                {rooms.map((r) => <option key={roomId(r)} value={roomId(r)}>{courtNumberLabel(r)}</option>)}
+                <option value="">{t('Select court number')}</option>
+                {rooms.map((r) => <option key={roomId(r)} value={roomId(r)}>{courtNumberLabel(r, t)}</option>)}
               </select>
             </Field>
           )}
@@ -169,22 +171,22 @@ export default function CourtOrdersPage({ initialMode = 'party', initial, hideOt
           <CaptchaField code={captcha} value={captchaInput} onChange={setCaptchaInput} onRefresh={refreshCaptcha} error={errors.captcha} />
 
           <div className="actions">
-            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? 'Searching…' : 'Go'}</button>
+            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t('Go')}</button>
             <Btn onClick={reset}>Reset</Btn>
           </div>
         </form>
       </Card>
 
       <div style={{ marginTop: 18 }} aria-live="polite">
-        {phase === 'idle' && <div className="empty">Choose a search type, fill in the details and select Go.</div>}
+        {phase === 'idle' && <div className="empty">{t('Choose a search type, fill in the details and select {action}.', { action: t('Go') })}</div>}
         {phase === 'loading' && (
-          <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span className="sr-only">Loading results</span></Card>
+          <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span className="sr-only">{t('Loading results')}</span></Card>
         )}
         {phase === 'error' && (
-          <Notice>The demonstration service is unavailable. <Btn className="small" onClick={() => run()}>Retry</Btn></Notice>
+          <Notice>{t('The demonstration service is unavailable.')} <Btn className="small" onClick={() => run()}>Retry</Btn></Notice>
         )}
         {phase === 'done' && results.length === 0 && (
-          <div className="empty">No matching order in the demonstration data. This does not mean no real order exists.</div>
+          <div className="empty">{t('No matching order in the demonstration data. This does not mean no real order exists.')}</div>
         )}
         {phase === 'done' && results.length > 0 && !selected && (
           <OrderResults results={results} filter={resultFilter} sort={resultSort} onFilter={setResultFilter} onSort={setResultSort} onView={(r) => setSelected(r.record)} />
@@ -194,12 +196,12 @@ export default function CourtOrdersPage({ initialMode = 'party', initial, hideOt
 
       {!hideOtherServices && (
         <Card title="Other search services">
-          <p className="tiny muted">Cause List and Case Status have demonstrations here. Caveat Search, Process Details and Location are not rebuilt and open the official site.</p>
+          <p className="tiny muted">{t('Cause List and Case Status have demonstrations here. Caveat Search, Process Details and Location are not rebuilt and open the official site.')}</p>
           <div className="actions">
-            <Btn className="small" onClick={() => go('caseStatus')}>Case Status (demo)</Btn>
+            <Btn className="small" onClick={() => go('caseStatus')}>{`${t('Case Status')} (${t('demo')})`}</Btn>
             {SEARCH_MENU_LINKS.filter((l) => l.page !== 'courtOrders').map((l) => (l.page
-              ? <Btn key={l.label} className="small" onClick={() => go(l.page!)}>{l.label} (demo)</Btn>
-              : <ExternalLink key={l.label} href={l.url}>{l.label} ↗</ExternalLink>))}
+              ? <Btn key={l.label} className="small" onClick={() => go(l.page!)}>{`${t(l.label)} (${t('demo')})`}</Btn>
+              : <ExternalLink key={l.label} href={l.url}>{t(l.label)} ↗</ExternalLink>))}
           </div>
         </Card>
       )}

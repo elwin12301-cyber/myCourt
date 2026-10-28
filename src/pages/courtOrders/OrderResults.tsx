@@ -1,6 +1,7 @@
 import { Btn, Card, Pill } from '../../components/ui'
 import { compareResults } from '../../features/courtOrders/courtOrders'
 import type { OrderResult } from '../../features/courtOrders/types'
+import { useLang, useT } from '../../i18n/context'
 import { fmt } from '../caseStatus/Results'
 
 export type ResultFilter = 'All' | 'Interim' | 'Final'
@@ -26,48 +27,51 @@ export default function OrderResults({ results, filter, sort, onFilter, onSort, 
   onSort: (s: ResultSort) => void
   onView: (r: OrderResult) => void
 }) {
+  const t = useT()
+  const lang = useLang()
   const rows = visibleRows(results, filter, sort)
+  const count = t(results.length === 1 ? '{n} of {m} order' : '{n} of {m} orders', { n: rows.length, m: results.length })
   return (
-    <Card title={`Search results · ${rows.length} of ${results.length} order${results.length === 1 ? '' : 's'}`}>
+    <Card title={`${t('Search results')} · ${count}`}>
       <div className="actions" style={{ marginBottom: 12 }}>
-        <label className="tiny">Order type{' '}
-          <select value={filter} onChange={(e) => onFilter(e.target.value as ResultFilter)}><option>All</option><option>Interim</option><option>Final</option></select>
+        <label className="tiny">{t('Order type')}{' '}
+          <select value={filter} onChange={(e) => onFilter(e.target.value as ResultFilter)}><option value="All">{t('All')}</option><option value="Interim">{t('Interim')}</option><option value="Final">{t('Final')}</option></select>
         </label>
-        <label className="tiny">Sort by{' '}
+        <label className="tiny">{t('Sort by')}{' '}
           <select value={sort} onChange={(e) => onSort(e.target.value as ResultSort)}>
-            <option value="newest">Newest order first</option><option value="oldest">Oldest order first</option><option value="case">Case number</option>
+            <option value="newest">{t('Newest order first')}</option><option value="oldest">{t('Oldest order first')}</option><option value="case">{t('Case number')}</option>
           </select>
         </label>
       </div>
       <div className="tablewrap">
         <table>
-          <caption className="sr-only">Court orders (demonstration data)</caption>
+          <caption className="sr-only">{t('Court orders (demonstration data)')}</caption>
           <thead>
             <tr>
-              <th scope="col">Sr No</th><th scope="col">Case Type/Case Number/Case Year</th><th scope="col">Petitioner versus Respondent</th>
-              <th scope="col">Order</th><th scope="col">Order date</th><th scope="col">Order document</th><th scope="col">View</th>
+              <th scope="col">{t('Sr No')}</th><th scope="col">{t('Case Type/Case Number/Case Year')}</th><th scope="col">{t('Petitioner versus Respondent')}</th>
+              <th scope="col">{t('Order')}</th><th scope="col">{t('Order date')}</th><th scope="col">{t('Order document')}</th><th scope="col">{t('View')}</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((r, i) => (
               <tr key={`${r.record.cnr}-${r.order.number}`}>
                 <td>{i + 1}</td>
-                <td><strong>{r.record.caseType}/{r.record.caseNumber}/{r.record.year}</strong><small>{r.record.cnr}</small></td>
-                <td>{r.record.petitioner} versus {r.record.respondent}</td>
-                <td><strong>Order {r.order.number}</strong><small>{r.order.title}</small><Pill kind={r.order.kind === 'Final' ? 'green' : 'amber'}>{r.order.kind}</Pill></td>
-                <td>{fmt(r.order.date)}</td>
+                <td><strong>{`${t(r.record.caseType)}/${r.record.caseNumber}/${r.record.year}`}</strong><small>{r.record.cnr}</small></td>
+                <td>{`${r.record.petitioner} ${t('versus')} ${r.record.respondent}`}</td>
+                <td><strong>{`${t('Order')} ${r.order.number}`}</strong><small>{t(r.order.title)}</small><Pill kind={r.order.kind === 'Final' ? 'green' : 'amber'}>{r.order.kind}</Pill></td>
+                <td>{fmt(r.order.date, lang)}</td>
                 <td>
-                  <button className="btn small" disabled title="No document exists in demonstration data">Unavailable</button>
-                  <small>No document exists in demonstration data</small>
+                  <button className="btn small" disabled title={t('No document exists in demonstration data')}>{t('Unavailable')}</button>
+                  <small>{t('No document exists in demonstration data')}</small>
                 </td>
-                <td><Btn className="small" onClick={() => onView(r)}>View<span className="sr-only"> case {r.record.caseNumber}/{r.record.year}</span></Btn></td>
+                <td><Btn className="small" onClick={() => onView(r)}>{t('View')}<span className="sr-only">{` ${t('case')} ${r.record.caseNumber}/${r.record.year}`}</span></Btn></td>
               </tr>
             ))}
           </tbody>
         </table>
-        {rows.length === 0 && <div className="empty">No orders match the selected order type.</div>}
+        {rows.length === 0 && <div className="empty">{t('No orders match the selected order type.')}</div>}
       </div>
-      <p className="tiny muted">Column layout is this prototype&apos;s design; the official results list was not observed.</p>
+      <p className="tiny muted">{t("Column layout is this prototype's design; the official results list was not observed.")}</p>
     </Card>
   )
 }

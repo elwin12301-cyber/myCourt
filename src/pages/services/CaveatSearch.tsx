@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { Btn, Card, Notice, PageHead, Pill } from '../../components/ui'
+import { useLang, useT } from '../../i18n/context'
 import { generateCaptcha, verifyCaptcha } from '../../features/caseStatus/captcha'
 import type { FieldErrors } from '../../features/caseStatus/validation'
 import {
@@ -31,6 +32,8 @@ function build(mode: Mode, v: FormValues, x: { role: CaveatRole; match: NameMatc
 }
 
 export default function CaveatSearch({ initialMode = 'name', onBack }: { initialMode?: Mode; onBack?: () => void } = {}) {
+  const t = useT()
+  const lang = useLang()
   const [mode, setMode] = useState<Mode>(initialMode)
   const [v, setV] = useState<FormValues>(EMPTY)
   const [role, setRole] = useState<CaveatRole>('caveator')
@@ -45,7 +48,7 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
   const [results, setResults] = useState<Caveat[]>([])
   const abortRef = useRef<AbortController>()
 
-  const tab = TABS.find((t) => t.id === mode)!
+  const tab = TABS.find((x) => x.id === mode)!
   const patch = (p: Partial<FormValues>) => setV((s) => ({ ...s, ...p }))
   const refreshCaptcha = () => { setCaptcha(generateCaptcha()); setCaptchaInput('') }
   const cancel = () => abortRef.current?.abort()
@@ -72,8 +75,8 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
   const subordinate = (
     <Field id="sub" label="Subordinate Court">
       <select id="sub" value={sub} onChange={(e) => setSub(e.target.value)}>
-        <option value="">Select subordinate court</option>
-        {SUBORDINATE_COURTS.map((c) => <option key={c}>{c}</option>)}
+        <option value="">{t('Select subordinate court')}</option>
+        {SUBORDINATE_COURTS.map((c) => <option key={c} value={c}>{t(c)}</option>)}
       </select>
     </Field>
   )
@@ -86,22 +89,22 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
       </PageHead>
 
       <div className="demobanner" role="note">
-        <strong>Demonstration data.</strong> The fields follow the official Caveat Search page, but the official page does not say how they are grouped, so this prototype groups them into four searches. Caveats are fictional; nothing here is connected to eCourts or affiliated with the judiciary.
+        <strong>{t('Demonstration data.')}</strong> {t('The fields follow the official Caveat Search page, but the official page does not say how they are grouped, so this prototype groups them into four searches. Caveats are fictional; nothing here is connected to eCourts or affiliated with the judiciary.')}
       </div>
 
       <Card>
-        <div className="tabrow" role="tablist" aria-label="Search by">
-          {TABS.map((t) => (
-            <button key={t.id} role="tab" id={`ctab-${t.id}`} aria-selected={mode === t.id} aria-controls="caveatpanel"
-              className={`tab ${mode === t.id ? 'active' : ''}`} onClick={() => switchMode(t.id)}>{t.label}</button>
+        <div className="tabrow" role="tablist" aria-label={t('Search by')}>
+          {TABS.map((x) => (
+            <button key={x.id} role="tab" id={`ctab-${x.id}`} aria-selected={mode === x.id} aria-controls="caveatpanel"
+              className={`tab ${mode === x.id ? 'active' : ''}`} onClick={() => switchMode(x.id)}>{t(x.label)}</button>
           ))}
         </div>
 
         <form id="caveatpanel" role="tabpanel" aria-labelledby={`ctab-${mode}`} onSubmit={run} noValidate>
           <details className="howto">
-            <summary>How to search</summary>
-            <p>Select the state, district and court complex, then complete the fields below, enter the captcha and select Go. {tab.help}</p>
-            <p className="tiny muted">Only active caveats that match are displayed. The official help text also mentions Soundex matching, which the form does not offer. Fields marked with * are required.</p>
+            <summary>{t('How to search')}</summary>
+            <p>{t('Select the state, district and court complex, then complete the fields below, enter the captcha and select Go.')} {t(tab.help)}</p>
+            <p className="tiny muted">{t('Only active caveats that match are displayed. The official help text also mentions Soundex matching, which the form does not offer. Fields marked with * are required.')}</p>
           </details>
 
           <CourtPicker v={v} set={patch} errors={errors} />
@@ -143,7 +146,7 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
 
           <CaptchaField code={captcha} value={captchaInput} onChange={setCaptchaInput} onRefresh={refreshCaptcha} error={errors.captcha} />
           <div className="actions">
-            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? 'Searching…' : 'Go'}</button>
+            <button className="btn primary" type="submit" disabled={phase === 'loading'}>{phase === 'loading' ? t('Searching…') : t('Go')}</button>
             <Btn onClick={reset}>Reset</Btn>
             {onBack && <Btn onClick={onBack}>Back</Btn>}
           </div>
@@ -151,32 +154,32 @@ export default function CaveatSearch({ initialMode = 'name', onBack }: { initial
       </Card>
 
       <div style={{ marginTop: 18 }} aria-live="polite">
-        {phase === 'idle' && <div className="empty">Choose a search type, fill in the details and select Go.</div>}
-        {phase === 'loading' && <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span className="sr-only">Loading results</span></Card>}
-        {phase === 'error' && <Notice>The demonstration service is unavailable. <Btn className="small" onClick={() => run()}>Retry</Btn></Notice>}
-        {phase === 'done' && results.length === 0 && <div className="empty">No active caveat matches in the demonstration data. This does not mean no real caveat exists.</div>}
+        {phase === 'idle' && <div className="empty">{t('Choose a search type, fill in the details and select {action}.', { action: t('Go') })}</div>}
+        {phase === 'loading' && <Card><div className="skeleton" /><div className="skeleton" /><div className="skeleton short" /><span className="sr-only">{t('Loading results')}</span></Card>}
+        {phase === 'error' && <Notice>{t('The demonstration service is unavailable.')} <Btn className="small" onClick={() => run()}>Retry</Btn></Notice>}
+        {phase === 'done' && results.length === 0 && <div className="empty">{t('No active caveat matches in the demonstration data. This does not mean no real caveat exists.')}</div>}
         {phase === 'done' && results.length > 0 && (
-          <Card title={`Active caveats · ${results.length}`}>
+          <Card title={t('Active caveats · {n}', { n: results.length })}>
             <div className="tablewrap">
               <table>
-                <caption className="sr-only">Caveats (demonstration data)</caption>
-                <thead><tr><th scope="col">Sr No</th><th scope="col">Caveat Number/Year</th><th scope="col">Caveator versus Caveatee</th><th scope="col">Court</th><th scope="col">Subordinate case</th><th scope="col">Date of decision</th><th scope="col">Status</th></tr></thead>
+                <caption className="sr-only">{t('Caveats (demonstration data)')}</caption>
+                <thead><tr>{['Sr No', 'Caveat Number/Year', 'Caveator versus Caveatee', 'Court', 'Subordinate case', 'Date of decision', 'Status'].map((h) => <th key={h} scope="col">{t(h)}</th>)}</tr></thead>
                 <tbody>
                   {results.map((c, i) => (
                     <tr key={`${c.caveatNumber}-${c.year}`}>
                       <td>{i + 1}</td>
                       <td><strong>{c.caveatNumber}/{c.year}</strong></td>
-                      <td>{c.caveator} versus {c.caveatee}</td>
-                      <td>{c.court.establishment}<small>{c.court.complex}, {c.court.district}</small></td>
-                      <td>{c.caseType}/{c.caseNumber}/{c.caseYear}<small>{c.subordinateCourt} · filing {c.filingNumber}/{c.filingYear}</small></td>
-                      <td>{fmt(c.decisionDate)}</td>
-                      <td><Pill kind="green">{c.status}</Pill></td>
+                      <td>{`${c.caveator} ${t('versus')} ${c.caveatee}`}</td>
+                      <td>{t(c.court.establishment)}<small>{`${t(c.court.complex)}, ${t(c.court.district)}`}</small></td>
+                      <td>{`${t(c.caseType)}/${c.caseNumber}/${c.caseYear}`}<small>{t('{court} · filing {number}', { court: t(c.subordinateCourt), number: `${c.filingNumber}/${c.filingYear}` })}</small></td>
+                      <td>{fmt(c.decisionDate, lang)}</td>
+                      <td><Pill kind="green">{t(c.status)}</Pill></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <p className="tiny muted">Column layout is this prototype&apos;s design; the official results were not observed.</p>
+            <p className="tiny muted">{t("Column layout is this prototype's design; the official results were not observed.")}</p>
           </Card>
         )}
       </div>
