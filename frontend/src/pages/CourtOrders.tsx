@@ -7,7 +7,7 @@ import { SEARCH_MENU_LINKS } from '../features/caseStatus/referenceData'
 import { generateCaptcha, verifyCaptcha } from '../features/caseStatus/captcha'
 import type { CaseRecord } from '../features/caseStatus/types'
 import type { FieldErrors } from '../features/caseStatus/validation'
-import { createMockOrderAdapter } from '../features/courtOrders/courtOrders'
+import { orderAdapter } from '../api/adapters'
 import { DEFAULT_FILTER, FILTER_LABELS, FILTER_OPTIONS, ORDER_MODES } from '../features/courtOrders/modes'
 import type { OrderFilter, OrderMode, OrderQuery, OrderResult } from '../features/courtOrders/types'
 import { validateOrderQuery } from '../features/courtOrders/validation'
@@ -17,7 +17,7 @@ import CaseDetail from './caseStatus/Detail'
 import { CaseTypeField, CourtPicker, courtOf, EMPTY, Field, Radios, YearField, type FormValues } from './caseStatus/form'
 import OrderResults, { type ResultFilter, type ResultSort } from './courtOrders/OrderResults'
 
-const adapter = createMockOrderAdapter()
+const adapter = orderAdapter()
 export type Phase = 'idle' | 'loading' | 'error' | 'done'
 
 interface Extra { roomId: string; from: string; to: string }

@@ -1,15 +1,16 @@
 import { useRef, useState, type FormEvent } from 'react'
+import { processAdapter } from '../../api/adapters'
 import { Btn, Card, Notice, PageHead, Pill } from '../../components/ui'
 import { useLang, useT } from '../../i18n/context'
 import { generateCaptcha, verifyCaptcha } from '../../features/caseStatus/captcha'
 import type { FieldErrors } from '../../features/caseStatus/validation'
 import { REGISTERED_EMAIL_NOTE } from '../../features/services/data'
-import { createMockProcessAdapter, validateProcessQuery, type PublicProcess } from '../../features/services/process'
+import { validateProcessQuery, type PublicProcess } from '../../features/services/process'
 import CaptchaField from '../caseStatus/Captcha'
 import { Field } from '../caseStatus/form'
 import { fmt } from '../caseStatus/Results'
 
-const adapter = createMockProcessAdapter()
+const adapter = processAdapter()
 type Phase = 'idle' | 'loading' | 'error' | 'found' | 'notfound'
 
 /**

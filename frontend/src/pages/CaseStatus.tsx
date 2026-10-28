@@ -4,7 +4,7 @@ import { useApp } from '../context'
 import { useT } from '../i18n/context'
 import ExternalLink from '../components/ExternalLink'
 import { generateCaptcha, verifyCaptcha } from '../features/caseStatus/captcha'
-import { createMockAdapter } from '../features/caseStatus/mockAdapter'
+import { caseAdapter } from '../api/adapters'
 import { helpVideoUrl, MODES, SEARCH_MENU_LINKS } from '../features/caseStatus/referenceData'
 import { validateQuery, type FieldErrors } from '../features/caseStatus/validation'
 import type { CaseRecord, SearchMode } from '../features/caseStatus/types'
@@ -13,7 +13,7 @@ import CaseDetail from './caseStatus/Detail'
 import { buildQuery, EMPTY, ModeFields, type FormValues } from './caseStatus/form'
 import Results from './caseStatus/Results'
 
-const adapter = createMockAdapter()
+const adapter = caseAdapter()
 
 type Phase = 'idle' | 'loading' | 'error' | 'done'
 

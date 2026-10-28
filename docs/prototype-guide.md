@@ -2,6 +2,7 @@
 
 ## Run
 ```
+cd frontend
 npm install
 npm run dev      # http://localhost:5173 (Vite picks the next free port if busy)
 npm test         # Vitest unit tests
@@ -52,7 +53,7 @@ Sidebar -> **Court orders**. All data is fictional. Examples (solve the on-scree
 - **Court Number** tab: choose `12 - Demo Judge A - ...` -> orders heard in that court.
 - **Order Date** tab: from and to `2025-08-20` -> one order (both dates are included).
 - Use **View** to open the case, **Back to results** to return with the same filter and sort.
-Specification, plan, tasks and the validation log are in `specs/001-court-orders/`. The browser check can be re-run with `node specs/001-court-orders/browser-check.mjs <output-folder>` while `npm run dev` is running (needs Google Chrome).
+Specification, plan, tasks and the validation log are in `specs/001-court-orders/`. The browser check can be re-run with `node specs/001-court-orders/browser-check.mjs <output-folder>` while `npm run dev` (in `frontend/`) is running (needs Google Chrome).
 
 ## eCourts Services site
 Sidebar -> **eCourts Services site** (address `#/services`). It replaces the workspace layout with a full site: top bar, header, theme notice, main menu, Search Menu, footer. Everything is fictional.
@@ -61,4 +62,4 @@ Sidebar -> **eCourts Services site** (address `#/services`). It replaces the wor
 - **Process Details:** `PRC-DEMO-0001` with `advocate.one@example.invalid`. A wrong e-mail and an unknown ID show the same message.
 - **Location:** choose a court, then View location (pop-up; Escape closes).
 - **Tools:** gear icon (theme), Aa (accessibility), language selector (translates the whole site; a notice says the translation is unreviewed), notice Dismiss, Search this site. Choices are remembered.
-- Code: `src/features/services/`, `src/pages/services/`. Check it with `node specs/002-services-site-prototype/browser-check.mjs <output-folder>` while `npm run dev` is running (needs Google Chrome).
+- Code: `src/features/services/`, `src/pages/services/`. Check it with `node specs/002-services-site-prototype/browser-check.mjs <output-folder>` while `npm run dev` (in `frontend/`) is running (needs Google Chrome).

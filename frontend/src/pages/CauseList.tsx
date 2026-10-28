@@ -4,14 +4,15 @@ import { useLang, useT } from '../i18n/context'
 import { generateCaptcha, verifyCaptcha } from '../features/caseStatus/captcha'
 import type { CaseRecord } from '../features/caseStatus/types'
 import type { FieldErrors } from '../features/caseStatus/validation'
-import { createMockCauseListAdapter, validateCauseList, type CauseListResult } from '../features/causeList/causeList'
+import { causeListAdapter } from '../api/adapters'
+import { validateCauseList, type CauseListResult } from '../features/causeList/causeList'
 import { roomId, roomLabel, roomsFor, type CauseListKind } from '../features/causeList/courtRooms'
 import CaptchaField from './caseStatus/Captcha'
 import CaseDetail from './caseStatus/Detail'
 import { courtOf, CourtPicker, EMPTY, Field, type FormValues } from './caseStatus/form'
 import { fmt } from './caseStatus/Results'
 
-const adapter = createMockCauseListAdapter()
+const adapter = causeListAdapter()
 type Phase = 'idle' | 'loading' | 'error' | 'done'
 
 export default function CauseListPage() {

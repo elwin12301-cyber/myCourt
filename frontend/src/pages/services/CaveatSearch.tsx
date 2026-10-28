@@ -1,16 +1,17 @@
 import { useRef, useState, type FormEvent } from 'react'
+import { caveatAdapter } from '../../api/adapters'
 import { Btn, Card, Notice, PageHead, Pill } from '../../components/ui'
 import { useLang, useT } from '../../i18n/context'
 import { generateCaptcha, verifyCaptcha } from '../../features/caseStatus/captcha'
 import type { FieldErrors } from '../../features/caseStatus/validation'
 import {
-  createMockCaveatAdapter, SUBORDINATE_COURTS, validateCaveatQuery, type Caveat, type CaveatQuery, type CaveatRole, type NameMatch,
+  SUBORDINATE_COURTS, validateCaveatQuery, type Caveat, type CaveatQuery, type CaveatRole, type NameMatch,
 } from '../../features/services/caveat'
 import CaptchaField from '../caseStatus/Captcha'
 import { CaseTypeField, courtOf, CourtPicker, EMPTY, Field, Radios, YearField, type FormValues } from '../caseStatus/form'
 import { fmt } from '../caseStatus/Results'
 
-const adapter = createMockCaveatAdapter()
+const adapter = caveatAdapter()
 type Phase = 'idle' | 'loading' | 'error' | 'done'
 type Mode = CaveatQuery['mode']
 

@@ -1,0 +1,860 @@
+{
+  "cases": [
+    {
+      "cnr": "TNCH019999992025",
+      "caseType": "Criminal Case (CC)",
+      "caseNumber": "412",
+      "year": "2025",
+      "filingNumber": "1030",
+      "filingYear": "2025",
+      "filingDate": "2025-08-12",
+      "registrationDate": "2025-08-14",
+      "petitioner": "State (demo)",
+      "respondent": "R. Kumar (demo)",
+      "petitionerAdvocate": {
+        "name": "Public Prosecutor (demo)",
+        "barCode": "TN/0001/2010"
+      },
+      "respondentAdvocate": {
+        "name": "A. Kumar (demo)",
+        "barCode": "TN/0412/2012"
+      },
+      "firNumber": "214",
+      "firYear": "2025",
+      "policeStation": "Demo Police Station - Chennai Central",
+      "acts": [
+        {
+          "act": "Indian Penal Code",
+          "sections": "420, 34"
+        }
+      ],
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "Principal Sessions Court Complex",
+        "establishment": "Sessions Court"
+      },
+      "courtNumberAndJudge": "12 - Demo Judge A",
+      "status": "Pending",
+      "firstHearing": "2025-09-30",
+      "nextHearing": "2026-10-28",
+      "decisionDate": null,
+      "stage": "Evidence",
+      "history": [
+        {
+          "date": "2026-09-02",
+          "businessOn": "2026-09-02",
+          "purpose": "Arguments",
+          "judge": "Demo Judge A"
+        },
+        {
+          "date": "2026-07-15",
+          "businessOn": "2026-09-02",
+          "purpose": "Evidence",
+          "judge": "Demo Judge A"
+        },
+        {
+          "date": "2025-08-20",
+          "businessOn": "2025-09-30",
+          "purpose": "First hearing",
+          "judge": "Demo Judge A"
+        }
+      ],
+      "orders": [
+        {
+          "date": "2026-09-02",
+          "title": "Interim order (demo)",
+          "kind": "Interim",
+          "number": "2",
+          "hasDocument": false
+        },
+        {
+          "date": "2025-08-20",
+          "title": "Order on first hearing (demo)",
+          "kind": "Interim",
+          "number": "1",
+          "hasDocument": false
+        }
+      ],
+      "iaBusiness": [
+        {
+          "ia": "IA 1/2026",
+          "party": "Respondent",
+          "date": "2026-07-15",
+          "status": "Pending"
+        }
+      ]
+    },
+    {
+      "cnr": "TNCH019999992024",
+      "caseType": "Civil Suit (CS)",
+      "caseNumber": "118",
+      "year": "2024",
+      "filingNumber": "305",
+      "filingYear": "2024",
+      "filingDate": "2024-03-04",
+      "registrationDate": "2024-03-06",
+      "petitioner": "Mehta (demo)",
+      "respondent": "Rao (demo)",
+      "petitionerAdvocate": {
+        "name": "S. Iyer (demo)",
+        "barCode": "TN/1180/2009"
+      },
+      "respondentAdvocate": {
+        "name": "M. Nair (demo)",
+        "barCode": "TN/2201/2014"
+      },
+      "firNumber": null,
+      "firYear": null,
+      "policeStation": null,
+      "acts": [
+        {
+          "act": "Code of Civil Procedure",
+          "sections": "Order 7 Rule 1"
+        }
+      ],
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "City Civil Court Complex",
+        "establishment": "City Civil Court"
+      },
+      "courtNumberAndJudge": "4 - Demo Judge B",
+      "status": "Pending",
+      "firstHearing": "2024-04-18",
+      "nextHearing": "2026-10-30",
+      "decisionDate": null,
+      "stage": "Written statement",
+      "history": [
+        {
+          "date": "2026-08-10",
+          "businessOn": "2026-10-30",
+          "purpose": "Written statement",
+          "judge": "Demo Judge B"
+        }
+      ],
+      "orders": [
+        {
+          "date": "2026-08-10",
+          "title": "Order granting time (demo)",
+          "kind": "Interim",
+          "number": "1",
+          "hasDocument": false
+        }
+      ],
+      "iaBusiness": []
+    },
+    {
+      "cnr": "MHMU019999992022",
+      "caseType": "Criminal Appeal (CRL.A)",
+      "caseNumber": "77",
+      "year": "2022",
+      "filingNumber": "510",
+      "filingYear": "2022",
+      "filingDate": "2022-01-19",
+      "registrationDate": "2022-01-21",
+      "petitioner": "Aruna Foundation (demo)",
+      "respondent": "State (demo)",
+      "petitionerAdvocate": {
+        "name": "P. Desai (demo)",
+        "barCode": "MAH/0077/2005"
+      },
+      "respondentAdvocate": {
+        "name": "Public Prosecutor (demo)",
+        "barCode": "MAH/0002/2011"
+      },
+      "firNumber": "88",
+      "firYear": "2021",
+      "policeStation": "Demo Police Station - Mumbai Fort",
+      "acts": [
+        {
+          "act": "Code of Criminal Procedure",
+          "sections": "374"
+        }
+      ],
+      "court": {
+        "state": "Maharashtra",
+        "district": "Mumbai",
+        "complex": "City Civil and Sessions Court",
+        "establishment": "Sessions Court"
+      },
+      "courtNumberAndJudge": "7 - Demo Judge C",
+      "status": "Disposed",
+      "firstHearing": "2022-03-02",
+      "nextHearing": null,
+      "decisionDate": "2024-05-06",
+      "stage": "Judgment pronounced",
+      "history": [
+        {
+          "date": "2024-05-06",
+          "businessOn": "2024-05-06",
+          "purpose": "Judgment",
+          "judge": "Demo Judge C"
+        }
+      ],
+      "orders": [
+        {
+          "date": "2024-05-06",
+          "title": "Final judgment (demo)",
+          "kind": "Final",
+          "number": "2",
+          "hasDocument": false
+        },
+        {
+          "date": "2023-06-12",
+          "title": "Interim stay order (demo)",
+          "kind": "Interim",
+          "number": "1",
+          "hasDocument": false
+        }
+      ],
+      "iaBusiness": []
+    },
+    {
+      "cnr": "DLND019999992023",
+      "caseType": "Criminal Case (CC)",
+      "caseNumber": "905",
+      "year": "2023",
+      "filingNumber": "2210",
+      "filingYear": "2023",
+      "filingDate": "2023-06-11",
+      "registrationDate": "2023-06-13",
+      "petitioner": "Sharma Traders (demo)",
+      "respondent": "V. Singh (demo)",
+      "petitionerAdvocate": {
+        "name": "K. Verma (demo)",
+        "barCode": "D/3301/2008"
+      },
+      "respondentAdvocate": {
+        "name": "R. Gill (demo)",
+        "barCode": "D/1190/2015"
+      },
+      "firNumber": null,
+      "firYear": null,
+      "policeStation": null,
+      "acts": [
+        {
+          "act": "Negotiable Instruments Act",
+          "sections": "138"
+        }
+      ],
+      "court": {
+        "state": "Delhi",
+        "district": "New Delhi",
+        "complex": "Patiala House Court Complex",
+        "establishment": "Magistrate Courts"
+      },
+      "courtNumberAndJudge": "21 - Demo Judge D",
+      "status": "Pending",
+      "firstHearing": "2023-07-20",
+      "nextHearing": "2026-11-05",
+      "decisionDate": null,
+      "stage": "Complainant evidence",
+      "history": [
+        {
+          "date": "2026-09-15",
+          "businessOn": "2026-11-05",
+          "purpose": "Complainant evidence",
+          "judge": "Demo Judge D"
+        }
+      ],
+      "orders": [],
+      "iaBusiness": []
+    },
+    {
+      "cnr": "TNMD019999992023",
+      "caseType": "Civil Suit (CS)",
+      "caseNumber": "56",
+      "year": "2023",
+      "filingNumber": "140",
+      "filingYear": "2023",
+      "filingDate": "2023-02-01",
+      "registrationDate": "2023-02-03",
+      "petitioner": "L. Pandian (demo)",
+      "respondent": "T. Selvi (demo)",
+      "petitionerAdvocate": {
+        "name": "S. Iyer (demo)",
+        "barCode": "TN/1180/2009"
+      },
+      "respondentAdvocate": {
+        "name": "G. Raman (demo)",
+        "barCode": "TN/0950/2011"
+      },
+      "firNumber": null,
+      "firYear": null,
+      "policeStation": null,
+      "acts": [
+        {
+          "act": "Code of Civil Procedure",
+          "sections": "Order 39"
+        }
+      ],
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Madurai",
+        "complex": "District Court Complex",
+        "establishment": "District Court"
+      },
+      "courtNumberAndJudge": "3 - Demo Judge E",
+      "status": "Disposed",
+      "firstHearing": "2023-03-14",
+      "nextHearing": null,
+      "decisionDate": "2025-02-20",
+      "stage": "Decree passed",
+      "history": [
+        {
+          "date": "2025-02-20",
+          "businessOn": "2025-02-20",
+          "purpose": "Judgment",
+          "judge": "Demo Judge E"
+        }
+      ],
+      "orders": [
+        {
+          "date": "2025-02-20",
+          "title": "Decree (demo)",
+          "kind": "Final",
+          "number": "1",
+          "hasDocument": false
+        }
+      ],
+      "iaBusiness": []
+    },
+    {
+      "cnr": "MHPU019999992026",
+      "caseType": "Criminal Case (CC)",
+      "caseNumber": "301",
+      "year": "2026",
+      "filingNumber": "640",
+      "filingYear": "2026",
+      "filingDate": "2026-02-09",
+      "registrationDate": "2026-02-11",
+      "petitioner": "State (demo)",
+      "respondent": "D. Patil (demo)",
+      "petitionerAdvocate": {
+        "name": "Public Prosecutor (demo)",
+        "barCode": "MAH/0003/2012"
+      },
+      "respondentAdvocate": {
+        "name": "A. Kumar (demo)",
+        "barCode": "TN/0412/2012"
+      },
+      "firNumber": "45",
+      "firYear": "2026",
+      "policeStation": "Demo Police Station - Pune Camp",
+      "acts": [
+        {
+          "act": "Bharatiya Nyaya Sanhita",
+          "sections": "318"
+        }
+      ],
+      "court": {
+        "state": "Maharashtra",
+        "district": "Pune",
+        "complex": "District and Sessions Court",
+        "establishment": "Sessions Court"
+      },
+      "courtNumberAndJudge": "9 - Demo Judge F",
+      "status": "Pending",
+      "firstHearing": "2026-03-10",
+      "nextHearing": "2026-10-28",
+      "decisionDate": null,
+      "stage": "Charge framing",
+      "history": [
+        {
+          "date": "2026-08-20",
+          "businessOn": "2026-10-28",
+          "purpose": "Charge framing",
+          "judge": "Demo Judge F"
+        }
+      ],
+      "orders": [
+        {
+          "date": "2026-08-20",
+          "title": "Order on charge (demo)",
+          "kind": "Interim",
+          "number": "1",
+          "hasDocument": false
+        }
+      ],
+      "iaBusiness": []
+    },
+    {
+      "cnr": "TNCH019999992026",
+      "caseType": "Criminal Case (CC)",
+      "caseNumber": "98",
+      "year": "2026",
+      "filingNumber": "233",
+      "filingYear": "2026",
+      "filingDate": "2026-01-15",
+      "registrationDate": "2026-01-17",
+      "petitioner": "State (demo)",
+      "respondent": "S. Raj (demo)",
+      "petitionerAdvocate": {
+        "name": "Public Prosecutor (demo)",
+        "barCode": "TN/0001/2010"
+      },
+      "respondentAdvocate": {
+        "name": "M. Rao (demo)",
+        "barCode": "TN/3305/2016"
+      },
+      "firNumber": null,
+      "firYear": null,
+      "policeStation": null,
+      "acts": [
+        {
+          "act": "Bharatiya Nyaya Sanhita",
+          "sections": "303"
+        }
+      ],
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "Principal Sessions Court Complex",
+        "establishment": "Sessions Court"
+      },
+      "courtNumberAndJudge": "12 - Demo Judge A",
+      "status": "Pending",
+      "firstHearing": "2026-02-20",
+      "nextHearing": "2026-10-28",
+      "decisionDate": null,
+      "stage": "Bail hearing",
+      "history": [
+        {
+          "date": "2026-09-10",
+          "businessOn": "2026-10-28",
+          "purpose": "Bail hearing",
+          "judge": "Demo Judge A"
+        }
+      ],
+      "orders": [],
+      "iaBusiness": []
+    },
+    {
+      "cnr": "TNCH019999992022",
+      "caseType": "Civil Suit (CS)",
+      "caseNumber": "77",
+      "year": "2022",
+      "filingNumber": "190",
+      "filingYear": "2022",
+      "filingDate": "2022-05-02",
+      "registrationDate": "2022-05-04",
+      "petitioner": "Fernandes (demo)",
+      "respondent": "Kapoor (demo)",
+      "petitionerAdvocate": {
+        "name": "M. Nair (demo)",
+        "barCode": "TN/2201/2014"
+      },
+      "respondentAdvocate": {
+        "name": "S. Iyer (demo)",
+        "barCode": "TN/1180/2009"
+      },
+      "firNumber": null,
+      "firYear": null,
+      "policeStation": null,
+      "acts": [
+        {
+          "act": "Code of Civil Procedure",
+          "sections": "Order 1"
+        }
+      ],
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "City Civil Court Complex",
+        "establishment": "City Civil Court"
+      },
+      "courtNumberAndJudge": "4 - Demo Judge B",
+      "status": "Pending",
+      "firstHearing": "2022-06-15",
+      "nextHearing": "2026-10-30",
+      "decisionDate": null,
+      "stage": "Issues",
+      "history": [
+        {
+          "date": "2026-08-25",
+          "businessOn": "2026-10-30",
+          "purpose": "Framing of issues",
+          "judge": "Demo Judge B"
+        }
+      ],
+      "orders": [],
+      "iaBusiness": []
+    }
+  ],
+  "courtRooms": [
+    {
+      "state": "Tamil Nadu",
+      "district": "Chennai",
+      "complex": "Principal Sessions Court Complex",
+      "establishment": "Sessions Court",
+      "number": "12",
+      "judge": "Demo Judge A",
+      "designation": "Principal Sessions Judge",
+      "period": "Jan 2024 - present"
+    },
+    {
+      "state": "Tamil Nadu",
+      "district": "Chennai",
+      "complex": "Principal Sessions Court Complex",
+      "establishment": "Additional Sessions Court",
+      "number": "15",
+      "judge": "Demo Judge G",
+      "designation": "Additional Sessions Judge",
+      "period": "Jan 2024 - present"
+    },
+    {
+      "state": "Tamil Nadu",
+      "district": "Chennai",
+      "complex": "City Civil Court Complex",
+      "establishment": "City Civil Court",
+      "number": "4",
+      "judge": "Demo Judge B",
+      "designation": "Additional Judge",
+      "period": "Jan 2024 - present"
+    },
+    {
+      "state": "Tamil Nadu",
+      "district": "Madurai",
+      "complex": "District Court Complex",
+      "establishment": "District Court",
+      "number": "3",
+      "judge": "Demo Judge E",
+      "designation": "District Judge",
+      "period": "Jan 2024 - present"
+    },
+    {
+      "state": "Maharashtra",
+      "district": "Mumbai",
+      "complex": "City Civil and Sessions Court",
+      "establishment": "Sessions Court",
+      "number": "7",
+      "judge": "Demo Judge C",
+      "designation": "Sessions Judge",
+      "period": "Jan 2024 - present"
+    },
+    {
+      "state": "Maharashtra",
+      "district": "Mumbai",
+      "complex": "City Civil and Sessions Court",
+      "establishment": "Civil Court",
+      "number": "2",
+      "judge": "Demo Judge H",
+      "designation": "Civil Judge",
+      "period": "Jan 2024 - present"
+    },
+    {
+      "state": "Maharashtra",
+      "district": "Pune",
+      "complex": "District and Sessions Court",
+      "establishment": "Sessions Court",
+      "number": "9",
+      "judge": "Demo Judge F",
+      "designation": "Additional Sessions Judge",
+      "period": "Jan 2024 - present"
+    },
+    {
+      "state": "Delhi",
+      "district": "New Delhi",
+      "complex": "Patiala House Court Complex",
+      "establishment": "Magistrate Courts",
+      "number": "21",
+      "judge": "Demo Judge D",
+      "designation": "Metropolitan Magistrate",
+      "period": "Jan 2024 - present"
+    }
+  ],
+  "caveats": [
+    {
+      "caveatNumber": "12",
+      "year": "2025",
+      "caveator": "R. Venkat (demo)",
+      "caveatee": "M. Sundar (demo)",
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "Principal Sessions Court Complex",
+        "establishment": "Sessions Court"
+      },
+      "subordinateCourt": "Magistrate Court No. 3 (demo)",
+      "caseType": "Criminal Case (CC)",
+      "caseNumber": "77",
+      "caseYear": "2024",
+      "filingNumber": "190",
+      "filingYear": "2024",
+      "decisionDate": "2025-02-10",
+      "status": "Active"
+    },
+    {
+      "caveatNumber": "19",
+      "year": "2025",
+      "caveator": "Kumar Brothers (demo)",
+      "caveatee": "L. Pandian (demo)",
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "Principal Sessions Court Complex",
+        "establishment": "Sessions Court"
+      },
+      "subordinateCourt": "Magistrate Court No. 5 (demo)",
+      "caseType": "Criminal Case (CC)",
+      "caseNumber": "301",
+      "caseYear": "2023",
+      "filingNumber": "612",
+      "filingYear": "2023",
+      "decisionDate": "2025-03-02",
+      "status": "Active"
+    },
+    {
+      "caveatNumber": "21",
+      "year": "2025",
+      "caveator": "S. Kumar (demo)",
+      "caveatee": "T. Anand (demo)",
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "Principal Sessions Court Complex",
+        "establishment": "Additional Sessions Court"
+      },
+      "subordinateCourt": "Magistrate Court No. 3 (demo)",
+      "caseType": "Criminal Case (CC)",
+      "caseNumber": "18",
+      "caseYear": "2025",
+      "filingNumber": "44",
+      "filingYear": "2025",
+      "decisionDate": null,
+      "status": "Active"
+    },
+    {
+      "caveatNumber": "3",
+      "year": "2026",
+      "caveator": "Mehta Traders (demo)",
+      "caveatee": "Rao Estates (demo)",
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "City Civil Court Complex",
+        "establishment": "City Civil Court"
+      },
+      "subordinateCourt": "City Civil Court (demo)",
+      "caseType": "Civil Suit (CS)",
+      "caseNumber": "55",
+      "caseYear": "2025",
+      "filingNumber": "410",
+      "filingYear": "2025",
+      "decisionDate": null,
+      "status": "Active"
+    },
+    {
+      "caveatNumber": "45",
+      "year": "2024",
+      "caveator": "Aruna Foundation (demo)",
+      "caveatee": "State (demo)",
+      "court": {
+        "state": "Maharashtra",
+        "district": "Mumbai",
+        "complex": "City Civil and Sessions Court",
+        "establishment": "Sessions Court"
+      },
+      "subordinateCourt": "Sessions Court (demo)",
+      "caseType": "Criminal Appeal (CRL.A)",
+      "caseNumber": "77",
+      "caseYear": "2022",
+      "filingNumber": "510",
+      "filingYear": "2022",
+      "decisionDate": "2024-05-06",
+      "status": "Expired"
+    },
+    {
+      "caveatNumber": "8",
+      "year": "2026",
+      "caveator": "Kumar (demo)",
+      "caveatee": "Singh (demo)",
+      "court": {
+        "state": "Delhi",
+        "district": "New Delhi",
+        "complex": "Patiala House Court Complex",
+        "establishment": "Magistrate Courts"
+      },
+      "subordinateCourt": "Magistrate Court No. 21 (demo)",
+      "caseType": "Criminal Case (CC)",
+      "caseNumber": "905",
+      "caseYear": "2023",
+      "filingNumber": "2210",
+      "filingYear": "2023",
+      "decisionDate": null,
+      "status": "Active"
+    }
+  ],
+  "processes": [
+    {
+      "processId": "PRC-DEMO-0001",
+      "email": "advocate.one@example.invalid",
+      "caseRef": "Criminal Case (CC) 412/2025 (demo)",
+      "type": "Summons",
+      "issuedOn": "2026-09-05",
+      "status": "Served",
+      "court": "Sessions Court, Chennai (demo)"
+    },
+    {
+      "processId": "PRC-DEMO-0002",
+      "email": "advocate.two@example.invalid",
+      "caseRef": "Civil Suit (CS) 118/2024 (demo)",
+      "type": "Notice",
+      "issuedOn": "2026-08-12",
+      "status": "Issued",
+      "court": "City Civil Court, Chennai (demo)"
+    },
+    {
+      "processId": "PRC-DEMO-0003",
+      "email": "clerk.demo@example.invalid",
+      "caseRef": "Criminal Case (CC) 905/2023 (demo)",
+      "type": "Warrant",
+      "issuedOn": "2026-07-01",
+      "status": "Returned",
+      "court": "Magistrate Courts, New Delhi (demo)"
+    }
+  ],
+  "locations": [
+    {
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "Principal Sessions Court Complex",
+        "establishment": ""
+      },
+      "address": "Principal Sessions Court Complex, Demonstration Road, Chennai, Tamil Nadu (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "Principal Sessions Court Complex",
+        "establishment": "Sessions Court"
+      },
+      "address": "Sessions Court, Principal Sessions Court Complex, Demonstration Road, Chennai, Tamil Nadu (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "Principal Sessions Court Complex",
+        "establishment": "Additional Sessions Court"
+      },
+      "address": "Additional Sessions Court, Principal Sessions Court Complex, Demonstration Road, Chennai, Tamil Nadu (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "City Civil Court Complex",
+        "establishment": ""
+      },
+      "address": "City Civil Court Complex, Demonstration Road, Chennai, Tamil Nadu (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "complex": "City Civil Court Complex",
+        "establishment": "City Civil Court"
+      },
+      "address": "City Civil Court, City Civil Court Complex, Demonstration Road, Chennai, Tamil Nadu (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Madurai",
+        "complex": "District Court Complex",
+        "establishment": ""
+      },
+      "address": "District Court Complex, Demonstration Road, Madurai, Tamil Nadu (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Tamil Nadu",
+        "district": "Madurai",
+        "complex": "District Court Complex",
+        "establishment": "District Court"
+      },
+      "address": "District Court, District Court Complex, Demonstration Road, Madurai, Tamil Nadu (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Maharashtra",
+        "district": "Mumbai",
+        "complex": "City Civil and Sessions Court",
+        "establishment": ""
+      },
+      "address": "City Civil and Sessions Court, Demonstration Road, Mumbai, Maharashtra (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Maharashtra",
+        "district": "Mumbai",
+        "complex": "City Civil and Sessions Court",
+        "establishment": "Sessions Court"
+      },
+      "address": "Sessions Court, City Civil and Sessions Court, Demonstration Road, Mumbai, Maharashtra (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Maharashtra",
+        "district": "Mumbai",
+        "complex": "City Civil and Sessions Court",
+        "establishment": "Civil Court"
+      },
+      "address": "Civil Court, City Civil and Sessions Court, Demonstration Road, Mumbai, Maharashtra (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Maharashtra",
+        "district": "Pune",
+        "complex": "District and Sessions Court",
+        "establishment": ""
+      },
+      "address": "District and Sessions Court, Demonstration Road, Pune, Maharashtra (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Maharashtra",
+        "district": "Pune",
+        "complex": "District and Sessions Court",
+        "establishment": "Sessions Court"
+      },
+      "address": "Sessions Court, District and Sessions Court, Demonstration Road, Pune, Maharashtra (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Delhi",
+        "district": "New Delhi",
+        "complex": "Patiala House Court Complex",
+        "establishment": ""
+      },
+      "address": "Patiala House Court Complex, Demonstration Road, New Delhi, Delhi (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    },
+    {
+      "court": {
+        "state": "Delhi",
+        "district": "New Delhi",
+        "complex": "Patiala House Court Complex",
+        "establishment": "Magistrate Courts"
+      },
+      "address": "Magistrate Courts, Patiala House Court Complex, Demonstration Road, New Delhi, Delhi (fictional address)",
+      "note": "Fictional address for demonstration; no real court is located here."
+    }
+  ]
+}
