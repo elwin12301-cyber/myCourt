@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { HELP, PAGE_ALIASES, parseCommand, parseNumber } from './commands'
+import { HELP, PAGE_ALIASES, PAGE_LABEL, pageFor, parseCommand, parseNumber } from './commands'
+import { speechErrorMessage } from '../speech'
 import { bestMatch, normalise, score } from './match'
 
 describe('voice command parser', () => {
@@ -56,6 +57,35 @@ describe('voice command parser', () => {
       if (parseCommand(phrase.trim()).t === 'unknown') bad.push(phrase)
     }
     expect(bad).toEqual([])
+  })
+})
+
+describe('going to a screen', () => {
+  it.each([
+    ['go to case status', 'caseStatus'], ['Go to case status.', 'caseStatus'], ['navigate to case status', 'caseStatus'], ['open the case status page', 'caseStatus'],
+    ['go to case statuses', 'caseStatus'], ['take me to the cause list', 'causeList'], ['go to court orders', 'courtOrders'], ['open hearing preparation', 'hearing'],
+    ['go to time and billing', 'billing'], ['show me the privacy policy', 'portalPrivacy'], ['go to terms and conditions', 'portalTerms'], ['open site map', 'portalSitemap'],
+  ])('"%s" goes to %s', (phrase, page) => expect(parseCommand(phrase)).toEqual({ t: 'go', page }))
+
+  it('every screen has a spoken name for the "Navigating to …" answer', () => {
+    for (const page of new Set(Object.values(PAGE_ALIASES))) expect(PAGE_LABEL[page].length).toBeGreaterThan(2)
+    expect(PAGE_LABEL.caseStatus).toBe('case status')
+  })
+  it('does not guess when the name is not close to any screen', () => {
+    expect(pageFor('purple elephants')).toBeNull()
+  })
+})
+
+describe('speech errors', () => {
+  it('a quiet pause or our own stop is not an error, so listening simply restarts', () => {
+    expect(speechErrorMessage('no-speech')).toBeNull()
+    expect(speechErrorMessage('aborted')).toBeNull()
+  })
+  it('real problems are explained in plain words', () => {
+    expect(speechErrorMessage('not-allowed')).toMatch(/refused/)
+    expect(speechErrorMessage('audio-capture')).toMatch(/No microphone/)
+    expect(speechErrorMessage('network')).toMatch(/internet/)
+    expect(speechErrorMessage('weird')).toMatch(/weird/)
   })
 })
 

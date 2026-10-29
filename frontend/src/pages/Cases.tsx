@@ -3,22 +3,11 @@ import { apiEnabled, messageOf } from '../api/client'
 import * as W from '../api/workspace'
 import { matterIdFromHash } from '../router'
 import MatterWorkspace from './MatterWorkspace'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TablePagination from '@mui/material/TablePagination'
-import TableRow from '@mui/material/TableRow'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import AddIcon from '@mui/icons-material/Add'
-import { Message, Section, Status } from '../components/mui'
+import { Message, Section, Status } from '../components/blocks'
 import { useApp } from '../context'
 import { Btn, Card, Notice, PageHead, Pill, Quick, Stat, Input } from '../components/ui'
 import { newMatterModal } from './modals'
+import { AddIcon, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '../components/kit'
 
 const MATTERS = [
   { title: 'State v. R. Kumar', id: 'CR/2025/0412', area: 'Criminal', court: 'Chennai · Sessions Court', next: '28 Oct 2026', status: 'Active', kind: 'green' as const },
@@ -55,7 +44,7 @@ function LiveMatters() {
         <Box component="form" onSubmit={create}>
           <TextField id="nm-title" label="Matter title" value={title} onChange={(e) => setTitle(e.target.value)} required />
           <TextField id="nm-ref" label="Client reference (optional)" value={ref} onChange={(e) => setRef(e.target.value)} />
-          <Button type="submit" variant="contained" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Create matter</Button>
+          <Button type="submit" variant="contained" startIcon={<AddIcon />} disabled={busy} style={{ marginTop: 8 }}>Create matter</Button>
         </Box>
       </Section>
       <Section title="Matter register">

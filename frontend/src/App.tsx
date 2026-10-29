@@ -1,13 +1,8 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent, type KeyboardEvent } from 'react'
 import { AppContext } from './context'
 import type { ChatMessage, DocItem, ModalConfig, PageId, Task } from './types'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import ListItemButton from '@mui/material/ListItemButton'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import Snackbar from '@mui/material/Snackbar'
 import { Modal, Pill, Row } from './components/ui'
+import { Avatar, Button, IconButton, ListItemButton, Skeleton, Snackbar } from './components/kit'
 import DisplaySettings from './components/DisplaySettings'
 import Security from './components/Security'
 import VoiceControl from './components/VoiceControl'
@@ -236,7 +231,7 @@ export default function App() {
 
   // With the backend in use the workspace needs a signed-in person. The Services-site demo stays public.
   const gate = gateState(auth.required, auth.status, page)
-  if (gate === 'loading') return <div role="status" className="page">Loading…</div>
+  if (gate === 'loading') return <div className="page"><Skeleton rows={5} /></div>
   if (gate === 'sign-in') return <AppContext.Provider value={ctx}><SignIn /><VoiceControl floating /></AppContext.Provider>
   const activeNav = page === 'caseDetail' ? 'cases' : page
 
@@ -283,27 +278,28 @@ export default function App() {
             })}
           </nav>
           <div className="sidebottom">
-            <Avatar sx={{ bgcolor: '#dbe6ff', color: '#2947a2', fontWeight: 700 }}>{auth.person ? auth.person.displayName.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase() : 'AK'}</Avatar>
+            <Avatar>{auth.person ? auth.person.displayName.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase() : 'AK'}</Avatar>
             <div><strong>{auth.person ? auth.person.displayName : 'Adv. A. Kumar'}</strong><small>Advocate workspace</small></div>
           </div>
         </aside>
-        <main className="main" id="main-content" tabIndex={-1}>
+        <main className="main" id="main-content" tabIndex={-1} onClick={() => { if (menuOpen) setMenuOpen(false) }}>
           <header className="topbar">
             <IconButton className="mobilemenu" aria-label="Menu" aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)}>☰</IconButton>
             <div className="search">
-              <OutlinedInput fullWidth size="small" placeholder="Search matters, documents, authorities…" inputProps={{ 'aria-label': 'Search' }} onKeyDown={onSearch as never} />
+              <input className="ctl" aria-label="Search" placeholder="Search matters, documents, authorities…" onKeyDown={onSearch} />
             </div>
             <div className="topactions">
               <Button variant="outlined" size="small" className="hide-sm" onClick={() => go('calendar')}>◷ Upcoming: 3</Button>
               <VoiceControl />
               <DisplaySettings />
               <IconButton title="Notifications" aria-label="Notifications" onClick={showNotifications}>♧</IconButton>
-              <Avatar title={auth.person?.displayName} sx={{ bgcolor: '#dbe6ff', color: '#2947a2', fontWeight: 700, width: 36, height: 36 }}>{(auth.person?.displayName ?? 'AK').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</Avatar>
+              <Avatar title={auth.person?.displayName}>{(auth.person?.displayName ?? 'AK').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</Avatar>
               {auth.required && auth.status === 'in' && <Button size="small" variant="outlined" onClick={() => setSecurityOpen(true)}>Security</Button>}
               {auth.required && auth.status === 'in' && <Button size="small" variant="outlined" onClick={() => void auth.signOut()}>Sign out</Button>}
             </div>
           </header>
-          <div className="page"><Suspense fallback={<div role="status">Loading…</div>}><Page /></Suspense></div>
+          <div className="routebar" key={`bar-${page}`} aria-hidden="true" />
+          <div className="page" key={page}><Suspense fallback={<Skeleton rows={5} />}><Page /></Suspense></div>
         </main>
       </div>
 

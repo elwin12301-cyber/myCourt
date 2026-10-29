@@ -19,6 +19,7 @@ export interface SvcMenuItem { label: string; slug?: SvcSlug; url?: string }
 
 /** Top bar links (opened through the external-site alert). */
 export const TOP_LINKS: SvcMenuItem[] = [
+  { label: 'इ-कमिटी, उच्चतम न्यायालय, भारत', url: 'https://ecommitteesci.gov.in/' },
   { label: 'e-Committee, Supreme Court of India', url: 'https://ecommitteesci.gov.in/' },
 ]
 
@@ -81,7 +82,7 @@ export const SVC_LANGUAGES = ['English', 'हिन्दी', 'मराठी'
 export const TOPBAR_OPTIONS = ['Light', 'Dark'] as const
 export const THEME_OPTIONS = ['Default', 'Dark', 'Eco', 'Light'] as const
 
-export const NOTICE_TEXT = 'We have updated the district court services website theme. Please clear your browser cache and refresh the page to see the changes.'
+export const NOTICE_TEXT = 'We have updated the district court services website theme. Please clear your browser cache and refresh the page to view the updated theme properly.'
 export const USAGE_WARNING = 'Do not use browser toolbar reload or back button'
 export const USAGE_WARNING_NOTE = 'This prototype supports reload and the Back button.'
 export const KEYBOARD_TIP = 'The best way to access combo boxes is by pressing Enter on the box, followed by Alt+Down Arrow.'

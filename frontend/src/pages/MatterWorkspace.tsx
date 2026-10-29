@@ -1,29 +1,10 @@
 import { useCallback, useEffect, useId, useState, type FormEvent, type ReactNode } from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Checkbox from '@mui/material/Checkbox'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Stack from '@mui/material/Stack'
-import Tab from '@mui/material/Tab'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Tabs from '@mui/material/Tabs'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import AddIcon from '@mui/icons-material/Add'
-import CheckIcon from '@mui/icons-material/Check'
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 import { useAuth } from '../api/auth'
 import { messageOf } from '../api/client'
 import * as W from '../api/workspace'
-import { Message, Row, Section, SelectField, Status } from '../components/mui'
+import { Message, Row, Section, SelectField, Status } from '../components/blocks'
 import { PageHead } from '../components/ui'
+import { AddIcon, Box, Button, Card, CardContent, CheckIcon, Checkbox, FormControlLabel, Stack, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography, VerifiedIcon as VerifiedUserIcon, Skeleton } from '../components/kit'
 
 /** The matter workspace shown when the backend is in use: real records, saved on the server, private to the people assigned. */
 
@@ -42,8 +23,8 @@ export function useLoad<T>(load: () => Promise<T>, deps: unknown[]) {
 
 export function State({ loading, error, onRetry, empty, children }: { loading: boolean; error: string; onRetry: () => void; empty?: string; children: ReactNode }) {
   if (error) return <Message severity="error" onRetry={onRetry}>{error}</Message>
-  if (loading) return <Typography role="status" color="text.secondary">Loading…</Typography>
-  if (empty) return <Typography color="text.secondary" sx={{ py: 1 }}>{empty}</Typography>
+  if (loading) return <Skeleton />
+  if (empty) return <Typography color="text.secondary" style={{ paddingTop: 8, paddingBottom: 8 }}>{empty}</Typography>
   return <>{children}</>
 }
 
@@ -60,28 +41,28 @@ export function useAction() {
 export const Err = ({ text }: { text: string }) => (text ? <Message severity="error">{text}</Message> : null)
 export const day = (iso: string) => new Date(iso).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
 export const Form = ({ onSubmit, children }: { onSubmit: (e: FormEvent) => void; children: ReactNode }) => (
-  <Box component="form" onSubmit={onSubmit} sx={{ mt: 1.5 }}>{children}</Box>
+  <Box component="form" onSubmit={onSubmit} style={{ marginTop: 12 }}>{children}</Box>
 )
 
 // ---------- drafts (constitution II: always a draft until an advocate approves) ----------
 export function DraftCard({ draft, canApprove, onApprove, busy }: { draft: W.Draft; canApprove: boolean; onApprove: () => void; busy?: boolean }) {
   return (
-    <Card component="article" aria-label={draft.title} sx={{ mb: 2 }}>
+    <Card component="article" aria-label={draft.title} style={{ marginBottom: 16 }}>
       <CardContent>
-        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+        <Stack direction="row" style={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
           <Typography variant="h3" component="h4">{draft.title}</Typography>
           <Status kind={draft.status === 'approved' ? 'green' : 'amber'}>{draft.status === 'approved' ? 'Approved' : 'Draft'}</Status>
         </Stack>
-        <Typography variant="caption" component="p" sx={{ my: 1 }}>
+        <Typography variant="caption" component="p" style={{ marginTop: 8, marginBottom: 8 }}>
           <strong>{draft.status === 'draft' ? 'Draft: advocate verification required' : 'Approved by an advocate'}</strong>
           {draft.isDemoContent ? ' · Demonstration content, not legal advice' : ''}
         </Typography>
-        <Typography sx={{ whiteSpace: 'pre-wrap' }}>{draft.body}</Typography>
+        <Typography style={{ whiteSpace: 'pre-wrap' }}>{draft.body}</Typography>
         {draft.sources.length === 0
-          ? <Typography variant="caption" color="text.secondary" component="p" sx={{ mt: 1 }}>No sources listed.</Typography>
+          ? <Typography variant="caption" color="text.secondary" component="p" style={{ marginTop: 8 }}>No sources listed.</Typography>
           : <ul>{draft.sources.map((s) => <li key={s.label}>{s.label}{s.reference ? ` — ${s.reference}` : ''}</li>)}</ul>}
         {draft.status === 'draft' && canApprove && (
-          <Button size="small" variant="contained" startIcon={<CheckIcon />} disabled={busy} onClick={onApprove} sx={{ mt: 1.5 }}>Approve this draft</Button>
+          <Button size="small" variant="contained" startIcon={<CheckIcon />} disabled={busy} onClick={onApprove} style={{ marginTop: 12 }}>Approve this draft</Button>
         )}
       </CardContent>
     </Card>
@@ -107,18 +88,18 @@ function Overview({ m, reload, onDeleted }: { m: W.Matter; reload: () => void; o
         </SelectField>
         <Err text={error} />
         {edit
-          ? <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>Save changes</Button>
+          ? <Button type="submit" variant="contained" disabled={busy} style={{ marginTop: 8 }}>Save changes</Button>
           : <Typography variant="caption" color="text.secondary" component="p">You have view-only access to this matter.</Typography>}
       </Box>
-      <Typography variant="caption" color="text.secondary" component="p" sx={{ mt: 1.5 }}>
+      <Typography variant="caption" color="text.secondary" component="p" style={{ marginTop: 12 }}>
         Your access: <strong>{m.myLevel}</strong>{m.isDemo ? ' · demonstration matter (fictional data)' : ''}
       </Typography>
       {m.myLevel === 'owner' && (
         <details style={{ marginTop: 12 }}>
           <summary>Delete this matter</summary>
-          <Typography sx={{ my: 1 }}>This permanently deletes the matter and everything under it. The audit trail is kept. Type the matter title to confirm.</Typography>
+          <Typography style={{ marginTop: 8, marginBottom: 8 }}>This permanently deletes the matter and everything under it. The audit trail is kept. Type the matter title to confirm.</Typography>
           <TextField id={`${id}d`} label="Matter title" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
-          <Button color="error" variant="outlined" disabled={busy || confirm !== m.title} onClick={() => run(() => W.matters.remove(m), onDeleted)} sx={{ mt: 1 }}>Delete matter</Button>
+          <Button color="error" variant="outlined" disabled={busy || confirm !== m.title} onClick={() => run(() => W.matters.remove(m), onDeleted)} style={{ marginTop: 8 }}>Delete matter</Button>
         </details>
       )}
     </Section>
@@ -147,7 +128,7 @@ export function TasksTab({ m }: { m: W.Matter }) {
           <TextField id="task-title" label="New task" value={title} onChange={(e) => setTitle(e.target.value)} required />
           <TextField id="task-due" label="Due date (optional)" type="date" value={due} onChange={(e) => setDue(e.target.value)} slotProps={{ inputLabel: { shrink: true } }} />
           <Err text={error} />
-          <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Add task</Button>
+          <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} style={{ marginTop: 8 }}>Add task</Button>
         </Form>
       )}
     </Section>
@@ -168,7 +149,7 @@ export function CalendarTab({ m }: { m: W.Matter }) {
         {l.data?.items.map((e) => (
           <Row key={e.id}>
             <div><strong>{e.title}</strong><Typography variant="caption" component="div" color="text.secondary">{e.kind} · {day(e.startsAt)}</Typography></div>
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Stack direction="row" spacing={1} style={{ alignItems: 'center' }}>
               {e.kind === 'deadline' && (e.approvedAt ? <Status kind="green">Approved</Status> : <Status kind="amber">Draft · not approved</Status>)}
               {e.kind === 'deadline' && !e.approvedAt && edit && <Button size="small" variant="outlined" disabled={busy} onClick={() => run(() => W.calendar.action(m.id, e, 'approve'), l.reload)}>Approve deadline</Button>}
             </Stack>
@@ -183,7 +164,7 @@ export function CalendarTab({ m }: { m: W.Matter }) {
           <TextField id="cal-title" label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
           <TextField id="cal-when" label="Date and time" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} required slotProps={{ inputLabel: { shrink: true } }} />
           <Err text={error} />
-          <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Add to calendar</Button>
+          <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} style={{ marginTop: 8 }}>Add to calendar</Button>
         </Form>
       )}
     </Section>
@@ -206,7 +187,7 @@ export function DocumentsTab({ m }: { m: W.Matter }) {
           {docs.data?.items.map((d) => (
             <Row key={d.id}>
               <div><strong>{d.name}</strong><Typography variant="caption" component="div" color="text.secondary">{d.fileType}{d.extractionConfidence != null ? ` · extraction confidence ${Math.round(d.extractionConfidence * 100)}%` : ''}</Typography></div>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <Stack direction="row" spacing={1} style={{ alignItems: 'center' }}>
                 <Status kind={d.reviewStatus === 'reviewed' ? 'green' : 'amber'}>{d.reviewStatus === 'reviewed' ? 'Reviewed' : 'Needs review'}</Status>
                 {edit && d.reviewStatus !== 'reviewed' && <Button size="small" variant="outlined" disabled={busy} onClick={() => run(() => W.documents.action(m.id, d, 'review'), docs.reload)}>Mark reviewed</Button>}
               </Stack>
@@ -222,7 +203,7 @@ export function DocumentsTab({ m }: { m: W.Matter }) {
             </SelectField>
             <TextField id="doc-text" label="Extracted text (optional)" multiline rows={3} value={text} onChange={(e) => setText(e.target.value)} />
             <Err text={error} />
-            <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Register document</Button>
+            <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} style={{ marginTop: 8 }}>Register document</Button>
           </Form>
         )}
       </Section>
@@ -232,7 +213,7 @@ export function DocumentsTab({ m }: { m: W.Matter }) {
           {notes.data?.items.map((n) => (
             <Row key={n.id}>
               <div style={{ whiteSpace: 'pre-wrap' }}>{n.transcript}</div>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <Stack direction="row" spacing={1} style={{ alignItems: 'center' }}>
                 <Status kind={n.reviewStatus === 'reviewed' ? 'green' : 'amber'}>{n.reviewStatus === 'reviewed' ? 'Reviewed' : 'Needs review'}</Status>
                 {edit && n.reviewStatus !== 'reviewed' && <Button size="small" variant="outlined" disabled={busy} onClick={() => run(() => W.voiceNotes.action(m.id, n, 'review'), notes.reload)}>Mark reviewed</Button>}
               </Stack>
@@ -242,7 +223,7 @@ export function DocumentsTab({ m }: { m: W.Matter }) {
         {edit && (
           <Form onSubmit={(e) => { e.preventDefault(); run(() => W.voiceNotes.create(m.id, { transcript }), () => { setTranscript(''); notes.reload() }) }}>
             <TextField id="vn-text" label="Transcript" multiline rows={3} value={transcript} onChange={(e) => setTranscript(e.target.value)} required />
-            <Button type="submit" variant="outlined" disabled={busy} sx={{ mt: 1 }}>Save transcript</Button>
+            <Button type="submit" variant="outlined" disabled={busy} style={{ marginTop: 8 }}>Save transcript</Button>
           </Form>
         )}
       </Section>
@@ -265,7 +246,7 @@ export function DraftsTab({ m }: { m: W.Matter }) {
           <Box component="form" onSubmit={(e: FormEvent) => { e.preventDefault(); run(() => W.drafts.research(m.id, query), () => { setQuery(''); l.reload() }) }}>
             <TextField id="rs-q" label="Search the demonstration sources" value={query} onChange={(e) => setQuery(e.target.value)} required />
             <Err text={error} />
-            <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>Search</Button>
+            <Button type="submit" variant="contained" disabled={busy} style={{ marginTop: 8 }}>Search</Button>
           </Box>
         </Section>
       )}
@@ -277,7 +258,7 @@ export function DraftsTab({ m }: { m: W.Matter }) {
           <Box component="form" onSubmit={(e: FormEvent) => { e.preventDefault(); run(() => W.drafts.create(m.id, { kind: 'summary', title, body, sources: [] }), () => { setTitle(''); setBody(''); l.reload() }) }}>
             <TextField id="dr-title" label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
             <TextField id="dr-body" label="Text" multiline rows={4} value={body} onChange={(e) => setBody(e.target.value)} required />
-            <Button type="submit" variant="outlined" disabled={busy} sx={{ mt: 1 }}>Save draft</Button>
+            <Button type="submit" variant="outlined" disabled={busy} style={{ marginTop: 8 }}>Save draft</Button>
           </Box>
         </Section>
       )}
@@ -316,7 +297,7 @@ export function BillingTab({ m }: { m: W.Matter }) {
             <TextField id="te-rate" label="Rate per hour (₹)" type="number" value={rate} onChange={(e) => setRate(e.target.value)} required slotProps={{ htmlInput: { min: 0 } }} />
             <TextField id="te-desc" label="Description" value={desc} onChange={(e) => setDesc(e.target.value)} />
             <Err text={error} />
-            <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} sx={{ mt: 1 }}>Add time</Button>
+            <Button type="submit" variant="outlined" startIcon={<AddIcon />} disabled={busy} style={{ marginTop: 8 }}>Add time</Button>
           </Form>
         )}
       </Section>
@@ -326,7 +307,7 @@ export function BillingTab({ m }: { m: W.Matter }) {
           {inv.data?.items.map((i) => (
             <Row key={i.id}>
               <div><strong>{i.number}</strong><Typography variant="caption" component="div" color="text.secondary">{i.lines.length} line(s) · {W.rupees(i.totalPaise)}</Typography></div>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <Stack direction="row" spacing={1} style={{ alignItems: 'center' }}>
                 <Status kind={i.status === 'approved' ? 'green' : 'amber'}>{i.status === 'approved' ? 'Approved' : 'Draft'}</Status>
                 {edit && i.status === 'draft' && <Button size="small" variant="outlined" disabled={busy} onClick={() => run(() => W.invoices.approve(m.id, i), inv.reload)}>Approve invoice</Button>}
               </Stack>
@@ -337,7 +318,7 @@ export function BillingTab({ m }: { m: W.Matter }) {
           <Form onSubmit={(e) => { e.preventDefault(); run(() => W.invoices.create(m.id, { number, timeEntryIds: picked }), () => { setNumber(''); setPicked([]); inv.reload() }) }}>
             <Typography variant="caption" color="text.secondary" component="p">Tick time entries above, then give the invoice a number.</Typography>
             <TextField id="inv-no" label="Invoice number" value={number} onChange={(e) => setNumber(e.target.value)} required />
-            <Button type="submit" variant="outlined" disabled={busy || picked.length === 0} sx={{ mt: 1 }}>Create invoice from {picked.length} entr{picked.length === 1 ? 'y' : 'ies'}</Button>
+            <Button type="submit" variant="outlined" disabled={busy || picked.length === 0} style={{ marginTop: 8 }}>Create invoice from {picked.length} entr{picked.length === 1 ? 'y' : 'ies'}</Button>
           </Form>
         )}
       </Section>
@@ -358,7 +339,7 @@ function AccessTab({ m }: { m: W.Matter }) {
           <Row key={a.personId}>
             <div><strong>{a.displayName}</strong><Typography variant="caption" component="div" color="text.secondary">{a.level}</Typography></div>
             {owner && (
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <Stack direction="row" spacing={1} style={{ alignItems: 'center' }}>
                 <SelectField id={`lv-${a.personId}`} label={`Access level for ${a.displayName}`} value={a.level} disabled={busy} fullWidth={false} margin="none"
                   onChange={(e) => run(() => W.matters.share(m.id, a.personId, e.target.value as W.Level), l.reload)}>
                   <option value="view">view</option><option value="edit">edit</option><option value="owner">owner</option>
@@ -376,7 +357,7 @@ function AccessTab({ m }: { m: W.Matter }) {
             <option value="view">view only</option><option value="edit">edit</option><option value="owner">owner</option>
           </SelectField>
           <Err text={error} />
-          <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>Share</Button>
+          <Button type="submit" variant="contained" disabled={busy} style={{ marginTop: 8 }}>Share</Button>
         </Form>
       )}
       {!owner && <Typography variant="caption" color="text.secondary" component="p">Only an owner can change who has access.</Typography>}
@@ -390,7 +371,7 @@ export function AuditView({ matterId }: { matterId: string }) {
   const [verdict, setVerdict] = useState('')
   return (
     <Section title="Audit trail">
-      <Typography variant="caption" color="text.secondary" component="p" sx={{ mb: 1 }}>Who viewed, created, changed, shared or approved something on this matter. Entries cannot be edited or removed.</Typography>
+      <Typography variant="caption" color="text.secondary" component="p" style={{ marginBottom: 8 }}>Who viewed, created, changed, shared or approved something on this matter. Entries cannot be edited or removed.</Typography>
       <Button size="small" variant="outlined" startIcon={<VerifiedUserIcon />} disabled={busy}
         onClick={() => run(async () => { const r = await W.matters.verifyAudit(matterId); setVerdict(r.ok ? 'The trail is intact.' : `The trail was altered at entry ${r.firstBadId}.`) })}>Verify the trail</Button>
       <div role="status" style={{ minHeight: 24 }}>{verdict}</div>
@@ -426,12 +407,12 @@ export default function MatterWorkspace({ id }: { id: string }) {
       <State loading={m.loading && !matter} error={m.error} onRetry={m.reload}>
         {matter && (
           <>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <Tabs value={tab} onChange={(_, v) => setTab(v)} variant="scrollable" scrollButtons="auto" aria-label="Matter sections">
+            <Box style={{ borderBottom: '1px solid var(--line)' }}>
+              <Tabs value={tab} onChange={(_, v) => setTab(v as (typeof TABS)[number])} variant="scrollable" scrollButtons="auto" aria-label="Matter sections">
                 {tabs.map((t) => <Tab key={t} value={t} label={t} id={`mt-${t}`} aria-controls="mt-panel" />)}
               </Tabs>
             </Box>
-            <Box id="mt-panel" role="tabpanel" aria-labelledby={`mt-${tab}`} sx={{ mt: 2 }}>
+            <Box id="mt-panel" role="tabpanel" aria-labelledby={`mt-${tab}`} style={{ marginTop: 16 }}>
               {tab === 'Overview' && <Overview m={matter} reload={m.reload} onDeleted={() => { window.location.hash = '#/cases' }} />}
               {tab === 'Tasks' && <TasksTab m={matter} />}
               {tab === 'Calendar' && <CalendarTab m={matter} />}
@@ -441,7 +422,7 @@ export default function MatterWorkspace({ id }: { id: string }) {
               {tab === 'Access' && <AccessTab m={matter} />}
               {tab === 'Audit' && <AuditView matterId={matter.id} />}
             </Box>
-            <Typography variant="caption" color="text.secondary" component="p" sx={{ mt: 1 }}>Signed in as {person?.displayName}.</Typography>
+            <Typography variant="caption" color="text.secondary" component="p" style={{ marginTop: 8 }}>Signed in as {person?.displayName}.</Typography>
           </>
         )}
       </State>

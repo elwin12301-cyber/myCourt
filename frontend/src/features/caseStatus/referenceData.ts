@@ -1,13 +1,14 @@
-import { STATES } from '../portal/data'
 import type { PageId } from '../../types'
 import type { SearchMode } from './types'
 
 /** The official Case Status page lists 36 states/UTs, with Dadra and Nagar Haveli and Daman and Diu merged. */
 export const MERGED_UT = 'The Dadra And Nagar Haveli And Daman And Diu'
-export const CASE_STATES: string[] = STATES.map((s) => s.name)
-  .filter((n) => n !== 'Dadra and Nagar Haveli' && n !== 'Daman and Diu')
-  .concat(MERGED_UT)
-  .sort((a, b) => a.localeCompare(b))
+export const CASE_STATES: string[] = [
+  'Andaman and Nicobar', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chandigarh', 'Chhattisgarh', 'Delhi', 'Goa', 'Gujarat', 'Haryana',
+  'Himachal Pradesh', 'Jammu and Kashmir', 'Jharkhand', 'Karnataka', 'Kerala', 'Ladakh', 'Lakshadweep', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+  'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Puducherry', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', MERGED_UT, 'Tripura',
+  'Uttarakhand', 'Uttar Pradesh', 'West Bengal',
+]
 
 /**
  * Demo court hierarchy: state -> district -> court complex -> establishments.
@@ -49,7 +50,7 @@ export const MODES: ModeInfo[] = [
     help: 'Enter the 16 digit alphanumeric CNR number without any hyphen or space. Example: MHAU019999992015.' },
   { id: 'party', label: 'Party Name', heading: 'Search by Petitioner/Respondent', videoKey: 'CSPartyNameHelp',
     help: 'Enter at least 3 characters. The name can be the petitioner, plaintiff, complainant, respondent, defendant, appellant, accused or extra party. Choose Both if the status is unknown. After searching, select View to see the case history.' },
-  { id: 'caseNumber', label: 'Case Number', heading: 'Search by Case Number',
+  { id: 'caseNumber', label: 'Case Number', heading: 'Search by Case Number', videoKey: 'CSPartyNameHelp',
     help: 'Select the case type, then enter the case number and year. Select View in the results to see the case history.' },
   { id: 'filingNumber', label: 'Filing Number', heading: 'Search by Filing Number', videoKey: 'CSFilingNumberHelp',
     help: 'Select the case type, then enter the filing number and the filing year. Select View to see the case history.' },

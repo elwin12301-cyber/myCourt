@@ -3,11 +3,11 @@
 | | |
 |---|---|
 | **Document** | SRS-001 |
-| **Version** | 1.2 |
-| **Date** | 2026-10-28 |
-| **Status** | Baseline of what is built, reviewed against the code and the Spec Kit specifications; 1.1 closes gaps G1–G3 and G6–G11 (see 11.1); 1.2 adds app-wide voice control (spec 005) |
+| **Version** | 1.6 |
+| **Date** | 2026-10-29 |
+| **Status** | Baseline of what is built, reviewed against the code and the Spec Kit specifications; 1.1 closes gaps G1–G3 and G6–G11 (see 11.1); 1.2 adds app-wide voice control (spec 005); 1.3 removes the UI framework (plain CSS and an in-house component kit); 1.4 adds the animated design layer; 1.5 fixes the phone layout and voice navigation; 1.6 audits this document against the code and adds the full Case Status requirements with evidence (section 4.13) |
 | **Standard followed** | Structure of ISO/IEC/IEEE 29148 (and IEEE 830) |
-| **Source of truth** | `specs/001`–`004`, `.specify/memory/constitution.md` v1.1.0, `docs/`, and the code in `frontend/` and `backend/` |
+| **Source of truth** | `specs/001`–`006`, `.specify/memory/constitution.md` v1.1.0, `docs/`, the code in `frontend/` and `backend/`, and the evidence in `docs/evidence/` |
 
 > **Demonstration only.** myCourt is an independent prototype. It is not the official eCourts service and is not affiliated with the Indian judiciary. All case, client and financial data is fictional.
 
@@ -44,13 +44,14 @@ Out of scope: any connection to the real eCourts service, real AI or transcripti
 
 ### 1.4 References
 - `.specify/memory/constitution.md` (principles I–V, v1.1.0)
-- `specs/001-court-orders`, `002-services-site-prototype`, `003-site-translation`, `004-workspace-backend` (spec, plan, tasks, validation log)
+- `specs/001-court-orders`, `002-services-site-prototype`, `003-site-translation`, `004-workspace-backend`, `005-voice-control`, `006-casestatus-parity` (spec, plan, tasks, validation log, browser checks)
 - `specs/004-workspace-backend/contracts/api.md` and `data-model.md`
 - `docs/backend-operations.md`, `docs/gap-analysis.md`, `docs/ecourts-reference-analysis.md`, `docs/prototype-guide.md`
-- Source site analysed: `https://services.ecourts.gov.in/ecourtindia_v6/` (public pages only)
+- Source site analysed: `https://services.ecourts.gov.in/ecourtindia_v6/` (public pages only), in particular `?p=casestatus/index` (read 2026-10-29)
+- `docs/casestatus-parity.md` (feature-by-feature comparison with the official Case Status page) and `docs/evidence/` (the verification run, parity results and screenshots)
 
 ### 1.5 Overview
-Section 2 describes the product, section 3 the users and interfaces, section 4 the functional requirements, section 5 data, section 6 the external interfaces, section 7 non-functional requirements, section 8 constraints, section 9 verification, section 10 traceability, section 11 gaps and risks.
+Section 2 describes the product, section 3 the users and interfaces, section 4 the functional requirements (4.13 is the complete Case Status specification), section 5 data, section 6 the external interfaces, section 7 non-functional requirements, section 8 constraints, section 9 verification, section 10 traceability, section 11 gaps and risks.
 
 ---
 
@@ -60,11 +61,11 @@ Section 2 describes the product, section 3 the users and interfaces, section 4 t
 A single-page React application talks to a FastAPI service over JSON. Without an API address it runs entirely on in-browser mock data; with one, the workspace requires sign-in and all workspace records are saved in PostgreSQL.
 
 ```
- Browser (React 18, TypeScript, Vite, Material UI)
+ Browser (React 18, TypeScript, Vite, plain CSS)
    |  hash routing, i18n (6 languages), mock adapters OR API client
    v   JSON over HTTP, session cookie + CSRF header
  FastAPI  /api   (auth, matters, contents, drafts, intake, audit, dashboard, services)
-   |  SQLAlchemy 2, Alembic migrations 0001-0006
+   |  SQLAlchemy 2, Alembic migrations 0001-0007
    v
  PostgreSQL 16   (append-only audit table enforced by triggers)
 ```
@@ -96,7 +97,7 @@ Python 3.12+ (developed on 3.13), Node 22+, PostgreSQL 16 (Docker, host port 543
 - TypeScript strict mode stays on; backend uses typed pydantic v2 schemas that reject unknown fields.
 - English text is the translation key; stored and searched values stay English.
 - External data access goes through the adapter pattern; the in-browser mock stays the default until an integration is verified.
-- New runtime dependencies must be justified. Material UI (with Emotion and icons) was added for the signed-in and shared components and is justified in the README.
+- New runtime dependencies must be justified. The only runtime dependencies are React and React DOM: there is no UI framework, and the components live in `frontend/src/components/kit.tsx`.
 - No scraping of official sites and no bypassing of CAPTCHAs or other access controls.
 
 ### 2.6 Assumptions and dependencies
@@ -111,14 +112,14 @@ Python 3.12+ (developed on 3.13), Node 22+, PostgreSQL 16 (Docker, host port 543
 
 ### 3.1 User interface
 - **Layout:** left sidebar (workspace, then eCourts portal reference), top bar (search, upcoming dates, display settings, notifications, profile, sign-out), content area, toast message, modal dialogs. A hamburger menu appears at narrow widths.
-- **Look:** classic legal style: deep navy and antique gold on ivory, serif headings, squarer cards. Theme in `frontend/src/theme.ts` and `styles.css`.
-- **Library:** Material UI components for buttons, cards, chips, fields, native selects, tables, dialogs, snackbars; legacy styles remain for layout.
+- **Look and motion:** classic legal style (deep navy and antique gold on ivory, serif headings) with depth and animation: page entrance, hover lift, count-up figures, sliding tab underline, spring-in dialogs and toasts, skeleton loaders, a route progress bar and a branded sign-in screen. Styles are in `frontend/src/styles.css` and `frontend/src/design.css`. All animation is disabled when the system asks for reduced motion (NFR 7.4).
+- **Components:** an in-house kit (buttons, fields, tables, tabs, alerts, dialog with focus trap, inline SVG icons) and one stylesheet; no UI framework or icon package.
 - **Navigation:** hash routes (`#/cases`, `#/caseDetail/{id}`, `#/services/...`) so reload, Back and link-sharing work.
-- **Accessibility:** skip link, labelled controls, errors tied to fields, visible amber focus ring, no colour-only meaning, language attribute matching the shown language, **Aa** display menu (text size, high contrast, invert, grayscale, low saturation, highlight links, text spacing, line height, hide images, big cursor, reset).
+- **Accessibility:** skip link, labelled controls, errors tied to fields, a single focus ring (navy on light surfaces, gold on dark ones, at least 3:1), no colour-only meaning, language attribute matching the shown language, and the **Accessibility Tools** panel with the official groups and wording: Color Contrast (High Contrast, Normal Contrast, Highlight Links, Invert Saturation), Text Size (A+ Font Size Increase, A− Font Size Decrease, A Normal Font, Text Spacing, Line Height), Others (Hide Images, Big Cursor, plus Grayscale and Low saturation) and Reset all settings.
 - **Services-site tools:** language selector, theme customizer (topbar light/dark; theme default/dark/eco/light), site search.
 
 ### 3.2 Hardware and software interfaces
-Browser only; microphone is listed for planned voice features (not built). PostgreSQL via SQLAlchemy; Docker Compose for the local database.
+Browser only; the microphone is used, with consent, by dictation and voice control (Chrome or Edge speech recognition). PostgreSQL via SQLAlchemy; Docker Compose for the local database.
 
 ### 3.3 Communication interfaces
 JSON over HTTP under `/api`; HttpOnly SameSite=Lax session cookie; `X-CSRF-Token` header and Origin check on every state-changing request. OpenAPI at `/openapi.json`, interactive docs at `/docs`.
@@ -226,7 +227,7 @@ Priority: **M** must, **S** should. Status as defined in the introduction.
 | FR-SVC-01 | A full-page Services site is reachable from the workspace, has its own chrome and a way back. | M | Built |
 | FR-SVC-02 | Top bar (external links, language selector, accessibility options, site search), branded header, dismissible theme notice, main menu (Home, e-Committee, Supreme Court, High Courts, District Courts, NJDG, Contact Us) and Search Menu (CNR Number, Case Status, Court Orders, Cause List, Caveat Search, Process Details, Location) in the official order, marking the current item. | M | Built |
 | FR-SVC-03 | CNR Number search is the home page with example, Search, Reset, Back and help link. | M | Built |
-| FR-SVC-04 | Case Status offers the seven official searches (Party Name, Case Number, Filing Number, Advocate [name / bar code / case-list date], FIR Number, Act, Case Type) with the court selector, status filter (Pending / Disposed / Both; no "Both" for Act and Case Type), captcha, Go, Back, "How to" help and help-video links, and case history from results. | M | Built |
+| FR-SVC-04 | Case Status (full specification in 4.13) offers the seven official searches (Party Name, Case Number, Filing Number, Advocate [name / bar code / case-list date], FIR Number, Act, Case Type) with the court selector, status filter (Pending / Disposed / Both; no "Both" for Act and Case Type), captcha, Go, Back, "How to" help and help-video links, and case history from results. | M | Built |
 | FR-SVC-05 | Court Orders: four searches (party name ≥ 3 characters + year; case number; court number; order date range, inclusive, from ≤ to), order-type filter (interim, final, both), results sorted newest first, case record with return to the unchanged list, unavailable-document explanation. | M | Built |
 | FR-SVC-06 | Cause List by court and date; also available inside the site. | M | Built |
 | FR-SVC-07 | Caveat Search: match type (anywhere / starting with), caveator or caveatee, subordinate court, case type and number, filing number, decision date, year, caveat number, captcha. | M | Built |
@@ -270,6 +271,7 @@ Priority: **M** must, **S** should. Status as defined in the introduction.
 | FR-VOI-05 | Alt+C opens a box to type any command, with the same result as speaking it (no microphone needed). | S | Built |
 | FR-VOI-07 | A dark bar (microphone, state, last answer, **Numbers**, **Replies**, **Help**, **Stop**) shows while voice control is on. **Numbers** badges every pressable item so it can be pressed by saying its number; **Replies** lists what was said and answered. | S | Built |
 | FR-VOI-08 | Voice control is available on every screen: top bar in the workspace, and a corner launcher on the sign-in screen and the full-page Services site. | S | Built |
+| FR-VOI-09 | Moving to a screen is answered, on screen and aloud, as "Navigating to <screen>."; natural wording and close variants of a screen name are accepted; pauses in speech never switch voice control off; the app's own voice is not taken as a command. | S | Built |
 | FR-VOI-06 | Spoken commands in Hindi, Marathi, Gujarati, Kannada and Tamil; hands-free wake word; on-device recognition. Commands are English only; dictation text can be in the six languages. | C | Not built |
 | FR-WSP-05 | Global search routes a typed query to the closest workspace and says so. | S | Built |
 | FR-WSP-06 | Notifications dialog lists items needing action. | S | Built |
@@ -279,12 +281,115 @@ Priority: **M** must, **S** should. Status as defined in the introduction.
 
 | ID | Requirement | Pri | Status |
 |---|---|---|---|
-| FR-OPS-01 | Database changes are applied by ordered, repeatable Alembic migrations (0001–0006) that keep data. | M | Built |
+| FR-OPS-01 | Database changes are applied by ordered, repeatable Alembic migrations (0001–0007) that keep data. | M | Built |
 | FR-OPS-02 | `GET /health` reports database state and mode (`demonstration-only` unless real data is enabled). | M | Built |
 | FR-OPS-03 | `export FILE` and `import FILE` make and restore a logical backup of all workspace data; import refuses a non-empty database. | M | Built |
 | FR-OPS-04 | Every request is validated on the server; errors use one body `{code, message, fields}` that never echoes submitted values. | M | Built |
 | FR-OPS-05 | Lookups carrying names, process IDs or e-mail addresses are POSTs with a body. | M | Built |
 | FR-OPS-06 | A database outage returns 503 `unavailable` and the screens show a retry state. | M | Built |
+
+### 4.13 Case Status service: full requirements
+
+**Source.** The official page `https://services.ecourts.gov.in/ecourtindia_v6/?p=casestatus/index`, read on 2026-10-29 (public text only). Each requirement below states what the official page shows, how myCourt meets it, and the evidence. Evidence IDs (A01…, B04…, C03…) are checks in `specs/006-casestatus-parity/browser-check.mjs`; other evidence names a test file or an older browser check. The matrix, screenshots and results are in `docs/casestatus-parity.md` and `docs/evidence/`.
+
+**Limits of the source.** The official results table and case-history layout appear only after the official CAPTCHA, which is never bypassed, so they were not observed (FR-CS-70). Where the page does not state a rule, the rule used here is marked **assumed**.
+
+#### 4.13.1 Page shell (every Services-site page, including Case Status)
+
+| ID | Requirement (what the official page shows) | Pri | Status | Evidence |
+|---|---|---|---|---|
+| FR-CS-01 | Top bar links "इ-कमिटी, उच्चतम न्यायालय, भारत" and "E-COMMITTEE, SUPREME COURT OF INDIA", opened through an external-site alert with Go and Cancel. | M | Built | A01, A16; 002 C3 |
+| FR-CS-02 | A "Skip to main content" link. | M | Built | A02 |
+| FR-CS-03 | A language list: English, हिन्दी, मराठी, ગુજરાતી, ಕನ್ನಡ, தமிழ், in that order. | M | Built | A03; 211 render tests |
+| FR-CS-04 | Header text "जिला न्यायालय सेवाएं", "eCourts Services", "District and Taluka Courts of India". | M | Built | A04 |
+| FR-CS-05 | A "Search this site" field with a Search button. | M | Built | A05; search.test.ts |
+| FR-CS-06 | Main menu in this order: Home, e-Committee, Supreme Court, High Courts, District Courts, NJDG, Contact Us. | M | Built | A06; 002 A1 |
+| FR-CS-07 | Search Menu in this order: CNR Number, Case Status, Court Orders, Cause List, Caveat Search, Process Details, Location; the current item is marked. | M | Built | A07; 002 A2 |
+| FR-CS-08 | The notice "We have updated the district court services website theme. Please clear your browser cache and refresh the page to view the updated theme properly.", which can be dismissed. | S | Built | A08 |
+| FR-CS-09 | A Theme Customizer with a heading, Topbar Color (Light, Dark) and Theme Color (Default, Dark, Eco, Light); the choice is kept after reload. | S | Built | A09; prefs.test.ts; 002 J1–J4 |
+| FR-CS-10 | Accessibility Tools: Color Contrast (High Contrast, Normal Contrast, Highlight Links, Invert Saturation), Text Size (A+ Font Size Increase, A− Font Size Decrease, A Normal Font, Text Spacing, Line Height), Others (Hide Images, Big Cursor), Reset all settings; each works and is kept after reload. | M | Built | A10, A11; 002 J5, J8 |
+| FR-CS-11 | A footer with the 12 Useful Links in order (About Us, Newsletter, Forms for Advocates, Help Videos, Site map, Contact Us, Web Information Manager, Copyright Policy, Hyperlinking Policy, Accessibility Statement, Screen Reader Access, Disclaimer), the content-owner and NIC-hosting statements, "Last Updated: 2 January 2026", "Version: 1.0", Follow Us (YouTube), six partner links in order, and the combo-box keyboard tip (Enter, then Alt+Down Arrow). | M | Built | A12–A15; 002 D1 |
+
+#### 4.13.2 The search form common to every mode
+
+| ID | Requirement | Pri | Status | Evidence |
+|---|---|---|---|---|
+| FR-CS-20 | The State list has the official 36 entries in the official order (Andaman and Nicobar … West Bengal, with Dadra and Nagar Haveli and Daman and Diu merged). Stored and searched values stay English in every language. | M | Built | B00; FR-LNG-03 |
+| FR-CS-21 | District, Court Complex and Establishment follow the State in a cascade, with the placeholders "Select state / district / court complex / establishment". State, District and Court Complex are required for court-based searches; Establishment is optional (**assumed**: its rule was not observed). A state with no demonstration data says so plainly. | M | Built | B01, B02; caseStatus.test.ts |
+| FR-CS-22 | Case Status has seven tabs in this order: Party Name, Case Number, Filing Number, Advocate, FIR Number, Act, Case Type. CNR Number is its own page in the Search Menu. | M | Built | B03, B12 |
+| FR-CS-23 | Each mode has the heading "Case Status : Search by …" (Petitioner/Respondent, Case Number, Filing Number, Advocate, FIR number, Act Type, Case Type). | M | Built | B04–B10 |
+| FR-CS-24 | Required fields carry an asterisk and are exposed as required to assistive technology; the note "Fields marked with * are required." is shown. | M | Built | B04–B10 |
+| FR-CS-25 | A CAPTCHA (image, "Enter Captcha" field) must be solved first; it can be refreshed and listened to; a wrong or empty answer blocks the search and issues a new one. It is a demonstration with no security purpose and is labelled so. | M | Built | B04–B10; caseStatus.test.ts (captcha) |
+| FR-CS-26 | Each mode has a "How to" text and a "Click here to view help video" link. The Case Number link uses the Party Name video code, as the official page does. | M | Built | B04–B10 |
+| FR-CS-27 | A Go button submits and a Back button leaves the form; Reset clears every entry, error and result (an addition). | M | Built | B04–B10 |
+| FR-CS-28 | An invalid form is not searched; each error is shown beside its field and announced to assistive technology (the official page uses an "OK" pop-up: see FR-CS-73). | M | Built | C01, C02; caseStatus.test.ts |
+| FR-CS-29 | Every control is reachable and operable by keyboard and has a label. | M | Built | A15; 002 L1, L2 |
+
+#### 4.13.3 The individual searches
+
+| ID | Requirement | Pri | Status | Evidence |
+|---|---|---|---|---|
+| FR-CS-30 | **Party Name.** Fields: \*Petitioner/Respondent (at least 3 characters; matches either side) and \*Registration Year (4 digits, 1950 to the current year: **assumed** range); status Pending, Disposed or Both. | M | Built | B04, C02, C03 |
+| FR-CS-31 | **Case Number.** \*Case Type ("Select case type"), \*Case Number (1 to 7 digits), \*Year. | M | Built | B05 |
+| FR-CS-32 | **Filing Number.** \*Case Type, \*Filing Number (1 to 7 digits), \*Year. | M | Built | B06 |
+| FR-CS-33 | **Advocate.** Options Advocate Name, Bar Code, Date Case List. Name: \*Advocate, at least 3 characters, with status Pending, Disposed or Both. Bar Code: \*Advocate Bar Code in the form MAH/XXXX/1982 (**assumed** pattern: 1 to 4 letters, 1 to 6 digits, 4-digit year), with the same status choice. Date Case List: \*Case List Date with a date picker, returning that day's cause list. | M | Built | B07, C06, C07 |
+| FR-CS-34 | **FIR Number.** \*Police Station ("Select police station", depends on the district); FIR Number (digits, up to 7) and Year, both optional as on the official page; status Pending, Disposed or Both. | M | Built | B08 |
+| FR-CS-35 | **Act.** Search Act (at least 3 characters, then the Search button fills the list), \*Act Type ("Select Act Type"), Under Section (optional); status Pending or Disposed only (no Both). | M | Built | B09, C08 |
+| FR-CS-36 | **Case Type.** \*Case Type and \*Year; status Pending or Disposed only (no Both). | M | Built | B10 |
+| FR-CS-37 | **CNR Number.** 16 letters or digits with no hyphen or space; spaces and hyphens typed are removed and letters are upper-cased. | M | Built | B12; 002 E1; caseStatus.test.ts |
+
+#### 4.13.4 Results and case history
+
+| ID | Requirement | Pri | Status | Evidence |
+|---|---|---|---|---|
+| FR-CS-40 | A valid search lists the matching cases with serial number, case type/number/year, petitioner versus respondent, court, next hearing, status and a View control; the list can be filtered by status and sorted. The column layout is myCourt's own design (FR-CS-70). | M | Built | C03; render.test.tsx |
+| FR-CS-41 | View opens the case history: Case details, Case status, Acts, FIR details, History, IA business and Orders; an order with no document says so. | M | Built | C04; render.test.tsx |
+| FR-CS-42 | Back returns to the same result list with the filter and sort unchanged. | M | Built | C05 |
+| FR-CS-43 | The three states other than results are designed: idle prompt, loading (placeholder bars with a visible "Loading results"), empty ("no matching record in the demonstration data; this does not mean a real case does not exist") and error with Retry. A search in progress is cancelled when a new one starts, the mode changes or the form is reset. | M | Built | 002 E2, E4; CaseStatus.tsx phases; caseStatus.test.ts |
+| FR-CS-44 | A demonstration notice is visible in every state of the page. | M | Built | 002 A4; render.test.tsx |
+
+#### 4.13.5 Data, API and privacy
+
+| ID | Requirement | Pri | Status | Evidence |
+|---|---|---|---|---|
+| FR-CS-50 | Searches go through a replaceable data source (in-browser mock or the API) so a real source can be swapped in without changing the screens. | M | Built | adapters.test.ts |
+| FR-CS-51 | `POST /api/cases/search` takes the query in a JSON body (never in the address), validates every field on the server and refuses unknown fields. | M | Built | backend test_services_site.py |
+| FR-CS-52 | The CNR `ERROR00000000000` returns 503 so the retry state can be exercised. | S | Built | backend test_services_site.py; backend test |
+| FR-CS-53 | All records are fictional: 8 baseline cases and, by `seed-demo --services 100`, 100 cases in the demonstration courts of Tamil Nadu, Maharashtra and Delhi. | M | Built | backend test_ops.py |
+| FR-CS-54 | The official CAPTCHA is never bypassed, no official data is scraped, and no official emblem or logo is reproduced. | M | Built | constitution I and V; code review |
+
+#### 4.13.6 Languages, accessibility and phones
+
+| ID | Requirement | Pri | Status | Evidence |
+|---|---|---|---|---|
+| FR-CS-60 | Every label, option, hint, help text, error and button of the page is available in the six languages; records and stored values stay as they are. | M | Built | 211 render tests; dictionary.test.ts |
+| FR-CS-61 | In a non-English language a notice in that language and in English says the text is machine-translated and not reviewed by a native speaker. | M | Built | behaviour.test.tsx; FR-LNG-05 |
+| FR-CS-62 | The page works from 360 px to desktop with no sideways scrolling, with touch targets of at least 44 px on touch devices, and can be driven by voice commands. | M | Built | 002 M1, M2; scripts/mobile-audit.mjs; 005 voice checks |
+
+#### 4.13.7 Not observable, not built, or deliberately different
+
+| ID | Item | Status | Reason |
+|---|---|---|---|
+| FR-CS-70 | The official results table columns and case-history layout. | Unverified | They appear only after the official CAPTCHA, which is not bypassed. myCourt's layout is its own design. |
+| FR-CS-71 | Help-video contents; the footer headings "PDF Viewer", "Acknowledgement" (and the empty "History", "IA Business" headings). | Not built | The page shows empty headings or video links only; there is nothing observable to reproduce. |
+| FR-CS-72 | Real court data from eCourts. | Not built by design | There is no authorised source (constitution V); data is fictional and labelled. |
+| FR-CS-73 | Validation errors in an "OK" pop-up. | Different on purpose | Inline errors beside each field are announced to assistive technology (constitution III). |
+| FR-CS-74 | The official year range, bar-code pattern and Establishment optionality. | Assumed | The page does not state them; they are marked **assumed** above and in `docs/gap-analysis.md`. |
+
+#### 4.13.8 Traceability: official feature to requirement to evidence
+
+| Official feature | Requirement | Parity check | Other evidence |
+|---|---|---|---|
+| Top bar, language, header, search, menus, notice | FR-CS-01 to FR-CS-08 | A01–A08 | 002 A1–A4, J9 |
+| Theme Customizer, Accessibility Tools | FR-CS-09, FR-CS-10 | A09–A11 | prefs.test.ts, 002 J1–J5, J8 |
+| Footer and keyboard tip | FR-CS-11 | A12–A15 | 002 D1 |
+| External-site alert | FR-CS-01 | A16 | 002 C3 |
+| State, district, court complex, establishment | FR-CS-20, FR-CS-21 | B00–B02 | caseStatus.test.ts |
+| Seven tabs, headings, required markers, help | FR-CS-22 to FR-CS-27 | B03–B10 | render.test.tsx |
+| Captcha | FR-CS-25 | B04–B10 | caseStatus.test.ts (captcha) |
+| Validation | FR-CS-28 | C01, C02 | caseStatus.test.ts |
+| Each search mode | FR-CS-30 to FR-CS-37 | B04–B10, B12, C06–C08 | caseStatus.test.ts |
+| Search, results, View, case history | FR-CS-40 to FR-CS-44 | C03–C05 | render.test.tsx |
 
 ---
 
@@ -316,7 +421,7 @@ Matter data is kept until an owner deletes it (permanent after typed confirmatio
 | Area | Endpoints |
 |---|---|
 | Public (fictional data) | `GET /health`; `POST /cases/search`, `/orders/search`, `/caveats/search`, `/locations/find`, `/cause-lists`, `/processes/lookup`; `GET /court-rooms` |
-| Accounts | `POST /auth/register`, `/auth/login`, `/auth/logout`, `/auth/password`; `GET /auth/me`; `POST /admin/people/{id}/deactivate` |
+| Accounts | `POST /auth/register`, `/auth/login` (optional `code`), `/auth/logout`, `/auth/password`, `/auth/mfa/setup`, `/auth/mfa/enable`, `/auth/mfa/disable`; `GET /auth/me`; `POST /admin/people/{id}/deactivate` |
 | Matters | `/matters`, `/matters/{id}`, `/matters/{id}/assignments[/{personId}]`, `POST /people/lookup` |
 | Contents | `/matters/{id}/tasks`, `calendar`, `documents`, `voice-notes`, `time-entries`, `invoices` (list, create, get, patch, delete) plus review and approve actions |
 | Drafts | `/matters/{id}/drafts` (+ `/approve`), `/matters/{id}/research`, `/matters/{id}/mappings`, `/conversations[/{id}[/messages]]` |
@@ -362,6 +467,8 @@ All changes are atomic; the database being down yields a retry state; backup and
 ### 7.4 Usability and accessibility (constitution III)
 Keyboard-only operation of every screen; labelled controls with required markers; errors associated with fields and announced; visible focus; colour never the only signal; usable from 360 px to desktop with no horizontal page scroll, including the longest translations; designed loading, empty and error states.
 
+**Responsive design.** Breakpoints at 1100, 860, 760 and 560 px. At 760 px and below the sidebar is a slide-in drawer (tap the dimmed page to close it), dialogs become bottom sheets, the top bar is one menu-and-search row plus a scrolling row of actions, and the voice bar is a full-width tray. On touch devices every button, tab, checkbox and link is at least 44 px high, text fields are 16 px so phones do not zoom, and no page scrolls sideways from 360 px up to desktop (checked by the phone-emulation audit `scripts/mobile-audit.mjs` over 20 pages at 360, 390, 430, 768 and 1024 px).
+
 ### 7.5 Maintainability and quality
 TypeScript strict; ESLint (`npm run lint`, TypeScript and React-hooks rules) is clean; automated tests required for validation, adapters and endpoints; a bug fix adds a failing-first test where practical. A schema-snapshot test fails when a model changes without a new Alembic revision.
 
@@ -372,7 +479,7 @@ Runs on Windows, macOS and Linux with the stated runtimes; the browser needs no 
 Demonstration data is always labelled; the system never implies affiliation with the judiciary or eCourts; machine translation is always disclosed; generated output is a draft until approved; not finding a source is never presented as proof none exists.
 
 ### 7.8 Bundle size
-Pages are loaded on demand; React and Material UI are separate cached chunks. The first screen loads about 250 kB gzipped (it was about 294 kB in one file) and the build no longer warns about chunk size.
+Pages are loaded on demand and React is a separate cached chunk. The first screen loads about 155 kB gzipped, down from about 250 kB when a UI framework was used.
 
 ---
 
@@ -395,15 +502,18 @@ Amendments go through `/speckit-constitution` with a Sync Impact Report. Non-tri
 |---|---|---|
 | Backend | `python -m pytest` (SQLite in memory) | 123 passed |
 | Backend on PostgreSQL | `python -m pytest -m postgres tests/postgres` (triggers, concurrency) | 4 passed |
-| Frontend | `npm test` (Vitest) | 590 passed, 2 skipped |
+| Frontend | `npm test` (Vitest) | 606 passed, 2 skipped (32 files); the Case Status, Court Orders, Services-site and translation files alone: 454 passed |
 | Lint | `npm run lint` | Clean |
 | Dependencies | `npm audit` | 0 vulnerabilities |
 | Build | `npm run build` (type-check + bundle) | Passes |
-| Browser, voice control | `specs/005-voice-control/browser-check.mjs` (mock mode) | 27/27 |
+| Browser, Case Status parity with the official page | `specs/006-casestatus-parity/browser-check.mjs` (mock mode) | 35/35 |
+| Browser, voice control | `specs/005-voice-control/browser-check.mjs` (mock mode) | 29/29 |
 | Browser, workspace | `specs/004-workspace-backend/browser-check.mjs` (throw-away PostgreSQL database) | 33/33, including the screens that now save on the server |
 | Browser, Services site | `specs/002-services-site-prototype/browser-check.mjs` | 60/60 (mock mode) |
 | Browser, court orders | `specs/001-court-orders/browser-check.mjs` | 23/23 |
 | Load | `scripts/load_check.py` | Run at implementation time |
+
+The unedited output of this run is in `docs/evidence/verification-run.md` (2026-10-29).
 
 Acceptance of this SRS: every **Built** requirement has at least one automated test or browser check; **Partial** and **Not built** items are accepted only as listed in section 11.
 
@@ -416,11 +526,12 @@ Acceptance of this SRS: every **Built** requirement has at least one automated t
 | 001 Court orders | FR-SVC-05, FR-SVC-10, FR-SVC-13 |
 | 002 Services-site prototype | FR-SVC-01 to FR-SVC-18, FR-WSP-07 |
 | 003 Site translation | FR-LNG-01 to FR-LNG-08 |
-| 005 Voice control | FR-VOI-01 to FR-VOI-06, FR-WSP-04 |
+| 005 Voice control | FR-VOI-01 to FR-VOI-09, FR-WSP-04 |
+| 006 Case Status parity | FR-CS-01 to FR-CS-74 (section 4.13) |
 | 004 Workspace backend | FR-ACC, FR-MAT, FR-CON, FR-DRF, FR-INT, FR-AUD, FR-DSH, FR-DEM, FR-OPS, NFR-SEC |
-| Constitution I | FR-DEM, FR-LNG-05, FR-SVC-16, NFR 7.7 |
+| Constitution I | FR-DEM, FR-LNG-05, FR-SVC-16, FR-CS-53, FR-CS-54, NFR 7.7 |
 | Constitution II | FR-DRF, FR-INT-02, FR-CON-02 |
-| Constitution III | NFR 7.4 |
+| Constitution III | NFR 7.4, FR-CS-28, FR-CS-29, FR-CS-62 |
 | Constitution IV | NFR 7.5, section 9 |
 | Constitution V | FR-AUD, FR-MAT-03/04, FR-OPS-05, NFR-SEC |
 
@@ -488,3 +599,8 @@ All of the following are needed before real client data: a security review; reso
 |---|---|---|
 | 1.0 | 2026-10-28 | First full SRS, reviewed against specs 001–004, the constitution and the implemented code |
 | 1.1 | 2026-10-28 | Gaps G1–G3 and G6–G11 closed; two-step sign-in, rate limiting, dictation, server-backed screens, lint, code-splitting, schema-snapshot test; gap register rewritten |
+| 1.2 | 2026-10-29 | App-wide voice control (spec 005) |
+| 1.3 | 2026-10-29 | UI framework removed: plain React and CSS with an in-house component kit; first-screen size reduced; docs updated |
+| 1.4 | 2026-10-29 | Design pass: animation, depth, branded sign-in, skeleton loaders; reduced-motion respected |
+| 1.5 | 2026-10-29 | Phone layout fixed (drawer menu, touch targets, bottom sheets); voice bar to bottom right and portalled out of the top bar; spoken "Navigating to …"; pauses no longer stop voice control |
+| 1.6 | 2026-10-29 | SRS audited against the code and a fresh full verification run; stale statements corrected (migrations, accessibility panel, focus ring, microphone, MFA routes, API table); full Case Status requirements with evidence added (4.13); Case Status parity check (35/35) and evidence folder added |

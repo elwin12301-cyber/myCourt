@@ -1,19 +1,13 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Checkbox from '@mui/material/Checkbox'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
 import * as W from '../../api/workspace'
-import { Message, Row, Section, SelectField, Status } from '../../components/mui'
+import { Message, Row, Section, SelectField, Status } from '../../components/blocks'
 import { PageHead } from '../../components/ui'
 import { useApp } from '../../context'
 import { commandFor, SPEECH_LANGUAGES, useSpeech } from '../../features/speech'
 import type { PageId } from '../../types'
 import { BillingTab, CalendarTab, DocumentsTab, DraftCard, Err, Form, State, TasksTab, day, useAction, useLoad } from '../MatterWorkspace'
 import { Scoped } from './Scope'
+import { Box, Button, Checkbox, FormControlLabel, Stack, TextField, Typography } from '../../components/kit'
 
 const NOTICE = 'Demonstration content only. Everything generated is a draft: an advocate must verify it before it is relied on, filed or sent.'
 
@@ -74,7 +68,7 @@ function GenerateBody({ m, kind, label, placeholder }: { m: W.Matter; kind: 'res
           <Form onSubmit={(e: FormEvent) => { e.preventDefault(); void run(() => (kind === 'research' ? W.drafts.research(m.id, query) : W.drafts.mapping(m.id, query)), () => { setQuery(''); past.reload() }) }}>
             <TextField id={`${kind}-q`} label={label} value={query} onChange={(e) => setQuery(e.target.value)} placeholder={placeholder} required />
             <Err text={error} />
-            <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>{busy ? 'Working…' : 'Run'}</Button>
+            <Button type="submit" variant="contained" disabled={busy} style={{ marginTop: 8 }}>{busy ? 'Working…' : 'Run'}</Button>
           </Form>
         </Section>
       )}
@@ -121,11 +115,11 @@ function AssistantBody({ m }: { m: W.Matter }) {
           <option value="">New conversation</option>
           {mine.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
         </SelectField>
-        <Stack spacing={1.5} sx={{ my: 2 }} aria-live="polite">
+        <Stack spacing={1.5} style={{ marginTop: 16, marginBottom: 16 }} aria-live="polite">
           {(conv?.messages ?? []).map((x) => (
-            <Box key={x.position} sx={{ alignSelf: x.role === 'user' ? 'flex-end' : 'flex-start', maxWidth: '88%', p: 1.5, borderRadius: 2, bgcolor: x.role === 'user' ? 'action.selected' : 'action.hover' }}>
-              <Typography variant="caption" component="strong" sx={{ display: 'block', mb: 0.5 }}>{x.role === 'user' ? 'You' : 'myCourt AI (demonstration)'}</Typography>
-              <Typography sx={{ whiteSpace: 'pre-wrap' }}>{x.body}</Typography>
+            <Box key={x.position} style={{ alignSelf: x.role === 'user' ? 'flex-end' : 'flex-start', maxWidth: '88%', padding: 12, borderRadius: 8, background: x.role === 'user' ? '#e4e9f5' : '#f1f3f7' }}>
+              <Typography variant="caption" component="strong" style={{ display: 'block', marginBottom: 4 }}>{x.role === 'user' ? 'You' : 'myCourt AI (demonstration)'}</Typography>
+              <Typography style={{ whiteSpace: 'pre-wrap' }}>{x.body}</Typography>
               {x.role === 'assistant' && <Typography variant="caption" color="text.secondary">Saved as a draft on this matter · verify before relying</Typography>}
             </Box>
           ))}
@@ -135,7 +129,7 @@ function AssistantBody({ m }: { m: W.Matter }) {
           <Form onSubmit={send}>
             <TextField id="chat-q" label="Ask about facts, authorities, drafts or next steps" value={text} onChange={(e) => setText(e.target.value)} />
             <Err text={error} />
-            <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>{busy ? 'Working…' : 'Send'}</Button>
+            <Button type="submit" variant="contained" disabled={busy} style={{ marginTop: 8 }}>{busy ? 'Working…' : 'Send'}</Button>
           </Form>
         ) : <Typography color="text.secondary">View-only access: you can read conversations but not add to them.</Typography>}
       </Section>
@@ -177,7 +171,7 @@ function VoiceBody({ m }: { m: W.Matter }) {
         </SelectField>
         <FormControlLabel control={<Checkbox checked={commands} onChange={(e) => setCommands(e.target.checked)} />} label="Voice commands (“open calendar”, “go to cases”, “show billing”)" />
         {!sp.supported && <Message severity="info">This browser does not offer speech recognition. You can still type or paste a transcript below.</Message>}
-        <Stack direction="row" spacing={1} sx={{ my: 1 }}>
+        <Stack direction="row" spacing={1} style={{ marginTop: 8, marginBottom: 8 }}>
           <Button variant="contained" disabled={!sp.supported || !consent || sp.listening} onClick={sp.start}>● Start dictation</Button>
           <Button variant="outlined" disabled={!sp.listening} onClick={sp.stop}>■ Stop</Button>
           {sp.listening && <Status kind="amber">Listening…</Status>}
@@ -186,14 +180,14 @@ function VoiceBody({ m }: { m: W.Matter }) {
         <TextField id="voice-text" label="Transcript (editable, original wording)" multiline minRows={6} value={transcript + (sp.interim ? ` ${sp.interim}` : '')} onChange={(e) => setTranscript(e.target.value)} />
         <Typography variant="caption" color="text.secondary" component="p">Confirm case numbers, names, dates, legal references, negations and amounts before relying on it.</Typography>
         <Err text={error} />
-        {edit && <Button variant="contained" disabled={busy || !transcript.trim()} onClick={() => void save()} sx={{ mt: 1 }}>Save as a voice note</Button>}
+        {edit && <Button variant="contained" disabled={busy || !transcript.trim()} onClick={() => void save()} style={{ marginTop: 8 }}>Save as a voice note</Button>}
       </Section>
       <Section title="Saved voice notes">
         <State loading={notes.loading} error={notes.error} onRetry={notes.reload} empty={notes.data && notes.data.items.length === 0 ? 'No voice notes on this matter yet.' : undefined}>
           {notes.data?.items.map((n) => (
             <Row key={n.id}>
               <span style={{ whiteSpace: 'pre-wrap' }}>{n.transcript}</span>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <Stack direction="row" spacing={1} style={{ alignItems: 'center' }}>
                 <Status kind={n.reviewStatus === 'reviewed' ? 'green' : 'amber'}>{n.reviewStatus === 'reviewed' ? 'Reviewed' : 'Needs review'}</Status>
                 {edit && n.reviewStatus !== 'reviewed' && <Button size="small" variant="outlined" onClick={() => void run(() => W.voiceNotes.action(m.id, n, 'review'), notes.reload)}>Mark reviewed</Button>}
               </Stack>
@@ -269,22 +263,22 @@ export function LiveIntake() {
           <TextField id="in-contact" label="Contact" value={contact} onChange={(e) => setContact(e.target.value)} />
           <TextField id="in-summary" label="Summary of facts and urgency" multiline minRows={3} value={summary} onChange={(e) => setSummary(e.target.value)} />
           <Err text={error} />
-          <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>Save intake</Button>
+          <Button type="submit" variant="contained" disabled={busy} style={{ marginTop: 8 }}>Save intake</Button>
         </Form>
       </Section>
       <Section title="Your intake records">
         <State loading={l.loading} error={l.error} onRetry={l.reload} empty={l.data && l.data.items.length === 0 ? 'No intake records yet.' : undefined}>
           {l.data?.items.map((r) => (
-            <Box key={r.id} sx={{ py: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
-              <Stack direction="row" sx={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
+            <Box key={r.id} style={{ paddingTop: 12, paddingBottom: 12, borderTop: '1px solid var(--line)' }}>
+              <Stack direction="row" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                 <strong>{r.prospectName}</strong>
                 <Status kind={r.conflictCheck === 'clear' ? 'green' : 'amber'}>{r.conflictCheck === 'clear' ? 'Conflict check clear' : r.conflictCheck === 'needs_review' ? 'Needs review' : 'Not checked'}</Status>
               </Stack>
               <Typography variant="caption" color="text.secondary" component="p">{r.contact || 'No contact'}{r.confirmedAt ? ` · confirmed ${day(r.confirmedAt)}` : ''}</Typography>
-              {r.summary && <Typography sx={{ whiteSpace: 'pre-wrap' }}>{r.summary}</Typography>}
+              {r.summary && <Typography style={{ whiteSpace: 'pre-wrap' }}>{r.summary}</Typography>}
               {r.matterId ? <Typography><a href={`#/caseDetail/${r.matterId}`}>Open the matter created from this intake</a></Typography> : (
-                <Stack direction="row" spacing={1} useFlexGap sx={{ mt: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-                  <TextField id={`note-${r.id}`} label="Conflict check note" size="small" sx={{ maxWidth: 320 }} value={note[r.id] ?? ''} onChange={(e) => setNote((n) => ({ ...n, [r.id]: e.target.value }))} />
+                <Stack direction="row" spacing={1} useFlexGap style={{ marginTop: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <TextField id={`note-${r.id}`} label="Conflict check note" size="small" style={{ maxWidth: 320 }} value={note[r.id] ?? ''} onChange={(e) => setNote((n) => ({ ...n, [r.id]: e.target.value }))} />
                   <Button size="small" variant="outlined" disabled={busy} onClick={() => void run(() => W.intake.confirm(r.id, 'clear', note[r.id] ?? ''), l.reload)}>Confirm clear</Button>
                   <Button size="small" variant="outlined" disabled={busy} onClick={() => void run(() => W.intake.confirm(r.id, 'needs_review', note[r.id] ?? ''), l.reload)}>Needs review</Button>
                   <Button size="small" variant="contained" disabled={busy || r.conflictCheck !== 'clear'} onClick={() => void run(() => W.intake.convert(r.id), l.reload)}>Create matter</Button>

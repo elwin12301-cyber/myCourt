@@ -129,3 +129,15 @@ Compared `https://services.ecourts.gov.in/ecourtindia_v6/?p=casestatus/index` (p
 | GAP-075 | Empty headings PDF Viewer, Acknowledgement, History, IA Business on the official page | History and IA business are built in the case detail; PDF Viewer and Acknowledgement have no observable content, so nothing was built |
 
 Everything else observed on the page is present: the eight searches and their fields and required markers (FIR Number and Year optional, as on the official page), the Pending / Disposed / Both filters (no "Both" for Act and Case Type), the three Advocate options with the bar-code format, the cascading State to Establishment selector with the 36-entry list, the captcha with refresh and audio, Go and Back, the "How to" help and help-video links, the Search Menu, theme customizer, six languages, accessibility options and footer links. Results-table columns and the case-history layout cannot be seen without solving the official captcha, so they stay **Unverified** (GAP-038).
+
+## Tenth pass — evidence-based parity check (2026-10-29)
+See [casestatus-parity.md](casestatus-parity.md). A scripted check of 35 items against the live official page's text now passes in real Chrome.
+
+| ID | Finding | Status |
+|---|---|---|
+| GAP-076 | Accessibility panel wording and grouping differed (no "Normal Contrast", "Invert Saturation" absent, no Color Contrast / Text Size / Others groups, "Reset all") | **Fixed**, translated into five languages |
+| GAP-077 | No Hindi top-bar link or Hindi header line; notice sentence differed | **Fixed** |
+| GAP-078 | Theme Customizer had no visible heading | **Fixed** |
+| GAP-079 | Headings lacked "Case Status :"; Filing Number year was "Filing Year"; advocate option read "Date Case List (Advocate's Cause List)"; Case Number had no help-video link | **Fixed** |
+| GAP-080 | State list order was alphabetical, not the official order | **Fixed** (explicit official list) |
+| GAP-081 | Official results and case-history layouts, help-video contents, PDF Viewer and Acknowledgement | **Not verifiable** (behind the official CAPTCHA, or empty on the page) |

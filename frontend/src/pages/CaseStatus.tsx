@@ -106,7 +106,7 @@ export default function CaseStatusPage({
         )}
 
         <form id="searchpanel" role={visibleModes.length > 1 ? 'tabpanel' : undefined} aria-labelledby={visibleModes.length > 1 ? `tab-${mode}` : undefined} aria-label={visibleModes.length > 1 ? undefined : t(info.heading)} onSubmit={run} noValidate>
-          <h4 style={{ margin: '0 0 6px' }}>{t(info.heading)}</h4>
+          <h4 style={{ margin: '0 0 6px' }}>{t('Case Status')} : {t(info.heading)}</h4>
           <details className="howto">
             <summary>{t('How to search')}</summary>
             <p>{t(info.help)}</p>

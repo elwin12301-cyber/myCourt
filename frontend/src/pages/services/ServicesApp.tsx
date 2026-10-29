@@ -48,6 +48,7 @@ function ThemePanel({ prefs, set, onClose }: { prefs: SitePrefs; set: (p: SitePr
   const t = useT()
   return (
     <div className="svc-themepanel" role="dialog" aria-label={t('Theme Customizer')} onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}>
+      <h3 className="svc-themettl">{t('Theme Customizer')}</h3>
       <fieldset>
         <legend>{t('Topbar Color')}</legend>
         {TOPBAR_OPTIONS.map((o) => (
@@ -172,6 +173,7 @@ function Shell({ initialSlug, prefs, setPrefs, lang }: ShellProps) {
         <div className="svc-brand">
           <div className="brandmark">eC</div>
           <div>
+            <small lang="hi">जिला न्यायालय सेवाएं</small>
             <h1>{t('eCourts Services')}</h1>
             <p>{t('District and Taluka Courts of India')}</p>
             <small>{t('Demonstration prototype')}</small>

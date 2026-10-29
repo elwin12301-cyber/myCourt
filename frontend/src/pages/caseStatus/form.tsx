@@ -163,12 +163,12 @@ export function ModeFields({ mode, v, set, errors }: { mode: SearchMode; v: Form
         <div className="grid layout3" style={{ alignItems: 'start', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
           <CaseTypeField v={v} set={set} errors={errors} />
           {num('number', mode === 'filingNumber' ? 'Filing Number' : 'Case Number', 'number')}
-          <YearField v={v} set={set} errors={errors} label={mode === 'filingNumber' ? 'Filing Year' : 'Year'} required />
+          <YearField v={v} set={set} errors={errors} label="Year" required />
         </div>
       )}
       {mode === 'advocate' && (
         <>
-          <Radios legend="Search by" name="by" value={v.by} options={['name', 'barCode', 'caseListDate']} labels={{ name: 'Advocate Name', barCode: 'Bar Code', caseListDate: "Date Case List (Advocate's Cause List)" }} onChange={(by) => set({ by })} />
+          <Radios legend="Search by" name="by" value={v.by} options={['name', 'barCode', 'caseListDate']} labels={{ name: 'Advocate Name', barCode: 'Bar Code', caseListDate: 'Date Case List' }} onChange={(by) => set({ by })} />
           {v.by === 'barCode' ? (
             <Field id="barCode" label="Advocate Bar Code" required error={errors.barCode} hint="Example format: MAH/XXXX/1982. Try MAH/0077/2005 (demo).">
               <Input id="barCode" value={v.barCode} aria-invalid={!!errors.barCode} aria-describedby={errors.barCode ? 'barCode-err' : undefined} onChange={(e) => set({ barCode: e.target.value })} />

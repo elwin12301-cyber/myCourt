@@ -131,9 +131,9 @@ The server validates every request again (unknown fields are rejected), so the f
 
 Operator commands (`python -m app.cli ...`: `migrate`, `seed-demo`, `remove-demo`, `export`, `import`, `check-real-data`) are described in [docs/backend-operations.md](docs/backend-operations.md).
 
-## User interface library
+## User interface
 
-The app uses **Material UI** (`@mui/material`, with Emotion and `@mui/icons-material`). Why a library: it gives these data-heavy screens accessible tabs, tables with pagination, form fields with labels and error text, alerts and status chips without hand-writing each one. The theme is in `frontend/src/theme.ts` (the myCourt colours, sentence-case buttons). `CssBaseline` is deliberately not used, so the older screens and the Services site keep their own styles. Pages load on demand and React and Material UI are separate cached chunks, so the first screen is about 250 kB gzipped.
+There is no UI framework. The screens are plain React with one stylesheet (`frontend/src/styles.css`) and a small in-house component kit (`frontend/src/components/kit.tsx`: buttons, fields, tables, tabs, alerts, a dialog with a focus trap, and a few inline icons; `ui.tsx` and `blocks.tsx` build the shared page pieces on it). The look is classic navy and gold on ivory with serif headings, with depth and motion in `frontend/src/design.css`: pages rise in, cards and buttons lift on hover, numbers count up, tabs have a sliding gold underline, dialogs and toasts spring in, loading shows skeleton bars, and the sign-in screen has a brand panel. All motion stops for people whose system asks for reduced motion. Pages load on demand and React is a separate cached chunk, so the first screen is about 155 kB gzipped. Material UI was used earlier and has been removed.
 
 ## What's in the app
 

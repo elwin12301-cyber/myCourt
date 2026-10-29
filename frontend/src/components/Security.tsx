@@ -1,11 +1,9 @@
 import { useState, type FormEvent } from 'react'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
 import { useAuth } from '../api/auth'
 import { api, ApiError, messageOf } from '../api/client'
-import { Message } from './mui'
+import { Message } from './blocks'
 import { Modal } from './ui'
+import { Button, TextField, Typography } from './kit'
 
 /** Turn two-step sign-in (an authenticator app) on or off for the signed-in person. */
 export default function Security({ onClose }: { onClose: () => void }) {
@@ -29,7 +27,7 @@ export default function Security({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal onClose={onClose} titleId="sec-title" title="Two-step sign-in" closeLabel="Close" actions={<Button variant="outlined" onClick={onClose}>Close</Button>}>
-      <Typography color="text.secondary" sx={{ mb: 1 }}>
+      <Typography color="text.secondary" style={{ marginBottom: 8 }}>
         {on ? 'Two-step sign-in is on: signing in needs a code from your authenticator app as well as your password.' : 'Add a second step at sign-in with an authenticator app (any app that supports time-based codes).'}
       </Typography>
       {error && <Message severity="warning">{error}</Message>}
@@ -37,16 +35,16 @@ export default function Security({ onClose }: { onClose: () => void }) {
       {!on && setup && (
         <form onSubmit={enable}>
           <Typography>Add this key in your authenticator app (choose “enter a setup key”, time-based):</Typography>
-          <Typography component="code" sx={{ display: 'block', my: 1, p: 1, bgcolor: 'action.hover', wordBreak: 'break-all', fontWeight: 700 }}>{setup.secret}</Typography>
+          <Typography component="code" style={{ display: 'block', marginTop: 8, marginBottom: 8, padding: 8, background: '#f1f3f7', wordBreak: 'break-all', fontWeight: 700 }}>{setup.secret}</Typography>
           <TextField id="mfa-code" label="Code from the app" value={code} onChange={(e) => setCode(e.target.value)} error={!!fields.code} helperText={fields.code} {...codeProps} />
-          <Button type="submit" variant="contained" disabled={busy} sx={{ mt: 1 }}>Turn on</Button>
+          <Button type="submit" variant="contained" disabled={busy} style={{ marginTop: 8 }}>Turn on</Button>
         </form>
       )}
       {on && (
         <form onSubmit={disable}>
           <TextField id="mfa-pw" label="Your password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} error={!!fields.password} helperText={fields.password} />
           <TextField id="mfa-code" label="Code from the app" value={code} onChange={(e) => setCode(e.target.value)} error={!!fields.code} helperText={fields.code} {...codeProps} />
-          <Button type="submit" variant="outlined" color="error" disabled={busy} sx={{ mt: 1 }}>Turn off</Button>
+          <Button type="submit" variant="outlined" color="error" disabled={busy} style={{ marginTop: 8 }}>Turn off</Button>
         </form>
       )}
     </Modal>

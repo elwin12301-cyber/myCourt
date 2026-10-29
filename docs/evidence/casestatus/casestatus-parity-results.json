@@ -1,0 +1,216 @@
+{
+  "officialSource": "https://services.ecourts.gov.in/ecourtindia_v6/?p=casestatus/index",
+  "checkedAt": "2026-10-29T16:00:19.075Z",
+  "results": [
+    {
+      "id": "A01",
+      "name": "Top bar: Hindi and English e-Committee links",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A02",
+      "name": "Skip to main content link",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A03",
+      "name": "Language list: English, हिन्दी, मराठी, ગુજરાતી, ಕನ್ನಡ, தமிழ் in order",
+      "ok": true,
+      "detail": "English | हिन्दी | मराठी | ગુજરાતી | ಕನ್ನಡ | தமிழ்"
+    },
+    {
+      "id": "A04",
+      "name": "Header text (Hindi title, eCourts Services, District and Taluka Courts of India)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A05",
+      "name": "Search this site field with a Search button",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A06",
+      "name": "Main menu in the official order (7 items)",
+      "ok": true,
+      "detail": "Home | e-Committee | Supreme Court | High Courts | District Courts | NJDG | Contact Us"
+    },
+    {
+      "id": "A07",
+      "name": "Search Menu in the official order (7 items)",
+      "ok": true,
+      "detail": "CNR Number | Case Status | Court Orders | Cause List | Caveat Search | Process Details | Location"
+    },
+    {
+      "id": "A08",
+      "name": "Theme-update notice, word for word, and it can be dismissed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A09",
+      "name": "Theme Customizer: Topbar Color (Light, Dark) and Theme Color (Default, Dark, Eco, Light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A10",
+      "name": "Accessibility Tools: all 16 official controls, same wording and groups",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A11",
+      "name": "Accessibility controls work: High Contrast on, Normal Contrast off, A+ grows text, Reset all settings",
+      "ok": true,
+      "detail": "big=110%"
+    },
+    {
+      "id": "A12",
+      "name": "Footer: the 12 Useful Links in the official order",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A13",
+      "name": "Footer statements: owner, NIC hosting, Last Updated 2 January 2026, Version 1.0, Follow Us",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A14",
+      "name": "Footer: the 6 partner links in the official order",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A15",
+      "name": "Keyboard tip for combo boxes (Enter, then Alt+Down Arrow)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "A16",
+      "name": "External site alert opens with Go and Cancel",
+      "ok": true,
+      "detail": "Cancel|Go"
+    },
+    {
+      "id": "B00",
+      "name": "State list: the official 36 entries in the official order",
+      "ok": true,
+      "detail": "ours=36"
+    },
+    {
+      "id": "B01",
+      "name": "Dropdown placeholders: Select state / district / court complex / establishment",
+      "ok": true,
+      "detail": "select state | select district | select court complex | select establishment"
+    },
+    {
+      "id": "B02",
+      "name": "Cascade works: choosing a state enables the district list",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "B03",
+      "name": "Seven search tabs: Party Name, Case Number, Filing Number, Advocate, FIR Number, Act, Case Type",
+      "ok": true,
+      "detail": "Party Name | Case Number | Filing Number | Advocate | FIR Number | Act | Case Type"
+    },
+    {
+      "id": "B04",
+      "name": "Party Name: heading \"Case Status : Search by Petitioner/Respondent\", fields, options, captcha, Go and Back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "B05",
+      "name": "Case Number: heading \"Case Status : Search by Case Number\", fields, options, captcha, Go and Back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "B06",
+      "name": "Filing Number: heading \"Case Status : Search by Filing Number\", fields, options, captcha, Go and Back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "B07",
+      "name": "Advocate: heading \"Case Status : Search by Advocate\", fields, options, captcha, Go and Back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "B08",
+      "name": "FIR Number: heading \"Case Status : Search by FIR number\", fields, options, captcha, Go and Back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "B09",
+      "name": "Act: heading \"Case Status : Search by Act Type\", fields, options, captcha, Go and Back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "B10",
+      "name": "Case Type: heading \"Case Status : Search by Case Type\", fields, options, captcha, Go and Back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "C01",
+      "name": "Pressing Go with nothing filled lists errors beside the fields (announced as alerts)",
+      "ok": true,
+      "detail": "5 alerts"
+    },
+    {
+      "id": "C02",
+      "name": "Party name shorter than 3 characters is refused with a message",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "C03",
+      "name": "A valid Party Name search returns a results list",
+      "ok": true,
+      "detail": "1 rows"
+    },
+    {
+      "id": "C04",
+      "name": "View opens the case history with Case details, Case status, Acts, FIR details, History, IA business, Orders",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "C05",
+      "name": "Back returns to the results list with the search kept",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "C06",
+      "name": "Advocate: choosing Bar Code shows the Advocate Bar Code field with the MAH/XXXX/1982 format",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "C07",
+      "name": "Advocate: choosing Date Case List shows Case List Date (with a date picker)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "C08",
+      "name": "Act: \"Search Act\" needs 3 characters and the Search button fills the Act Type list",
+      "ok": true,
+      "detail": "1 acts listed"
+    }
+  ]
+}

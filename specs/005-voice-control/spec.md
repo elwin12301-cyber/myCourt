@@ -37,6 +37,9 @@ The first time, a plain warning says that Chrome and Edge send the audio to the 
 - **FR-013**: While on, a dark bar at the bottom MUST show a microphone mark, the state ("Listening…", "Dictating…", "Starting the microphone…", or the microphone problem), a one-line hint or the last answer, and the buttons **Numbers**, **Replies**, **Help** and **Stop**.
 - **FR-014**: **Numbers** MUST put a numbered badge on every control that can be pressed or filled on the screen, kept in step as the page scrolls and changes; "click 12", "12" or "press number twelve" MUST press, or move into, that item. With no numbers showing it MUST say so.
 - **FR-015**: **Replies** MUST show what was said and what the app answered, newest last, announced politely to screen readers.
+- **FR-017**: Every command that moves to a screen MUST answer "Navigating to <screen name>." (for example "Navigating to case status."), shown on screen and spoken aloud while voice control is on. The parser MUST accept natural wording ("go to", "open", "show me", "take me to", "navigate to", with or without "the" and "page") and close variants of a screen's name.
+- **FR-018**: A pause in speaking MUST NOT stop voice control. The browser's "no speech" and "aborted" events are not errors and listening restarts at once; only real problems (microphone refused, no microphone, speech service unreachable) are shown. The app's own spoken answers MUST NOT be taken as commands.
+- **FR-019**: On phones the voice bar MUST be a full-width tray at the bottom with large buttons, and the page MUST leave room beneath it; on larger screens it sits at the bottom right.
 - **FR-016**: Voice control MUST be available on every screen: in the top bar of the workspace, and as a round launcher in the corner of the sign-in screen and the full-page Services site.
 
 ## Success Criteria

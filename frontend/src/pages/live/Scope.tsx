@@ -1,10 +1,9 @@
 import { useState, type ReactNode } from 'react'
-import Link from '@mui/material/Link'
-import Typography from '@mui/material/Typography'
 import * as W from '../../api/workspace'
-import { Message, SelectField } from '../../components/mui'
+import { Message, SelectField } from '../../components/blocks'
 import { PageHead } from '../../components/ui'
 import { State, useLoad } from '../MatterWorkspace'
+import { Link, Typography } from '../../components/kit'
 
 /** The matter a screen is working on is remembered while moving between screens. */
 let remembered = ''

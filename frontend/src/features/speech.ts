@@ -18,6 +18,18 @@ export function speechCtor(w: Window = window): Ctor | null {
   return x.SpeechRecognition ?? x.webkitSpeechRecognition ?? null
 }
 
+/**
+ * What to tell the person about a recognition error, or null when it is harmless. Chrome ends listening with "no-speech" after a few
+ * quiet seconds and "aborted" whenever we stop it ourselves; neither is a problem, listening just starts again.
+ */
+export function speechErrorMessage(code: string): string | null {
+  if (code === 'no-speech' || code === 'aborted') return null
+  if (code === 'not-allowed' || code === 'service-not-allowed') return 'Microphone access was refused. Allow it in the browser address bar and try again.'
+  if (code === 'audio-capture') return 'No microphone was found. Plug one in or check the browser settings.'
+  if (code === 'network') return 'The browser speech service could not be reached. Check your internet connection.'
+  return `Speech recognition stopped: ${code}.`
+}
+
 export const SPEECH_LANGUAGES: { code: string; label: string }[] = [
   { code: 'en-IN', label: 'English (India)' }, { code: 'hi-IN', label: 'हिन्दी (Hindi)' }, { code: 'mr-IN', label: 'मराठी (Marathi)' },
   { code: 'gu-IN', label: 'ગુજરાતી (Gujarati)' }, { code: 'kn-IN', label: 'ಕನ್ನಡ (Kannada)' }, { code: 'ta-IN', label: 'தமிழ் (Tamil)' },
@@ -61,7 +73,7 @@ export function useSpeech(lang: string, onFinal: (text: string) => void) {
       }
       setInterim(live)
     }
-    r.onerror = (e) => setError(e.error === 'not-allowed' ? 'Microphone access was refused. Allow it in the browser address bar and try again.' : `Speech recognition stopped: ${e.error}.`)
+    r.onerror = (e) => { const m = speechErrorMessage(e.error); if (m) setError(m) }
     r.onend = () => { setListening(false); setInterim('') }
     setError(''); rec.current = r
     try { r.start(); setListening(true) } catch { setError('Could not start the microphone.') }

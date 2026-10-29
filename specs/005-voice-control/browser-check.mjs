@@ -31,7 +31,7 @@ try {
     setv(sel, v) { const el = document.querySelector(sel); if (!el) throw new Error('missing ' + sel); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })) },
     clickText(t) { const b = [...document.querySelectorAll('button')].find((x) => x.textContent.trim().startsWith(t) && !x.disabled); if (!b) throw new Error('no button ' + t); b.click() },
     altKey(k) { window.dispatchEvent(new KeyboardEvent('keydown', { altKey: true, key: k, bubbles: true })) },
-    toast() { return document.querySelector('.MuiSnackbarContent-message')?.textContent || '' }
+    toast() { return document.querySelector('.toast')?.textContent || '' }
   }; true`
   const load = async (hash = '', w = 1280, h = 1000) => {
     await send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: false })
@@ -53,6 +53,10 @@ try {
   log('V2 Alt+C opens a box to type a command, with the list of commands', (await ev(`!!document.querySelector('#voice-cmd')`)) && (await ev(`document.body.innerText.includes('Move around')`)))
   await ev(`__t.setv('#voice-cmd', 'open calendar')`); await ev(`__t.clickText('Run command')`); await sleep(900)
   log('V3 "open calendar" goes to the calendar', (await hash()) === '#/calendar', await hash())
+  const said = await ev('__t.toast()')
+  log('V3b the app answers "Navigating to calendar and follow up."', said === 'Navigating to calendar and follow up.', said)
+  const csSaid = await say('go to case status')
+  log('V3c "go to case status" goes there and says "Navigating to case status."', (await hash()) === '#/caseStatus' && csSaid === 'Navigating to case status.', `${await hash()} / ${csSaid}`)
   await say('open client intake')
   log('V4 "open client intake" goes to intake', (await hash()) === '#/intake', await hash())
 

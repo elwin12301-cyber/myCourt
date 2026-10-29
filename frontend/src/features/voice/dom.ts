@@ -165,11 +165,20 @@ export function pageSummary(): string {
   return [h, sub].filter(Boolean).join('. ') || 'This screen has no heading.'
 }
 
+let spokeAt = 0
+
+/** True while the app is talking and for a moment after, so the microphone does not mistake the app's own voice for a command. */
+export function isSpeaking(): boolean {
+  try { return window.speechSynthesis?.speaking === true || Date.now() - spokeAt < 800 } catch { return false }
+}
+
 export function speak(text: string) {
   try {
     if (!('speechSynthesis' in window)) return
     window.speechSynthesis.cancel()
     const u = new SpeechSynthesisUtterance(text); u.rate = 1.05
+    u.onend = () => { spokeAt = Date.now() }
+    u.onerror = () => { spokeAt = Date.now() }
     window.speechSynthesis.speak(u)
   } catch { /* speech output is optional */ }
 }

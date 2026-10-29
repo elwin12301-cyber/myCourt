@@ -210,7 +210,7 @@ try {
   log('J4 Reset theme restores Default and Light', await ev(`document.querySelector('.svc').className.includes('theme-default') && document.querySelector('.svc').className.includes('top-light')`))
   // accessibility precedence
   await ev(`[...document.querySelectorAll('.dispwrap button')].find((b) => b.textContent.includes('Accessibility options')).click()`); await step(200)
-  await ev(`[...document.querySelectorAll('.dispmenu input')].find((i) => i.closest('label').textContent.includes('High contrast')).click()`); await step(300)
+  await ev(`[...document.querySelectorAll('.dispmenu input')].find((i) => i.closest('label').textContent.includes('High Contrast')).click()`); await step(300)
   log('J5 High Contrast is applied to the page', await ev(`document.documentElement.classList.contains('hc')`))
   await ev(`[...document.querySelectorAll('.dispmenu button')].find((b) => b.textContent.includes('Reset all')).click()`); await step(200)
   // language

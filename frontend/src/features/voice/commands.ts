@@ -1,4 +1,5 @@
 import type { PageId } from '../../types'
+import { score } from './match'
 
 /** What a spoken or typed phrase asks the app to do. Parsing is pure; carrying it out is in dom.ts and VoiceControl. */
 export type Action =
@@ -30,6 +31,33 @@ export const PAGE_ALIASES: Record<string, PageId> = {
   'high courts': 'portalHighCourts', 'district courts': 'portalDistrict', forms: 'portalForms', 'forms for advocates': 'portalForms',
   contact: 'portalContact', 'contact us': 'portalContact', help: 'portalHelp', 'useful links': 'portalHelp', 'search portal': 'portalSearch',
   'site map': 'portalSitemap', sitemap: 'portalSitemap', 'help videos': 'portalHelpVideos', privacy: 'portalPrivacy', 'privacy policy': 'portalPrivacy',
+  manuals: 'portalManuals', brochures: 'portalBrochures', 'knowledge management': 'portalKnowledge', newsletter: 'portalNewsletter',
+  'web information manager': 'portalWebInfo', disclaimer: 'portalDisclaimer', terms: 'portalTerms', 'terms and conditions': 'portalTerms',
+  copyright: 'portalCopyright', 'copyright policy': 'portalCopyright', 'hyperlinking policy': 'portalHyperlink', 'accessibility statement': 'portalAccessibility',
+  'screen reader': 'portalScreenReader', 'screen reader access': 'portalScreenReader', 'case statuses': 'caseStatus', 'cases status': 'caseStatus',
+}
+
+/** How each screen is named when the app says where it is going. */
+export const PAGE_LABEL: Record<PageId, string> = {
+  dashboard: 'dashboard', cases: 'cases and matters', caseStatus: 'case status', causeList: 'cause list', courtOrders: 'court orders',
+  services: 'the eCourts services site', caseDetail: 'the matter', assistant: 'the AI legal assistant', research: 'research', documents: 'documents and OCR',
+  mapping: 'legal section mapping', voice: 'voice to text', hearing: 'hearing preparation', calendar: 'calendar and follow up', intake: 'client intake', billing: 'time and billing',
+  portalHome: 'the eCourts portal home', portalAbout: 'about eCourts', portalHighCourts: 'high courts', portalDistrict: 'district courts', portalForms: 'forms for advocates',
+  portalContact: 'contact us', portalHelp: 'useful links', portalSearch: 'portal search', portalHelpVideos: 'help videos', portalManuals: 'manuals', portalBrochures: 'brochures',
+  portalKnowledge: 'knowledge management', portalNewsletter: 'newsletter', portalWebInfo: 'the web information manager', portalDisclaimer: 'the disclaimer',
+  portalPrivacy: 'the privacy policy', portalTerms: 'terms and conditions', portalCopyright: 'the copyright policy', portalHyperlink: 'the hyperlinking policy',
+  portalAccessibility: 'the accessibility statement', portalScreenReader: 'screen reader access', portalSitemap: 'the site map',
+}
+
+/** Exact name first; otherwise the closest name when every word of what was said is found in it ("case statuses" -> case status). */
+export function pageFor(name: string): PageId | null {
+  if (PAGE_ALIASES[name]) return PAGE_ALIASES[name]
+  let best: PageId | null = null, top = 0
+  for (const [alias, page] of Object.entries(PAGE_ALIASES)) {
+    const sc = score(name, alias)
+    if (sc > top) { top = sc; best = page }
+  }
+  return top >= 40 ? best : null
 }
 
 const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen']
@@ -91,9 +119,10 @@ export function parseCommand(raw: string): Action {
   if (/^(?:type|write|dictate|say|insert|input) .+$/.test(p)) return { t: 'type', text: raw.replace(/^\s*(?:hey |ok |okay |computer |please )*\w+\s+/i, '').trim() }
   if ((m = p.match(/^(?:uncheck|untick|un tick|deselect|turn off|disable|clear the box|switch off) (.+)$/))) return { t: 'check', name: m[1], on: false }
   if ((m = p.match(/^(?:check|tick|turn on|enable|switch on) (.+)$/))) return { t: 'check', name: m[1], on: true }
-  if ((m = p.match(/^(?:go to|open|show|take me to|navigate to|switch to|visit) (.+)$/))) {
+  if ((m = p.match(/^(?:go to|open|show me|show|take me to|bring up|pull up|navigate to|switch to|visit|i want to (?:go to|see|open)) (.+)$/))) {
     const key = stripPage(m[1])
-    if (PAGE_ALIASES[key]) return { t: 'go', page: PAGE_ALIASES[key] }
+    const page = pageFor(key)
+    if (page) return { t: 'go', page }
     const o = p.match(/^(?:open|show) (.+)$/)
     if (o) return { t: 'click', name: o[1] }
   }

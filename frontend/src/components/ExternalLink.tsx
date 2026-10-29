@@ -1,8 +1,7 @@
 import { useState, type ReactNode } from 'react'
-import Button from '@mui/material/Button'
-import ListItemButton from '@mui/material/ListItemButton'
 import { useT } from '../i18n/context'
 import { Btn, Modal } from './ui'
+import { Button, ListItemButton } from './kit'
 
 /** Mirrors the portal's "External site alert": confirm before leaving the app. `nav` renders it as a sidebar item. */
 export default function ExternalLink({ href, className = 'btn small', nav = false, children }: { href: string; className?: string; nav?: boolean; children: ReactNode }) {

@@ -1,14 +1,11 @@
 import { useApp } from '../context'
 import { Banner, Btn, Card, PageHead, Pill, Quick, Row, Stat } from '../components/ui'
 import { useEffect, useState } from 'react'
-import Box from '@mui/material/Box'
-import MuiCard from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
 import { apiEnabled } from '../api/client'
-import { Message, Section } from '../components/mui'
+import { Message, Section } from '../components/blocks'
 import * as W from '../api/workspace'
 import { newMatterModal } from './modals'
+import { Box, Card as KitCard, CardContent, Typography } from '../components/kit'
 
 function LiveSummary() {
   const [d, setD] = useState<W.DashboardData | null>(null)
@@ -22,17 +19,17 @@ function LiveSummary() {
   ]
   return (
     <Section title="Your workspace (saved on the server)">
-      <Box sx={{ display: 'grid', gap: 1.5, gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
+      <Box style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
         {tiles.map(([label, n, hint]) => (
-          <MuiCard key={label}><CardContent>
+          <KitCard key={label}><CardContent>
             <Typography variant="caption" color="text.secondary">{label}</Typography>
-            <Typography variant="h4" component="p" sx={{ fontWeight: 700 }}>{n}</Typography>
+            <Typography variant="h4" component="p" style={{ fontWeight: 700 }}>{n}</Typography>
             <Typography variant="caption" color="text.secondary">{hint}</Typography>
-          </CardContent></MuiCard>
+          </CardContent></KitCard>
         ))}
       </Box>
       {d.nextDates.length > 0 && (
-        <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0, mt: 1.5 }}>
+        <Box component="ul" style={{ listStyle: 'none', padding: 0, margin: 0, marginTop: 12 }}>
           {d.nextDates.map((e) => <li key={e.id}><strong>{e.title}</strong> <Typography variant="caption" color="text.secondary">{e.kind} · {new Date(e.startsAt).toLocaleString('en-IN')}</Typography></li>)}
         </Box>
       )}
