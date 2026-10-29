@@ -43,6 +43,25 @@ export default function DisplaySettings({ label }: { label?: string } = {}) {
     try { localStorage.setItem(KEY, JSON.stringify(p)) } catch { /* storage unavailable */ }
   }, [p])
 
+  // Voice control and other tools change the display through this event.
+  useEffect(() => {
+    const on = (e: Event) => {
+      const c = (e as CustomEvent<string>).detail
+      setP((s) => {
+        const flags = (f: Flag, add: boolean) => (add ? [...new Set([...s.flags, f])] : s.flags.filter((x) => x !== f))
+        if (c === 'bigger') return { ...s, size: Math.min(3, s.size + 1) }
+        if (c === 'smaller') return { ...s, size: Math.max(-1, s.size - 1) }
+        if (c === 'normal') return { ...s, size: 0 }
+        if (c === 'contrast-on') return { ...s, flags: flags('contrast', true) }
+        if (c === 'contrast-off') return { ...s, flags: flags('contrast', false) }
+        if (c === 'reset') return DEFAULTS
+        return s
+      })
+    }
+    window.addEventListener('mycourt:display', on)
+    return () => window.removeEventListener('mycourt:display', on)
+  }, [])
+
   const toggle = (k: Flag) => setP((s) => ({ ...s, flags: s.flags.includes(k) ? s.flags.filter((x) => x !== k) : [...s.flags, k] }))
   const size = (d: number) => setP((s) => ({ ...s, size: Math.max(-1, Math.min(3, s.size + d)) }))
 

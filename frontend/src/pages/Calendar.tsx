@@ -41,7 +41,7 @@ export default function CalendarPage() {
             <label className="checkrow" key={`${t.title}-${i}`}>
               <input type="checkbox" checked={t.done} onChange={(e) => setTasks((all) => all.map((x, j) => (j === i ? { ...x, done: e.target.checked } : x)))} />
               <div style={{ flex: 1 }}>
-                <strong style={t.done ? { textDecoration: 'line-through', color: '#98a2b3' } : undefined}>{t.title}</strong>
+                <strong style={t.done ? { textDecoration: 'line-through', color: '#5b667c' } : undefined}>{t.title}</strong>
                 <small>Due: {t.due}</small>
               </div>
               <span className={`pill ${t.due === 'Today' ? 'amber' : ''}`}>{t.done ? 'Done' : t.due}</span>

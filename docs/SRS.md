@@ -3,9 +3,9 @@
 | | |
 |---|---|
 | **Document** | SRS-001 |
-| **Version** | 1.1 |
+| **Version** | 1.2 |
 | **Date** | 2026-10-28 |
-| **Status** | Baseline of what is built, reviewed against the code and the Spec Kit specifications; 1.1 closes gaps G1–G3 and G6–G11 (see 11.1) |
+| **Status** | Baseline of what is built, reviewed against the code and the Spec Kit specifications; 1.1 closes gaps G1–G3 and G6–G11 (see 11.1); 1.2 adds app-wide voice control (spec 005) |
 | **Standard followed** | Structure of ISO/IEC/IEEE 29148 (and IEEE 830) |
 | **Source of truth** | `specs/001`–`004`, `.specify/memory/constitution.md` v1.1.0, `docs/`, and the code in `frontend/` and `backend/` |
 
@@ -262,7 +262,15 @@ Priority: **M** must, **S** should. Status as defined in the introduction.
 | FR-WSP-01 | Dashboard, Cases & matters, Case status, Cause list, Court orders, eCourts Services site, AI Legal Assistant, RAG Research, Documents & OCR, Legal section mapping, Voice-to-text, Hearing preparation, Calendar & follow-up, Client intake, Time & billing, plus the eCourts portal reference (Home, About, e-Committee, NJDG, Supreme Court, High Courts, District Courts, Contact, Forms, Help, search, policy pages). | M | Built |
 | FR-WSP-02 | With the API on, Cases, Dashboard and the matter workspace are server-backed. | M | Built |
 | FR-WSP-03 | With the API on, Assistant, Research, Mapping, Voice, Hearing, Calendar, Intake, Billing and Documents work on one of the person's matters (a matter picker on each screen) and save on the server; without the API they remain browser-state demonstration screens. | S | Built |
-| FR-WSP-04 | Dictation and voice commands ("open calendar") with the browser's speech recognition, in six languages. It is opt-in: the person must accept that Chrome and Edge send the audio to the browser vendor, and it is for demonstration material only. Without support or consent the recorder stays simulated. | S | Built (see 11.2 for the confidentiality limit) |
+| FR-WSP-04 | Dictation on the Voice screen with the browser's speech recognition, in six languages, opt-in and for demonstration material only. Without support or consent the recorder stays simulated. | S | Built (see 11.2 for the confidentiality limit) |
+| FR-VOI-01 | **App-wide voice control** (top-bar Voice button, Alt+V): move to any screen, back, forward, reload; scroll; press a button, link or tab by name; focus a field by label; type or dictate into it; set a named field; choose a list option; tick or untick a box; next, previous, clear, submit; text bigger, smaller, normal; high contrast on and off; read the page; sign out; help; stop. | S | Built |
+| FR-VOI-02 | Controls are matched by what a person would say (label, name, text, placeholder). If nothing matches it says so and changes nothing. Dictated values keep their capitals and punctuation. | S | Built |
+| FR-VOI-03 | Every command gives a visible, announced answer and can be spoken aloud on request; a status area shows listening, what was heard and what was done. | S | Built |
+| FR-VOI-04 | Before first use a privacy warning (the browser vendor receives the audio; demonstration material only) must be agreed to; the microphone is not started before that. | M | Built |
+| FR-VOI-05 | Alt+C opens a box to type any command, with the same result as speaking it (no microphone needed). | S | Built |
+| FR-VOI-07 | A dark bar (microphone, state, last answer, **Numbers**, **Replies**, **Help**, **Stop**) shows while voice control is on. **Numbers** badges every pressable item so it can be pressed by saying its number; **Replies** lists what was said and answered. | S | Built |
+| FR-VOI-08 | Voice control is available on every screen: top bar in the workspace, and a corner launcher on the sign-in screen and the full-page Services site. | S | Built |
+| FR-VOI-06 | Spoken commands in Hindi, Marathi, Gujarati, Kannada and Tamil; hands-free wake word; on-device recognition. Commands are English only; dictation text can be in the six languages. | C | Not built |
 | FR-WSP-05 | Global search routes a typed query to the closest workspace and says so. | S | Built |
 | FR-WSP-06 | Notifications dialog lists items needing action. | S | Built |
 | FR-WSP-07 | Display settings persist across reloads. | S | Built |
@@ -387,10 +395,11 @@ Amendments go through `/speckit-constitution` with a Sync Impact Report. Non-tri
 |---|---|---|
 | Backend | `python -m pytest` (SQLite in memory) | 123 passed |
 | Backend on PostgreSQL | `python -m pytest -m postgres tests/postgres` (triggers, concurrency) | 4 passed |
-| Frontend | `npm test` (Vitest) | 525 passed, 2 skipped |
+| Frontend | `npm test` (Vitest) | 590 passed, 2 skipped |
 | Lint | `npm run lint` | Clean |
 | Dependencies | `npm audit` | 0 vulnerabilities |
 | Build | `npm run build` (type-check + bundle) | Passes |
+| Browser, voice control | `specs/005-voice-control/browser-check.mjs` (mock mode) | 27/27 |
 | Browser, workspace | `specs/004-workspace-backend/browser-check.mjs` (throw-away PostgreSQL database) | 33/33, including the screens that now save on the server |
 | Browser, Services site | `specs/002-services-site-prototype/browser-check.mjs` | 60/60 (mock mode) |
 | Browser, court orders | `specs/001-court-orders/browser-check.mjs` | 23/23 |
@@ -407,6 +416,7 @@ Acceptance of this SRS: every **Built** requirement has at least one automated t
 | 001 Court orders | FR-SVC-05, FR-SVC-10, FR-SVC-13 |
 | 002 Services-site prototype | FR-SVC-01 to FR-SVC-18, FR-WSP-07 |
 | 003 Site translation | FR-LNG-01 to FR-LNG-08 |
+| 005 Voice control | FR-VOI-01 to FR-VOI-06, FR-WSP-04 |
 | 004 Workspace backend | FR-ACC, FR-MAT, FR-CON, FR-DRF, FR-INT, FR-AUD, FR-DSH, FR-DEM, FR-OPS, NFR-SEC |
 | Constitution I | FR-DEM, FR-LNG-05, FR-SVC-16, NFR 7.7 |
 | Constitution II | FR-DRF, FR-INT-02, FR-CON-02 |
@@ -422,7 +432,7 @@ Acceptance of this SRS: every **Built** requirement has at least one automated t
 
 | # | Gap | Priority | Status in 1.1 |
 |---|---|---|---|
-| G1 | Voice control with browser speech recognition | P2 | **Closed.** Dictation and voice commands, opt-in, six languages (FR-WSP-04). |
+| G1 | Voice control with browser speech recognition | P2 | **Closed.** Dictation on the Voice screen (FR-WSP-04) and, in 1.2, full app-wide voice control with 27 browser checks (FR-VOI-01 to 05). Numbers, replies and a corner launcher on every screen were added (FR-VOI-07, 08). Commands in languages other than English remain open (FR-VOI-06). |
 | G2 | Standalone screens kept browser state | P1 | **Closed.** Assistant, Research, Mapping, Voice, Hearing, Calendar, Intake, Billing and Documents save on the server when the API is on (FR-WSP-03). |
 | G3 | No front-end screen for the intake API | P2 | **Closed.** Intake screen with confirm-clear and create-matter. |
 | G4 | Translations not reviewed by a native speaker | P1 | **Open.** Needs people, not code. The notice, glossary and inspection method are in place; reviewers are still needed. |

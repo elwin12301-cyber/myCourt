@@ -54,9 +54,10 @@ export default function SignIn() {
                 <TextField id="su-name" label="Your name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)}
                   error={!!fields.displayName} helperText={fields.displayName} slotProps={{ formHelperText: { role: 'alert' } }} />
               )}
-              <TextField id="su-email" label="E-mail address" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)}
-                error={!!fields.email} helperText={fields.email} slotProps={{ formHelperText: { role: 'alert' } }} />
-              <TextField id="su-password" label="Password" type="password" autoComplete={mode === 'in' ? 'current-password' : 'new-password'}
+              <TextField id="su-email" name="email" label={mode === 'in' ? 'E-mail or username' : 'E-mail address'} type="text" autoComplete="username"
+                value={email} onChange={(e) => setEmail(e.target.value)} error={!!fields.email} helperText={fields.email}
+                slotProps={{ htmlInput: { spellCheck: false, autoCapitalize: 'none', inputMode: 'email' }, formHelperText: { role: 'alert' } }} />
+              <TextField id="su-password" name="password" label="Password" type="password" autoComplete={mode === 'in' ? 'current-password' : 'new-password'}
                 value={password} onChange={(e) => setPassword(e.target.value)} error={!!fields.password}
                 helperText={fields.password || (mode === 'new' ? 'At least 12 characters.' : undefined)}
                 slotProps={{ formHelperText: { role: fields.password ? 'alert' : undefined } }} />

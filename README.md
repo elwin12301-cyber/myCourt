@@ -100,7 +100,7 @@ PostgreSQL is published on **port 5433** (not 5432) so it does not clash with a 
 | `backend/` | `uvicorn app.main:app --reload` | API with auto-reload |
 | repo root | `docker compose down` | Stop PostgreSQL (add `-v` to delete its data) |
 
-The browser checks drive headless Chrome and need the frontend (and optionally the backend) running: `node specs/002-services-site-prototype/browser-check.mjs <output-folder>`.
+Voice control has its own check (`node specs/005-voice-control/browser-check.mjs`, frontend in mock mode on port 5174). The browser checks drive headless Chrome and need the frontend (and optionally the backend) running: `node specs/002-services-site-prototype/browser-check.mjs <output-folder>`.
 
 ## The API
 
@@ -160,7 +160,7 @@ The backend serves fictional data only. A real integration must read from an aut
 - **Demonstration only.** The API refuses real client data unless `MYCOURT_ALLOW_REAL_DATA=true` **and** `python -m app.cli check-real-data` passes (changed secret, HTTPS cookies, audit triggers). Passing it is necessary, not sufficient: there are no firm roles, no multi-factor sign-in, no rate limiting beyond sign-in, and no security review yet. Keep it on localhost with fictional data.
 - **Backend-backed screens.** With `VITE_API_URL` set, every workspace screen is saved on the server: Cases, Dashboard, the matter workspace, and the Assistant, Research, Mapping, Voice, Hearing, Calendar, Intake, Billing and Documents screens (each works on a matter you pick). Without it they stay browser demonstrations.
 - **No real AI.** Assistant, research and mapping return labelled demonstration drafts; no matter text leaves the system. Original files are not stored, only register entries and extracted text.
-- **Dictation is not private.** The Voice screen can use the browser's speech recognition (opt-in, with voice commands such as "open calendar"). In Chrome and Edge the audio goes to the browser vendor; use it for demonstration material only.
+- **Voice control is not private.** The top-bar **Voice** button (Alt+V) lets you run the whole app by speaking: open any screen, press buttons by name or by number (**Numbers** puts a number on everything pressable), focus and fill fields, dictate, scroll, change text size and contrast, and more. A bar shows what it heard (**Replies**, **Help**, **Stop**); say "what can I say"; Alt+C opens a box to type the same commands. The sign-in screen and the Services site have a round mic launcher in the corner. It uses the browser's speech recognition, which in Chrome and Edge sends the audio to the browser vendor, so it asks you to agree first and is for demonstration material only. Commands are understood in English; dictation can be in the six languages.
 - **Two-step sign-in** (authenticator app) is optional per account (Security button). Its secret is stored readable in the database. There is no single sign-on and no firm-wide roles; the general request limit is per process.
 - Migrations create a fixed list of tables per revision; a later table change needs its own revision (a test fails if you forget).
 - The non-English translations are unreviewed.

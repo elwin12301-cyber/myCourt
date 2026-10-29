@@ -10,6 +10,7 @@ import Snackbar from '@mui/material/Snackbar'
 import { Modal, Pill, Row } from './components/ui'
 import DisplaySettings from './components/DisplaySettings'
 import Security from './components/Security'
+import VoiceControl from './components/VoiceControl'
 import { hashForPage, pageFromHash } from './router'
 import { gateState, useAuth } from './api/auth'
 import { apiEnabled } from './api/client'
@@ -236,7 +237,7 @@ export default function App() {
   // With the backend in use the workspace needs a signed-in person. The Services-site demo stays public.
   const gate = gateState(auth.required, auth.status, page)
   if (gate === 'loading') return <div role="status" className="page">Loading…</div>
-  if (gate === 'sign-in') return <SignIn />
+  if (gate === 'sign-in') return <AppContext.Provider value={ctx}><SignIn /><VoiceControl floating /></AppContext.Provider>
   const activeNav = page === 'caseDetail' ? 'cases' : page
 
   // The eCourts Services site is a full-page prototype with its own chrome, so it replaces the workspace layout.
@@ -244,6 +245,7 @@ export default function App() {
     return (
       <AppContext.Provider value={ctx}>
         <Suspense fallback={<div role="status" className="page">Loading…</div>}><ServicesApp /></Suspense>
+        <VoiceControl floating />
         <Snackbar open={toastShow} message={toastMsg} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} />
       </AppContext.Provider>
     )
@@ -293,6 +295,7 @@ export default function App() {
             </div>
             <div className="topactions">
               <Button variant="outlined" size="small" className="hide-sm" onClick={() => go('calendar')}>◷ Upcoming: 3</Button>
+              <VoiceControl />
               <DisplaySettings />
               <IconButton title="Notifications" aria-label="Notifications" onClick={showNotifications}>♧</IconButton>
               <Avatar title={auth.person?.displayName} sx={{ bgcolor: '#dbe6ff', color: '#2947a2', fontWeight: 700, width: 36, height: 36 }}>{(auth.person?.displayName ?? 'AK').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</Avatar>
